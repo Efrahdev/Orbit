@@ -15,7 +15,7 @@ The app uses relative paths, so it also supports a repository subdirectory URL. 
 ## Using Orbit
 - **Top bar:** a tick button (top left) selects or deselects every visible bookmark; then the search box, a sort menu, and the three-bar menu (top right) that opens the Library panel from the right.
 - **Add link:** the round + button floating at the bottom centre, within thumb reach. While rows are selected it is replaced by a bar with Move, Export, Delete and clear.
-- **Rows:** one slim row per bookmark showing a serial number and the name you gave it. Tick boxes select; the star, pencil and cross favourite, edit and delete. Clicking a row opens it.
+- **Rows:** one slim row per bookmark showing a serial number and the name you gave it. Tick boxes select; the icons on the right copy the link, pin it to the top, edit and delete. Pinned rows stay at the top and show small up and down arrows to put them in your own order. The Pinned filter shows only those. Clicking a row opens it.
 - **Names:** editing requires a name. When you paste exactly one link you can name it straight away; otherwise the name defaults to the website domain and can be edited later.
 
 ## What you can save
@@ -32,7 +32,7 @@ The only thing skipped is an entry with exactly the same address and name as one
 ## Chrome import and export
 Export bookmarks from desktop Chrome and choose Library > Import Chrome HTML. Nested folders become complete collection paths. Duplicate URLs are skipped (an existing bookmark with the same address wins). Every bookmark with an address is imported, including bookmarklets (which are saved as copy-only text and never run).
 
-Export to Chrome rebuilds nested folders as standard bookmark HTML. It does not carry Orbit notes, tags or favourites: use a full JSON backup for those. Empty Chrome folders are not retained because collections are derived from saved bookmarks. Folder names containing the literal separator ' / ' are interpreted as nested paths on HTML export.
+Export to Chrome rebuilds nested folders as standard bookmark HTML. It does not carry Orbit notes, tags or pins: use a full JSON backup for those. Empty Chrome folders are not retained because collections are derived from saved bookmarks. Folder names containing the literal separator ' / ' are interpreted as nested paths on HTML export.
 
 ## Backups and recovery
 Full JSON backup includes bookmarks, favourites, notes, tags, dates, visit counts and theme/view/icon preferences. Restore validates the whole file before writing. Merge keeps existing local versions of duplicate URLs. Replace restores backup preferences, initiates a recovery download and also stores the previous library under recovery-before-replace in the same IndexedDB transaction. Check your Downloads folder: browsers may block downloads.
@@ -52,7 +52,7 @@ For public, non-sensitive bookmarks:
 
 This is an additive snapshot, not synchronisation: existing local versions win; remote edits and deletions do not replace local records; deleted local links may return if they remain in the published snapshot. To replace a device library exactly, restore a full backup in Replace mode instead.
 
-Published snapshots include titles, URLs, collections, favourites, notes and tags. Opening history is reset in the published file. Anyone with access to the public site can read the snapshot. Do not upload private backups, confidential work links, tokens or secrets. A private repository does not necessarily make its Pages site private.
+Published snapshots include titles, URLs, collections, pins, notes and tags. Opening history is reset in the published file. Anyone with access to the public site can read the snapshot. Do not upload private backups, confidential work links, tokens or secrets. A private repository does not necessarily make its Pages site private.
 
 For private transfer, keep library.json empty and move a full backup between your devices yourself. True private automatic synchronisation remains a separate backend integration requiring a service choice, authentication and access rules. No credentials are embedded in these files.
 
@@ -65,3 +65,7 @@ Automated Chromium checks covered: the top-bar layout and the floating add butto
 ## References
 - GitHub Pages deployment: https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
 - PWA installation: https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable
+
+## Font
+
+Orbit uses Nunito (rounded, easy to read), bundled as `nunito.woff2` so nothing is fetched from outside. It is licensed under the SIL Open Font License; see `nunito-OFL.txt`.
