@@ -12,15 +12,25 @@ A framework-free bookmark manager prepared for GitHub Pages. No build tools, npm
 
 The app uses relative paths, so it also supports a repository subdirectory URL. Keep all deployment files together.
 
-## Save and organise
-Quick capture accepts multiple HTTP/HTTPS links, including links embedded in copied text and bare domain names entered one per line. It normalises URLs, removes exact duplicates and derives editable titles from URL paths and domains, not fetched page metadata. URL query parameters are preserved, so tracking-parameter variants are distinct links.
+## Using Orbit
+- **Top bar:** a tick button (top left) selects or deselects every visible bookmark; then the search box, a sort menu, and the three-bar menu (top right) that opens the Library panel from the right.
+- **Add link:** the round + button floating at the bottom centre, within thumb reach. While rows are selected it is replaced by a bar with Move, Export, Delete and clear.
+- **Rows:** one slim row per bookmark showing a serial number and the name you gave it. Tick boxes select; the star, pencil and cross favourite, edit and delete. Clicking a row opens it.
+- **Names:** editing requires a name. When you paste exactly one link you can name it straight away; otherwise the name defaults to the website domain and can be edited later.
 
-Add with notes opens the detailed editor. Collections use paths such as Learning / Programming. Search includes titles, addresses, domains, collections, tags and notes. Recently opened records links opened through Orbit, not the browser's general history. Use checkboxes and Select visible for bulk move, JSON export and deletion.
+## What you can save
+Anything. Each non-empty line you paste is saved as typed, with no validation: web addresses, `localhost:3000` (saved as http), LAN addresses, `file:///` paths, `mailto:` and other app links, even plain text. Bare domains get https; bare `localhost`, IP addresses and host:port get http. Lines of ordinary text containing web links still have those links picked out. Query parameters are kept.
 
-Website icons are opt-in under Library. Orbit requests each destination's /favicon.ico directly; sites without that file fall back to a letter icon. HTTP icons may be blocked on HTTPS pages. No third-party icon service or analytics is used.
+What happens on click depends on the browser, not Orbit:
+- Web links and app links (`mailto:`, `tel:`, `whatsapp:` and similar) open normally. Web links open in a new tab of the browser you are using Orbit in; a web page cannot choose a different browser.
+- `file:`, `chrome:`, `about:`, `data:` and plain text cannot be opened from a web page, so clicking copies the text to the clipboard.
+- `javascript:` bookmarklets are saved but never run, because they would execute inside Orbit with access to your bookmarks. Clicking copies the text instead.
+- `localhost` links only work on the device where that server is running.
+
+The only thing skipped is an entry with exactly the same address and name as one already saved. The same address under a different name is allowed. Entries are limited to 100,000 characters. Search covers names, addresses, domains, collections, tags and notes.
 
 ## Chrome import and export
-Export bookmarks from desktop Chrome and choose Library > Import Chrome HTML. Nested folders become complete collection paths. Duplicate URLs are skipped. Non-HTTP/HTTPS bookmarks, including bookmarklets, are not imported.
+Export bookmarks from desktop Chrome and choose Library > Import Chrome HTML. Nested folders become complete collection paths. Duplicate URLs are skipped (an existing bookmark with the same address wins). Every bookmark with an address is imported, including bookmarklets (which are saved as copy-only text and never run).
 
 Export to Chrome rebuilds nested folders as standard bookmark HTML. It does not carry Orbit notes, tags or favourites: use a full JSON backup for those. Empty Chrome folders are not retained because collections are derived from saved bookmarks. Folder names containing the literal separator ' / ' are interpreted as nested paths on HTML export.
 
@@ -50,7 +60,7 @@ For private transfer, keep library.json empty and move a full backup between you
 The service worker caches the application shell, not destination websites or the published library. Previously saved bookmarks remain browsable offline; opening external destinations still needs connectivity. HTML navigation uses network-first with an offline fallback. Increase the cache version in sw.js when changing cached icons or manifest assets. Browser installation and service workers require HTTPS or localhost.
 
 ## Validation
-Automated Chromium checks exercised bulk capture/deduplication, editing notes/tags, notes search, nested Chrome import, JSON backup download, merge restore, bulk move, persistence after reload and offline reload. Layout overflow checks passed at widths 320, 360, 412, 768, 1440 and 1920 CSS pixels. No page-level JavaScript errors were observed in those checks. This is not physical Android device certification or an exhaustive accessibility/security audit.
+Automated Chromium checks covered: the top-bar layout and the floating add button, saving localhost, LAN, file, mailto, javascript, chrome and plain-text entries, click behaviour for each (new tab, copy, and confirming a bookmarklet does not run), duplicate and same-address-different-name handling, select-all and individual selection, the right-hand Library panel, JSON backup and replace-restore round trip with unusual entries, persistence after reload, and no sideways overflow from 320 to 1280 CSS pixels with no page errors. This is not physical device certification or an exhaustive accessibility or security audit.
 
 ## References
 - GitHub Pages deployment: https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
