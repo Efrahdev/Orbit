@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Advanced Search Builder Suite • Amazon, Google, YouTube</title>
+<style>
+:root { color-scheme:dark; --bg:#09111e; --panel:#101d30; --edge:#334964; --text:#edf4ff; --muted:#b0c2d7; --accent:#7ec8ff; --good:#88e0b3; --bad:#ffb2b7; font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif }
+* { box-sizing:border-box }
+[hidden] { display:none !important }
+body { margin:0; background:radial-gradient(ellipse at top right,#183456 0,transparent 45%),var(--bg); color:var(--text); padding:24px 14px 70px }
+main { width:min(100%,970px); margin:0 auto }
+header { margin-bottom:16px }
+.eyebrow { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.14em; color:var(--accent) }
+h1 { font-size:clamp(28px,4.5vw,42px); letter-spacing:-.04em; line-height:1.17; margin:7px 0 10px }
+.lead { font-size:14px; color:var(--muted); max-width:780px; line-height:1.6 }
+
+/* tabs */
+.tabs { display:flex; gap:8px; overflow-x:auto; padding:4px 2px 12px; margin:0 0 4px; scrollbar-width:thin }
+.tab { appearance:none; flex:none; display:inline-flex; align-items:center; gap:9px; min-height:46px; padding:11px 16px; border-radius:12px; border:1px solid #3b5574; background:#0d1b2f; color:var(--muted); font:inherit; font-size:14px; font-weight:800; cursor:pointer }
+.tab::before { content:""; width:9px; height:9px; border-radius:50%; background:var(--dot,var(--accent)) }
+.tab:hover { filter:brightness(1.15) }
+.tab[aria-selected=true] { color:var(--text); background:#173a5c; border-color:var(--dot,var(--accent)); box-shadow:0 0 0 1px var(--dot,var(--accent)) inset }
+
+.panel { background:var(--panel); border:1px solid var(--edge); border-radius:17px; padding:22px; margin:18px 0 }
+.section-title { font-weight:850; text-transform:uppercase; font-size:11px; letter-spacing:.13em; color:var(--accent); margin:0 0 16px }
+.grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px }
+.grid3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px }
+.field { display:grid; gap:7px; align-content:start }
+label { font-size:13px; font-weight:700 }
+input[type=text],input[type=number],input[type=date],select,textarea { width:100%; padding:11px 12px; border-radius:10px; min-height:45px; background:#09172a; border:1px solid #3b5574; color:var(--text); font:inherit; font-size:14px }
+textarea { min-height:90px; resize:vertical }
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible { outline:3px solid var(--accent); outline-offset:2px }
+select { cursor:pointer }
+select:disabled { opacity:.45; cursor:not-allowed }
+option { background:#101d30 }
+.hint { font-size:12px; color:var(--muted); line-height:1.55; margin:1px 0 0 }
+.separator { border:0; border-top:1px solid #314560; margin:21px 0 }
+.toggle-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px }
+.toggle-grid.three { grid-template-columns:repeat(3,minmax(0,1fr)) }
+.toggle { display:flex; align-items:center; gap:12px; padding:15px; border:1px solid #405474; background:#0a192c; border-radius:11px; cursor:pointer }
+.toggle.mini { padding:11px 12px; gap:10px }
+.toggle input { width:19px; height:19px; flex:none; accent-color:#68b9ef }
+.toggle:has(input:checked) { background:#123755; border-color:#72bcee }
+.toggle strong { font-size:14px; display:block }
+.toggle.mini strong { font-size:13px }
+.toggle small { display:block; color:var(--muted); font-weight:400; margin-top:3px; font-size:12px }
+.hidden { display:none }
+.space { margin-top:16px }
+code,.mono { font-family:ui-monospace,"Cascadia Code",Consolas,monospace }
+code { color:#c2e7ff; background:#142943; padding:2px 5px; border-radius:4px }
+.help { background:#0b2437; padding:14px; border-radius:10px; border:1px solid #355979; color:#cde2f7; font-size:12px; line-height:1.7 }
+.urlbox { border:1px solid #395773; border-radius:12px; background:#081522; padding:14px; overflow-wrap:anywhere; line-height:1.65; font-size:13px; color:#a8defe; user-select:all }
+.facets { display:flex; flex-wrap:wrap; gap:7px; margin-top:11px }
+.chip { border:1px solid #395875; border-radius:30px; font-size:12px; padding:5px 9px; background:#172a43; color:#dceeff }
+.btns { display:flex; gap:10px; margin-top:15px }
+.button,.link-button { appearance:none; border-radius:10px; cursor:pointer; border:1px solid #5396c5; min-height:44px; padding:12px 15px; font:inherit; font-size:13px; font-weight:800; text-align:center; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:6px }
+.button { color:#dfeeff; background:#183453 }
+.link-button { color:#071729; background:var(--accent); flex:1 }
+.button:hover,.link-button:hover { filter:brightness(1.10) }
+.button:disabled,.link-button.disabled { pointer-events:none; opacity:.4 }
+.meta { display:flex; justify-content:space-between; gap:12px; align-items:center }
+.message { margin:10px 0 0; font-size:12px; color:var(--bad); min-height:13px }
+.notice { margin:6px 0 0; font-size:12px; color:#ffd3a2; line-height:1.55 }
+.result { line-height:1.7; font-size:13px; margin-top:12px; white-space:pre-wrap; overflow-wrap:anywhere }
+.result.good { color:var(--good) }
+.result.warn { color:#ffd3a2 }
+details summary { cursor:pointer; color:#b2daff; font-size:13px; font-weight:700 }
+details[open] summary { margin-bottom:12px }
+footer { font-size:12px; color:var(--muted); line-height:1.7; padding:6px }
+@media(max-width:620px) {
+ .grid,.grid3,.toggle-grid { grid-template-columns:1fr }
+ .toggle-grid.three { grid-template-columns:repeat(2,minmax(0,1fr)) }
+ .panel { padding:17px }
+ .btns { flex-direction:column }
+ .btns .button,.btns .link-button { width:100% }
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+ <div class="eyebrow">Standalone search toolkit • 4 builders</div>
+ <h1>Advanced Search Builder <span style="color:#8cd6ba;font-size:17px;vertical-align:middle">Suite</span></h1>
+ <p class="lead">Pick a tab: Amazon India, Google Web, Google Shopping or YouTube. Every selection updates a real search URL instantly, and each tab has its own checker that shows which filters the site appears to have kept.</p>
+</header>
+
+<div class="tabs" role="tablist" aria-label="Search builders">
+ <button class="tab" role="tab" id="tab-amazon" data-tool="amazon" aria-controls="tool-amazon" aria-selected="true" style="--dot:#ffb454">Amazon India</button>
+ <button class="tab" role="tab" id="tab-google" data-tool="google" aria-controls="tool-google" aria-selected="false" tabindex="-1" style="--dot:#8ab4f8">Google Web</button>
+ <button class="tab" role="tab" id="tab-shopping" data-tool="shopping" aria-controls="tool-shopping" aria-selected="false" tabindex="-1" style="--dot:#81c995">Google Shopping</button>
+ <button class="tab" role="tab" id="tab-youtube" data-tool="youtube" aria-controls="tool-youtube" aria-selected="false" tabindex="-1" style="--dot:#ff7b7b">YouTube</button>
+</div>
+
+<!-- ============================ AMAZON INDIA ============================ -->
+<div id="tool-amazon" class="tool" role="tabpanel" aria-labelledby="tab-amazon">
+ <div class="panel" aria-label="Amazon search criteria">
+  <div class="section-title">Product and brand</div>
+  <div class="field"><label for="am-query">Product keywords and exact technical requirements</label><input id="am-query" type="text" autocomplete="off"><p class="hint">Example: “USB C to USB C 100W retractable 1 metre”.</p></div>
+  <div class="grid space">
+   <div class="field"><label for="am-category">Amazon department</label><select id="am-category"><option value="">All departments (recommended initially)</option><option value="electronics">Electronics</option><option value="computers">Computers &amp; Accessories</option><option value="kitchen">Home &amp; Kitchen</option><option value="automotive">Car &amp; Motorbike</option><option value="office-products">Office Products</option><option value="fashion">Fashion</option><option value="beauty">Beauty</option><option value="sporting">Sports &amp; Outdoors</option><option value="toys">Toys &amp; Games</option><option value="stripbooks">Books</option></select></div>
+   <div class="field"><label for="am-brand">Brand restriction</label><select id="am-brand"><option value="">All brands</option><option>UGREEN</option><option>Anker</option><option>Belkin</option><option>Baseus</option><option>Spigen</option><option>Ambrane</option><option>Portronics</option><option>boAt</option><option>Stuffcool</option><option>Amazon Basics</option><option>Samsung</option><option>Apple</option><option>Lenovo</option><option>HP</option><option>Dell</option><option>Logitech</option><option>Sony</option><option>Philips</option><option>Xiaomi</option><option value="__custom">Other brand…</option></select></div>
+  </div>
+  <div id="am-customContainer" class="field space hidden"><label for="am-customBrand">Enter custom brand name</label><input id="am-customBrand" type="text" placeholder="Brand as shown on Amazon"></div>
+  <div class="space"><label class="toggle"><input id="am-brandKeyword" type="checkbox" checked><span><strong>Also add brand to search keywords</strong><small>Fallback if Amazon ignores the strict brand filter. Matching is still not guaranteed.</small></span></label></div>
+  <hr class="separator">
+  <div class="section-title">Amazon filters</div>
+  <div class="toggle-grid">
+   <label class="toggle"><input id="am-stars" type="checkbox"><span><strong>4★ and above</strong><small>Amazon India rating refinement</small></span></label>
+   <label class="toggle"><input id="am-prime" type="checkbox"><span><strong>Prime eligible only</strong><small>Amazon India Prime refinement</small></span></label>
+  </div>
+  <div class="grid3 space">
+   <div class="field"><label for="am-minPrice">Minimum price (₹)</label><input id="am-minPrice" type="number" min="0" step="1" placeholder="No minimum"></div>
+   <div class="field"><label for="am-maxPrice">Maximum price (₹)</label><input id="am-maxPrice" type="number" min="0" step="1" placeholder="No maximum"></div>
+   <div class="field"><label for="am-discount">Advertised discount</label><select id="am-discount"><option value="0">No discount filter</option><option value="10">10% and above</option><option value="20">20% and above</option><option value="30">30% and above</option><option value="40">40% and above</option><option value="50">50% and above</option><option value="60">60% and above</option><option value="70">70% and above</option></select></div>
+  </div>
+  <hr class="separator">
+  <div class="section-title">Ranking and extended filters</div>
+  <div class="grid">
+   <div class="field"><label for="am-sort">Sort order</label><select id="am-sort"><option value="">Amazon relevance</option><option value="review-rank">Average customer reviews</option><option value="price-asc-rank">Price: low to high</option><option value="price-desc-rank">Price: high to low</option><option value="date-desc-rank">Newest arrivals</option></select></div>
+   <div class="field"><label for="am-page">Page number</label><select id="am-page"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
+  </div>
+  <details class="space"><summary>Additional custom Amazon filters (advanced)</summary><div class="field"><label for="am-extra">Paste a comma-separated list of Amazon <code>rh</code> facets</label><input id="am-extra" type="text" placeholder="p_n_feature_browse-bin:123456789"><p class="hint">Use only identifiers copied from an Amazon results-page URL. Format: <code>p_name:value,p_other:value</code></p></div></details>
+ </div>
+ <div id="am-out"></div>
+</div>
+
+<!-- ============================ GOOGLE WEB ============================ -->
+<div id="tool-google" class="tool" role="tabpanel" aria-labelledby="tab-google" hidden>
+ <div class="panel" aria-label="Google Web search criteria">
+  <div class="section-title">What to find</div>
+  <div class="grid">
+   <div class="field"><label for="gw-all">All of these words</label><input id="gw-all" type="text" autocomplete="off"><p class="hint">Plain keywords. Use <code>*</code> as a wildcard for an unknown word.</p></div>
+   <div class="field"><label for="gw-exact">This exact phrase</label><input id="gw-exact" type="text" placeholder="e.g. 100W PD 3.1" autocomplete="off"><p class="hint">Wrapped in quotation marks so the words must appear together.</p></div>
+   <div class="field"><label for="gw-any">Any of these words</label><input id="gw-any" type="text" placeholder="anker, ugreen, baseus" autocomplete="off"><p class="hint">Comma-separated. Becomes <code>(a OR b OR c)</code>.</p></div>
+   <div class="field"><label for="gw-none">None of these words</label><input id="gw-none" type="text" placeholder="used, refurbished, fake" autocomplete="off"><p class="hint">Comma-separated. Each becomes <code>-word</code>.</p></div>
+  </div>
+  <hr class="separator">
+  <div class="section-title">Where it must appear</div>
+  <div class="grid3">
+   <div class="field"><label for="gw-site">Only from these sites</label><input id="gw-site" type="text" placeholder="reddit.com, .gov.in" autocomplete="off"><p class="hint">Comma-separated domains or paths.</p></div>
+   <div class="field"><label for="gw-nosite">Never from these sites</label><input id="gw-nosite" type="text" placeholder="pinterest.com" autocomplete="off"><p class="hint">Comma-separated. Becomes <code>-site:</code>.</p></div>
+   <div class="field"><label for="gw-filetype">File type</label><select id="gw-filetype"><option value="">Any format</option><option value="pdf">PDF</option><option value="doc">DOC</option><option value="docx">DOCX</option><option value="xls">XLS</option><option value="xlsx">XLSX</option><option value="ppt">PPT</option><option value="pptx">PPTX</option><option value="csv">CSV</option><option value="txt">TXT</option></select></div>
+  </div>
+  <div class="grid3 space">
+   <div class="field"><label for="gw-intitle">In the page title</label><input id="gw-intitle" type="text" placeholder="review, comparison" autocomplete="off"></div>
+   <div class="field"><label for="gw-inurl">In the web address</label><input id="gw-inurl" type="text" placeholder="datasheet" autocomplete="off"></div>
+   <div class="field"><label for="gw-intext">In the page text</label><input id="gw-intext" type="text" placeholder="E-marker chip" autocomplete="off"></div>
+  </div>
+  <p class="hint space">Each of these three takes comma-separated words or phrases. Multi-word items are quoted automatically.</p>
+  <hr class="separator">
+  <div class="section-title">Numbers, dates and language</div>
+  <div class="grid3">
+   <div class="field"><label for="gw-numfrom">Number range from</label><input id="gw-numfrom" type="number" step="any" placeholder="e.g. 500"></div>
+   <div class="field"><label for="gw-numto">Number range to</label><input id="gw-numto" type="number" step="any" placeholder="e.g. 2000"></div>
+   <div class="field"><label for="gw-numunit">Currency symbol</label><select id="gw-numunit"><option value="">None</option><option value="₹">₹ rupee</option><option value="$">$ dollar</option><option value="£">£ pound</option><option value="€">€ euro</option></select></div>
+  </div>
+  <div class="grid3 space">
+   <div class="field"><label for="gw-recent">Quick time range</label><select id="gw-recent"><option value="">Any time</option><option value="h">Past hour</option><option value="d">Past 24 hours</option><option value="w">Past week</option><option value="m">Past month</option><option value="y">Past year</option></select></div>
+   <div class="field"><label for="gw-after">Published after</label><input id="gw-after" type="date"></div>
+   <div class="field"><label for="gw-before">Published before</label><input id="gw-before" type="date"></div>
+  </div>
+  <div class="grid3 space">
+   <div class="field"><label for="gw-lang">Language</label><select id="gw-lang"></select></div>
+   <div class="field"><label for="gw-region">Region bias</label><select id="gw-region"></select></div>
+   <div class="field"><label for="gw-page">Page number</label><select id="gw-page"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
+  </div>
+  <hr class="separator">
+  <div class="section-title">Result behaviour</div>
+  <div class="toggle-grid">
+   <label class="toggle"><input id="gw-sortdate" type="checkbox"><span><strong>Sort by date</strong><small>Newest first instead of by relevance</small></span></label>
+   <label class="toggle"><input id="gw-verbatim" type="checkbox"><span><strong>Verbatim</strong><small>Search your exact words; no synonyms or spelling fixes</small></span></label>
+   <label class="toggle"><input id="gw-webonly" type="checkbox"><span><strong>Web results only</strong><small>Plain links view, without AI overview or widgets</small></span></label>
+   <label class="toggle"><input id="gw-safe" type="checkbox"><span><strong>SafeSearch on</strong><small>Filter explicit results</small></span></label>
+  </div>
+ </div>
+ <div id="gw-out"></div>
+</div>
+
+<!-- ============================ GOOGLE SHOPPING ============================ -->
+<div id="tool-shopping" class="tool" role="tabpanel" aria-labelledby="tab-shopping" hidden>
+ <div class="panel" aria-label="Google Shopping criteria">
+  <div class="section-title">Product</div>
+  <div class="grid">
+   <div class="field"><label for="gs-q">Product keywords and technical requirements</label><input id="gs-q" type="text" autocomplete="off"></div>
+   <div class="field"><label for="gs-brand">Brand (optional)</label><input id="gs-brand" type="text" placeholder="e.g. UGREEN" autocomplete="off"><p class="hint">Added to the keywords. Google Shopping has no stable brand code in the URL.</p></div>
+  </div>
+  <hr class="separator">
+  <div class="section-title">Price and condition</div>
+  <div class="grid3">
+   <div class="field"><label for="gs-min">Minimum price (₹)</label><input id="gs-min" type="number" min="0" step="1" placeholder="No minimum"></div>
+   <div class="field"><label for="gs-max">Maximum price (₹)</label><input id="gs-max" type="number" min="0" step="1" placeholder="No maximum"></div>
+   <div class="field"><label for="gs-cond">Condition</label><select id="gs-cond"><option value="">Any</option><option value="new:1">New</option><option value="used:1">Used</option></select></div>
+  </div>
+  <div class="toggle-grid space">
+   <label class="toggle"><input id="gs-free" type="checkbox"><span><strong>Free delivery</strong><small>Only listings that advertise free shipping</small></span></label>
+   <label class="toggle"><input id="gs-sale" type="checkbox"><span><strong>On sale</strong><small>Only listings marked as discounted</small></span></label>
+  </div>
+  <hr class="separator">
+  <div class="section-title">Ranking and region</div>
+  <div class="grid">
+   <div class="field"><label for="gs-sort">Sort order</label><select id="gs-sort"><option value="">Google default</option><option value="p_ord:p">Price: low to high</option><option value="p_ord:pd">Price: high to low</option><option value="p_ord:rv">Review score</option></select></div>
+   <div class="field"><label for="gs-region">Region</label><select id="gs-region"></select></div>
+  </div>
+  <details class="space"><summary>Advanced (Shopping mode and custom codes)</summary>
+   <div class="grid">
+    <div class="field"><label for="gs-mode">Shopping URL mode</label><select id="gs-mode"><option value="udm">Current Shopping tab (udm=28)</option><option value="tbm">Classic Shopping (tbm=shop)</option></select><p class="hint">If filters disappear, try the other mode.</p></div>
+    <div class="field"><label for="gs-extra">Custom <code>tbs</code> codes</label><input id="gs-extra" type="text" placeholder="key:value,key:value"><p class="hint">Only codes copied from a Google Shopping results URL, as <code>key:value</code>.</p></div>
+   </div>
+  </details>
+ </div>
+ <div id="gs-out"></div>
+</div>
+
+<!-- ============================ YOUTUBE ============================ -->
+<div id="tool-youtube" class="tool" role="tabpanel" aria-labelledby="tab-youtube" hidden>
+ <div class="panel" aria-label="YouTube search criteria">
+  <div class="section-title">What to find</div>
+  <div class="grid">
+   <div class="field"><label for="yt-q">Keywords</label><input id="yt-q" type="text" autocomplete="off"></div>
+   <div class="field"><label for="yt-exact">This exact phrase</label><input id="yt-exact" type="text" placeholder="e.g. teardown" autocomplete="off"><p class="hint">Wrapped in quotation marks.</p></div>
+   <div class="field"><label for="yt-any">Any of these words</label><input id="yt-any" type="text" placeholder="review, unboxing" autocomplete="off"><p class="hint">Comma-separated. Joined with <code>|</code> (OR).</p></div>
+   <div class="field"><label for="yt-none">None of these words</label><input id="yt-none" type="text" placeholder="shorts, reaction" autocomplete="off"><p class="hint">Comma-separated. Each becomes <code>-word</code>.</p></div>
+  </div>
+  <div class="field space"><label for="yt-channel">Search inside one channel (optional)</label><input id="yt-channel" type="text" placeholder="@handle or UC… channel ID" autocomplete="off"><p class="hint">Opens that channel’s own search page. YouTube’s type, duration, date and sort filters do not apply there, so they are left out.</p></div>
+  <hr class="separator">
+  <div class="section-title">Filters</div>
+  <div class="grid3">
+   <div class="field"><label for="yt-upload">Upload date</label><select id="yt-upload"><option value="">Any time</option><option value="1">Last hour</option><option value="2">Today</option><option value="3">This week</option><option value="4">This month</option><option value="5">This year</option></select></div>
+   <div class="field"><label for="yt-type">Type</label><select id="yt-type"><option value="">Any type</option><option value="1">Video</option><option value="2">Channel</option><option value="3">Playlist</option><option value="4">Movie</option></select></div>
+   <div class="field"><label for="yt-duration">Duration</label><select id="yt-duration"><option value="">Any length</option><option value="1">Under 4 minutes</option><option value="3">4–20 minutes</option><option value="2">Over 20 minutes</option></select></div>
+  </div>
+  <div class="grid space">
+   <div class="field"><label for="yt-sort">Sort by</label><select id="yt-sort"><option value="0">Relevance</option><option value="2">Upload date</option><option value="3">View count</option><option value="1">Rating</option></select></div>
+   <div class="field"><label for="yt-region">Region</label><select id="yt-region"></select></div>
+  </div>
+  <hr class="separator">
+  <div class="section-title">Features</div>
+  <div id="yt-flags" class="toggle-grid three"></div>
+ </div>
+ <div id="yt-out"></div>
+</div>
+
+<footer>No login, API key or network connection is required to build a link. This page does not scrape any site, check live results or bypass any site’s restrictions. Search sites change their URL parameters from time to time, which is why every tab includes a checker.</footer>
+</main>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const val = id => $(id).value.trim();
+const chk = id => $(id).checked;
+const splitList = s => s.split(',').map(x => x.trim()).filter(Boolean);
+const noQuotes = s => s.replace(/"/g, '').trim();
+const maybeQuote = t => /\s/.test(t) ? '"' + t + '"' : t;
+const norm = s => s.replace(/\s+/g, ' ').trim().toLowerCase();
+const isNum = s => s !== '' && Number.isFinite(Number(s));
+const sel = id => $(id).selectedOptions[0].textContent;
+
+function fill(id, list){
+ $(id).replaceChildren(...list.map(([v, l]) => { const o = document.createElement('option'); o.value = v; o.textContent = l; return o; }));
+}
+function setAll(map){
+ for(const [id, v] of Object.entries(map)){
+  const e = $(id);
+  if(e.type === 'checkbox') e.checked = !!v; else e.value = v;
+ }
+}
+
+const REGIONS = [['','Default (no region hint)'],['in','India'],['us','United States'],['gb','United Kingdom'],['au','Australia'],['ca','Canada'],['sg','Singapore'],['ae','United Arab Emirates'],['de','Germany']];
+const LANGS = [['','Any language'],['en','English'],['hi','Hindi'],['ta','Tamil'],['te','Telugu'],['bn','Bengali'],['mr','Marathi'],['gu','Gujarati'],['kn','Kannada'],['ml','Malayalam'],['pa','Punjabi'],['ur','Urdu'],['es','Spanish'],['fr','French'],['de','German'],['ja','Japanese'],['ar','Arabic']];
+const DEFAULT_QUERY = 'retractable USB C 100W charging cable';
+
+/* ---------- shared output + checker UI, one instance per tab ---------- */
+function outputHTML(c){
+ const p = c.p;
+ return `
+<div class="panel" aria-label="Generated URL">
+ <div class="meta"><div class="section-title" style="margin:0">Live generated URL</div><button id="${p}-reset" type="button" class="button">Clear filters</button></div>
+ <div id="${p}-url" class="urlbox mono space" aria-live="polite"></div>
+ <div id="${p}-chips" class="facets" aria-live="polite"></div>
+ <p id="${p}-message" class="message" role="alert"></p>
+ <p id="${p}-notes" class="notice" aria-live="polite"></p>
+ <div class="btns"><a id="${p}-open" class="link-button" href="#" target="_blank" rel="noopener noreferrer">${c.openLabel} ↗</a><button id="${p}-copy" class="button" type="button">Copy URL</button></div>
+ <p class="hint space"><strong>Important:</strong> ${c.important}</p>
+ <details class="space"><summary>Show the decoded URL and individual filter codes</summary><div id="${p}-decoded" class="urlbox mono space"></div><div id="${p}-facetList" class="hint space"></div></details>
+</div>
+<div class="panel" aria-label="Filter checker">
+ <div class="section-title">${c.checkTitle}</div>
+ <p class="hint">${c.checkHint}</p>
+ <div class="field space"><label for="${p}-returned">${c.pasteLabel}</label><textarea id="${p}-returned" placeholder="${c.pastePlaceholder}"></textarea></div>
+ <div class="btns"><button class="button" id="${p}-check" type="button">Check retained filters</button><button class="button" id="${p}-clearCheck" type="button">Clear check</button></div>
+ <div id="${p}-result" class="result" aria-live="polite"></div>
+</div>
+<div class="help">${c.help}</div>`;
+}
+
+function mountTool(cfg){
+ const p = cfg.p;
+ const g = s => $(p + '-' + s);
+ let current = null;
+ $(p + '-out').innerHTML = outputHTML(cfg);
+
+ function render(){
+  if(cfg.onRender) cfg.onRender();
+  current = cfg.build();
+  g('url').textContent = current.link;
+  let decoded = current.link;
+  try { decoded = decodeURIComponent(current.link.replace(/\+/g, '%20')); } catch(_) {}
+  g('decoded').textContent = decoded;
+  g('facetList').textContent = current.facets.length ? cfg.facetLabel + current.facets.join('   |   ') : 'No additional filters selected.';
+  g('message').textContent = current.error || '';
+  g('notes').textContent = (current.notes || []).join(' ');
+  const bad = Boolean(current.error);
+  g('copy').disabled = bad;
+  const open = g('open');
+  open.href = bad ? '#' : current.link;
+  open.classList.toggle('disabled', bad);
+  open.setAttribute('aria-disabled', String(bad));
+  const chips = current.chips.length ? current.chips : ['No filters selected'];
+  g('chips').replaceChildren(...chips.map(t => { const s = document.createElement('span'); s.className = 'chip'; s.textContent = t; return s; }));
+ }
+
+ for(const id of Object.keys(cfg.defaults)){
+  $(id).addEventListener('input', render);
+  $(id).addEventListener('change', render);
+ }
+ g('open').addEventListener('click', e => { if(current.error) e.preventDefault(); });
+ g('copy').addEventListener('click', async () => {
+  if(current.error) return;
+  const btn = g('copy'), text = current.link;
+  const done = ok => { btn.textContent = ok ? 'Copied ✓' : 'Select the URL text to copy'; setTimeout(() => { btn.textContent = 'Copy URL'; }, 2000); };
+  try { await navigator.clipboard.writeText(text); done(true); }
+  catch(e){
+   const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select();
+   let ok = false; try { ok = document.execCommand('copy'); } catch(_) {}
+   t.remove(); done(ok);
+  }
+ });
+ g('reset').addEventListener('click', () => {
+  setAll(cfg.defaults);
+  g('returned').value = ''; g('result').textContent = ''; g('result').className = 'result';
+  render();
+ });
+ g('clearCheck').addEventListener('click', () => { g('returned').value = ''; g('result').textContent = ''; g('result').className = 'result'; });
+ g('check').addEventListener('click', () => {
+  const target = g('result'); target.className = 'result';
+  let parsed;
+  try { parsed = new URL(g('returned').value.trim()); }
+  catch(e){ target.textContent = cfg.pasteError; target.classList.add('warn'); return; }
+  const out = cfg.check(parsed, current);
+  target.textContent = out.rows.join('\n');
+  target.classList.add(out.level);
+ });
+
+ setAll(cfg.defaults);
+ render();
+}
+
+/* ======================================================================
+   1. AMAZON INDIA  (logic unchanged from the original builder)
+   ====================================================================== */
+const AM_TOKENS = { stars:'p_72:1318476031', prime:'p_85:10440599031' };
+const AM_DEFAULTS = {
+ 'am-query':DEFAULT_QUERY, 'am-category':'', 'am-brand':'', 'am-customBrand':'', 'am-brandKeyword':true,
+ 'am-stars':false, 'am-prime':false, 'am-minPrice':'', 'am-maxPrice':'', 'am-discount':'0', 'am-sort':'', 'am-page':'1', 'am-extra':''
+};
+
+mountTool({
+ p:'am', openLabel:'Open results on Amazon', facetLabel:'Filter codes: ', defaults:AM_DEFAULTS,
+ important:'The URL updates when you change a filter. Amazon may remove or ignore an incompatible filter after loading. Encoding such as <code>%3A</code> is correct.',
+ checkTitle:'Did Amazon retain your selections?',
+ checkHint:'Open the generated URL above. Then copy the address of Amazon’s resulting <strong>search-results page</strong>, paste it here and click Check. This detects removed URL filters; it cannot guarantee that each product satisfies them.',
+ pasteLabel:'URL from Amazon after opening the search', pastePlaceholder:'Paste the final Amazon search-results URL here',
+ pasteError:'Paste a complete Amazon.in URL, beginning with https://www.amazon.in/.',
+ help:'<strong>Reliable troubleshooting:</strong> Begin with keywords alone, then enable 4★, Prime and brand one at a time. If Amazon removes a facet, try the same filter through Amazon’s own left-side filter panel for that particular search. Too many filters can legitimately return no matches.',
+ onRender(){ $('am-customContainer').classList.toggle('hidden', val('am-brand') !== '__custom'); },
+ build(){
+  const chosen = val('am-brand');
+  const brand = chosen === '__custom' ? val('am-customBrand') : chosen;
+  const rawQuery = val('am-query');
+  const low = val('am-minPrice'), high = val('am-maxPrice');
+  let error = '';
+  if(!rawQuery) error = 'Please enter product keywords.';
+  else if((low !== '' && (!Number.isFinite(Number(low)) || Number(low) < 0)) || (high !== '' && (!Number.isFinite(Number(high)) || Number(high) < 0))) error = 'Price values must be zero or above.';
+  else if(low !== '' && high !== '' && Number(low) > Number(high)) error = 'Minimum price cannot exceed maximum price.';
+  else if(chosen === '__custom' && !brand) error = 'Enter a custom brand or select All brands.';
+  const query = brand && chk('am-brandKeyword') && !rawQuery.toLowerCase().includes(brand.toLowerCase()) ? rawQuery + ' ' + brand : rawQuery;
+  const facets = [];
+  if(low !== '' || high !== '') facets.push('p_36:' + (low !== '' ? Math.round(Number(low) * 100) : '') + '-' + (high !== '' ? Math.round(Number(high) * 100) : ''));
+  if(chk('am-stars')) facets.push(AM_TOKENS.stars);
+  if(chk('am-prime')) facets.push(AM_TOKENS.prime);
+  if(brand) facets.push('p_89:' + brand);
+  const pct = Number(val('am-discount'));
+  if(pct > 0) facets.push('p_n_pct-off-with-tax:' + pct + '-100');
+  const custom = splitList(val('am-extra'));
+  const invalidCustom = custom.filter(v => !/^[a-zA-Z0-9_\-]+:[^&#=?]+$/.test(v));
+  if(invalidCustom.length && !error) error = 'Invalid custom filter syntax: ' + invalidCustom.join(', ');
+  if(!invalidCustom.length) facets.push(...custom);
+  const url = new URL('https://www.amazon.in/s');
+  url.searchParams.set('k', query);
+  if(val('am-category')) url.searchParams.set('i', val('am-category'));
+  if(facets.length) url.searchParams.set('rh', facets.join(','));
+  if(val('am-sort')) url.searchParams.set('s', val('am-sort'));
+  if(Number(val('am-page')) > 1) url.searchParams.set('page', val('am-page'));
+  const chips = [];
+  if(brand) chips.push('Brand: ' + brand);
+  if(chk('am-stars')) chips.push('4★+');
+  if(chk('am-prime')) chips.push('Prime only');
+  if(val('am-minPrice') || val('am-maxPrice')) chips.push('Price: ₹' + (val('am-minPrice') || '0') + '–₹' + (val('am-maxPrice') || '∞'));
+  if(Number(val('am-discount')) > 0) chips.push(val('am-discount') + '%+ discount');
+  if(val('am-category')) chips.push('Department: ' + val('am-category'));
+  if(val('am-sort')) chips.push('Sort: ' + sel('am-sort'));
+  return { link:url.toString(), facets, chips, error, notes:[] };
+ },
+ check(u, cur){
+  if(!u.hostname.endsWith('amazon.in') && !u.hostname.endsWith('amazon.com')) return { rows:['This is not an Amazon search URL.'], level:'warn' };
+  const rh = u.searchParams.get('rh') || u.searchParams.get('refinements') || '';
+  const found = rh.split(',').map(s => s.trim()).filter(Boolean);
+  const missing = cur.facets.filter(f => !found.includes(f));
+  const kept = cur.facets.filter(f => found.includes(f));
+  const rows = ['Expected ' + cur.facets.length + ' filter(s). Found ' + found.length + ' Amazon facet(s) in the pasted URL.'];
+  rows.push('Retained: ' + (kept.length ? kept.join(' | ') : 'None / not detectable'));
+  rows.push('Missing: ' + (missing.length ? missing.join(' | ') : 'None'));
+  if(u.pathname !== '/s' && u.pathname !== '/s/') rows.push('Warning: paste a SEARCH results URL, not a product /dp/ link.');
+  rows.push('Note: Retained codes do not prove that Amazon applied the filters to every listing.');
+  return { rows, level: missing.length ? 'warn' : 'good' };
+ }
+});
+
+/* ======================================================================
+   shared Google checker (used by Web and Shopping)
+   ====================================================================== */
+function googleCheck(u, cur){
+ if(!/(^|\.)google\.[a-z.]{2,}$/.test(u.hostname)) return { rows:['This is not a Google URL. Expected google.com or a country domain such as google.co.in.'], level:'warn' };
+ if(u.pathname !== '/search') return { rows:['Paste a Google results URL; its path should be /search.'], level:'warn' };
+ const foundQ = norm(u.searchParams.get('q') || '');
+ const keptQ = cur.parts.filter(x => foundQ.includes(norm(x)));
+ const missQ = cur.parts.filter(x => !foundQ.includes(norm(x)));
+ const foundTbs = (u.searchParams.get('tbs') || '').split(',').filter(Boolean);
+ const keptP = [], missP = [], expTbs = [];
+ for(const [k, v] of Object.entries(cur.params)){
+  if(k === 'tbs') v.split(',').forEach(t => { expTbs.push(t); (foundTbs.includes(t) ? keptP : missP).push('tbs=' + t); });
+  else (u.searchParams.get(k) === v ? keptP : missP).push(k + '=' + v);
+ }
+ const kept = [...keptQ, ...keptP], miss = [...missQ, ...missP];
+ const extra = foundTbs.filter(t => !expTbs.includes(t));
+ const rows = ['Expected ' + cur.facets.length + ' item(s). Retained ' + kept.length + '.'];
+ rows.push('Retained: ' + (kept.length ? kept.join(' | ') : 'None'));
+ rows.push('Missing: ' + (miss.length ? miss.join(' | ') : 'None'));
+ if(extra.length) rows.push('Other filter codes present in the pasted URL: ' + extra.join(' | '));
+ rows.push('Note: Retained codes show that Google kept the parameters in the address; they do not prove every result matches.');
+ return { rows, level: miss.length ? 'warn' : 'good' };
+}
+
+/* ======================================================================
+   2. GOOGLE WEB  (advanced operators)
+   ====================================================================== */
+fill('gw-lang', LANGS);
+fill('gw-region', REGIONS);
+const GW_DEFAULTS = {
+ 'gw-all':'retractable USB C 100W cable', 'gw-exact':'', 'gw-any':'', 'gw-none':'',
+ 'gw-site':'', 'gw-nosite':'', 'gw-filetype':'', 'gw-intitle':'', 'gw-inurl':'', 'gw-intext':'',
+ 'gw-numfrom':'', 'gw-numto':'', 'gw-numunit':'', 'gw-recent':'', 'gw-after':'', 'gw-before':'',
+ 'gw-lang':'', 'gw-region':'', 'gw-page':'1',
+ 'gw-sortdate':false, 'gw-verbatim':false, 'gw-webonly':false, 'gw-safe':false
+};
+
+mountTool({
+ p:'gw', openLabel:'Open results on Google', facetLabel:'Operators and parameters: ', defaults:GW_DEFAULTS,
+ important:'Operators go inside the <code>q</code> parameter; the other settings are separate parameters. Google may ignore or rewrite some of them, particularly SafeSearch and the web-only view, which can depend on your account.',
+ checkTitle:'Did Google keep your selections?',
+ checkHint:'Open the generated URL above, then copy the address of Google’s results page and paste it here. This is also handy after you adjust filters in Google’s own Tools menu: paste the address to see the codes it used.',
+ pasteLabel:'URL from Google after opening the search', pastePlaceholder:'Paste the final Google results URL here',
+ pasteError:'Paste a complete Google results URL, beginning with https://www.google.com/search.',
+ help:'<strong>Tips:</strong> If results look thin, remove operators one at a time. <code>site:</code>, <code>filetype:</code> and <code>intitle:</code> together are very restrictive. Custom dates use the <code>after:</code> and <code>before:</code> operators and take priority over the quick time range.',
+ onRender(){ $('gw-recent').disabled = Boolean(val('gw-after') || val('gw-before')); },
+ build(){
+  const parts = [], chips = [], notes = [], params = {};
+  let error = '';
+  const fail = m => { if(!error) error = m; };
+
+  const all = val('gw-all');
+  if(all){ parts.push(all); chips.push('Words: ' + all); }
+  const exact = noQuotes(val('gw-exact'));
+  if(exact){ parts.push('"' + exact + '"'); chips.push('Exact: “' + exact + '”'); }
+  const any = splitList(val('gw-any')).map(noQuotes).filter(Boolean);
+  if(any.length){ parts.push(any.length > 1 ? '(' + any.map(maybeQuote).join(' OR ') + ')' : maybeQuote(any[0])); chips.push('Any of: ' + any.join(' / ')); }
+
+  const from = val('gw-numfrom'), to = val('gw-numto'), unit = val('gw-numunit');
+  if(from !== '' || to !== ''){
+   if(!isNum(from) || !isNum(to)) fail('Enter both ends of the number range.');
+   else if(Number(from) > Number(to)) fail('The number range start cannot exceed its end.');
+   else { parts.push(unit + from + '..' + unit + to); chips.push('Range: ' + unit + from + '–' + unit + to); }
+  }
+
+  [['gw-intitle','intitle','In title'],['gw-inurl','inurl','In URL'],['gw-intext','intext','In text']].forEach(([id, op, label]) => {
+   const items = splitList(val(id)).map(noQuotes).filter(Boolean);
+   items.forEach(t => parts.push(op + ':' + maybeQuote(t)));
+   if(items.length) chips.push(label + ': ' + items.join(', '));
+  });
+
+  const cleanSite = s => s.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+  const sites = splitList(val('gw-site')).map(cleanSite);
+  const nosites = splitList(val('gw-nosite')).map(cleanSite);
+  const badSite = [...sites, ...nosites].find(s => !s || /[\s"]/.test(s));
+  if(badSite !== undefined) fail('Site entries must be domains or paths without spaces, for example reddit.com or .gov.in.');
+  if(sites.length){ parts.push(sites.length > 1 ? '(' + sites.map(s => 'site:' + s).join(' OR ') + ')' : 'site:' + sites[0]); chips.push('Only on: ' + sites.join(', ')); }
+  if(nosites.length){ nosites.forEach(s => parts.push('-site:' + s)); chips.push('Not on: ' + nosites.join(', ')); }
+
+  const ft = val('gw-filetype');
+  if(ft){ parts.push('filetype:' + ft); chips.push('File type: ' + ft.toUpperCase()); }
+  const none = splitList(val('gw-none')).map(noQuotes).filter(Boolean);
+  if(none.length){ none.forEach(t => parts.push('-' + maybeQuote(t))); chips.push('Excluding: ' + none.join(', ')); }
+
+  const after = val('gw-after'), before = val('gw-before'), tbs = [];
+  if(after && before && after > before) fail('The “published after” date cannot be later than “published before”.');
+  if(after){ parts.push('after:' + after); chips.push('After ' + after); }
+  if(before){ parts.push('before:' + before); chips.push('Before ' + before); }
+  const rec = val('gw-recent');
+  if(after || before){ if(rec) notes.push('Custom dates override the quick time range, so it was left out.'); }
+  else if(rec){ tbs.push('qdr:' + rec); chips.push('Time: ' + sel('gw-recent')); }
+  if(chk('gw-sortdate')){ tbs.push('sbd:1'); chips.push('Sorted by date'); }
+  if(chk('gw-verbatim')){ tbs.push('li:1'); chips.push('Verbatim'); }
+
+  if(chk('gw-webonly')){ params.udm = '14'; chips.push('Web results only'); }
+  if(val('gw-lang')){ params.lr = 'lang_' + val('gw-lang'); chips.push('Language: ' + sel('gw-lang')); }
+  if(val('gw-region')){ params.gl = val('gw-region'); chips.push('Region: ' + sel('gw-region')); }
+  if(chk('gw-safe')){ params.safe = 'active'; chips.push('SafeSearch'); }
+  if(tbs.length) params.tbs = tbs.join(',');
+  const page = Number(val('gw-page'));
+  if(page > 1){ params.start = String((page - 1) * 10); chips.push('Page ' + page); }
+
+  const q = parts.join(' ');
+  if(!q) fail('Add at least one search term or operator.');
+  const url = new URL('https://www.google.com/search');
+  url.searchParams.set('q', q);
+  for(const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+  const facets = [...parts, ...Object.entries(params).map(([k, v]) => k + '=' + v)];
+  return { link:url.toString(), facets, chips, error, notes, parts, params };
+ },
+ check: googleCheck
+});
+
+/* ======================================================================
+   3. GOOGLE SHOPPING
+   ====================================================================== */
+fill('gs-region', REGIONS);
+const GS_DEFAULTS = {
+ 'gs-q':DEFAULT_QUERY, 'gs-brand':'', 'gs-min':'', 'gs-max':'', 'gs-cond':'', 'gs-sort':'', 'gs-region':'in',
+ 'gs-free':false, 'gs-sale':false, 'gs-mode':'udm', 'gs-extra':''
+};
+
+mountTool({
+ p:'gs', openLabel:'Open results on Google Shopping', facetLabel:'Parameters: ', defaults:GS_DEFAULTS,
+ important:'Google has changed its Shopping address format more than once, and it does not publish these codes. They are the long-standing ones, but Google may drop any of them. Use the checker below to see which survived.',
+ checkTitle:'Did Google Shopping keep your selections?',
+ checkHint:'Open the generated URL above, then copy the address of the Shopping results page and paste it here. If a filter was dropped, set it with the filters on Google’s page instead and paste that address here to see the codes Google uses today.',
+ pasteLabel:'URL from Google Shopping after opening the search', pastePlaceholder:'Paste the final Google Shopping results URL here',
+ pasteError:'Paste a complete Google results URL, beginning with https://www.google.com/search.',
+ help:'<strong>Troubleshooting:</strong> Start with keywords only, then add price, condition and sort one at a time. If nothing sticks, switch the Shopping URL mode under Advanced. The brand is added to the keywords because Google Shopping has no stable brand code.',
+ build(){
+  const notes = [], chips = [], params = {};
+  let error = '';
+  const kw = val('gs-q'), brand = noQuotes(val('gs-brand'));
+  const q = brand && !kw.toLowerCase().includes(brand.toLowerCase()) ? (kw + ' ' + brand).trim() : kw;
+  const low = val('gs-min'), high = val('gs-max');
+  if(!q) error = 'Please enter product keywords.';
+  else if((low !== '' && (!isNum(low) || Number(low) < 0)) || (high !== '' && (!isNum(high) || Number(high) < 0))) error = 'Price values must be zero or above.';
+  else if(low !== '' && high !== '' && Number(low) > Number(high)) error = 'Minimum price cannot exceed maximum price.';
+
+  const tbs = [];
+  if(low !== '' || high !== ''){
+   tbs.push('price:1');
+   if(low !== '') tbs.push('ppr_min:' + Math.round(Number(low)));
+   if(high !== '') tbs.push('ppr_max:' + Math.round(Number(high)));
+   chips.push('Price: ₹' + (low || '0') + '–₹' + (high || '∞'));
+  }
+  if(val('gs-cond')){ tbs.push(val('gs-cond')); chips.push('Condition: ' + sel('gs-cond')); }
+  if(chk('gs-free')){ tbs.push('free_ship:1'); chips.push('Free delivery'); }
+  if(chk('gs-sale')){ tbs.push('sales:1'); chips.push('On sale'); }
+  if(val('gs-sort')){ tbs.push(val('gs-sort')); chips.push('Sort: ' + sel('gs-sort')); }
+  const custom = splitList(val('gs-extra'));
+  const invalid = custom.filter(v => !/^[A-Za-z0-9_]+:[A-Za-z0-9_.\-]+$/.test(v));
+  if(invalid.length && !error) error = 'Invalid custom code: ' + invalid.join(', ') + '. Use key:value, for example p_ord:p.';
+  if(!invalid.length && custom.length){ tbs.push(...custom); chips.push('Custom codes: ' + custom.length); }
+  if(brand) chips.unshift('Brand: ' + brand);
+
+  if(val('gs-mode') === 'tbm') params.tbm = 'shop'; else params.udm = '28';
+  if(tbs.length) params.tbs = 'mr:1,' + tbs.join(',');
+  if(val('gs-region')){ params.gl = val('gs-region'); chips.push('Region: ' + sel('gs-region')); }
+
+  const url = new URL('https://www.google.com/search');
+  url.searchParams.set('q', q);
+  for(const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+  const parts = q ? [q] : [];
+  const facets = [...parts, ...Object.entries(params).map(([k, v]) => k + '=' + v)];
+  return { link:url.toString(), facets, chips, error, notes, parts, params };
+ },
+ check: googleCheck
+});
+
+/* ======================================================================
+   4. YOUTUBE
+   YouTube packs sort + filters into one protobuf blob in the "sp" parameter.
+   Fields: 1 sort (1 rating, 2 date, 3 views) | 2 filter message:
+     1 upload date, 2 type, 3 duration, then boolean features by field number.
+   ====================================================================== */
+const YT = {
+ sort:{1:'Rating',2:'Upload date',3:'View count'},
+ upload:{1:'Last hour',2:'Today',3:'This week',4:'This month',5:'This year'},
+ type:{1:'Video',2:'Channel',3:'Playlist',4:'Movie'},
+ duration:{1:'Under 4 min',2:'Over 20 min',3:'4–20 min'},
+ flags:{4:'HD',5:'Subtitles/CC',6:'Creative Commons',7:'3D',8:'Live',9:'Purchased',14:'4K',15:'360°',23:'Location',25:'HDR',26:'VR180'}
+};
+const YT_FLAG_UI = [4,5,6,8,14,15,26,25,7]; // features offered in the UI
+
+const varint = n => { const out = []; while(n > 127){ out.push((n % 128) | 128); n = Math.floor(n / 128); } out.push(n); return out; };
+
+function ytEncode(o){
+ const f = [];
+ if(o.upload) f.push([1, o.upload]);
+ if(o.type) f.push([2, o.type]);
+ if(o.duration) f.push([3, o.duration]);
+ o.flags.forEach(x => f.push([x, 1]));
+ f.sort((a, b) => a[0] - b[0]);
+ const filt = [];
+ f.forEach(([fld, v]) => filt.push(...varint(fld * 8), ...varint(v)));
+ const bytes = [];
+ if(o.sort) bytes.push(...varint(1 * 8), ...varint(o.sort));
+ if(filt.length) bytes.push(...varint(2 * 8 + 2), ...varint(filt.length), ...filt);
+ return bytes.length ? btoa(String.fromCharCode(...bytes)) : '';
+}
+function pbParse(b){
+ const out = []; let i = 0;
+ const rv = () => { let r = 0, s = 0, x; do { if(i >= b.length) throw new Error('eof'); x = b[i++]; r += (x & 127) * Math.pow(2, s); s += 7; } while(x & 128); return r; };
+ while(i < b.length){
+  const tag = rv(), fld = Math.floor(tag / 8), w = tag % 8;
+  if(w === 0) out.push([fld, w, rv()]);
+  else if(w === 2){ const n = rv(); if(i + n > b.length) throw new Error('len'); out.push([fld, w, b.slice(i, i + n)]); i += n; }
+  else throw new Error('wire');
+ }
+ return out;
+}
+function ytDecode(sp){
+ try {
+  let s = sp.replace(/ /g, '+').replace(/-/g, '+').replace(/_/g, '/');
+  while(s.length % 4) s += '=';
+  const bytes = [...atob(s)].map(c => c.charCodeAt(0));
+  const o = { sort:0, upload:0, type:0, duration:0, flags:[] };
+  pbParse(bytes).forEach(([fld, w, v]) => {
+   if(fld === 1 && w === 0) o.sort = v;
+   else if(fld === 2 && w === 2) pbParse(v).forEach(([g2, w2, x]) => {
+    if(w2 !== 0) return;
+    if(g2 === 1) o.upload = x; else if(g2 === 2) o.type = x; else if(g2 === 3) o.duration = x;
+    else if(x === 1) o.flags.push(g2);
+   });
+  });
+  return o;
+ } catch(e){ return null; }
+}
+function ytLabels(o){
+ const L = [];
+ if(o.sort) L.push('Sort: ' + (YT.sort[o.sort] || 'code ' + o.sort));
+ if(o.upload) L.push('Uploaded: ' + (YT.upload[o.upload] || 'code ' + o.upload));
+ if(o.type) L.push('Type: ' + (YT.type[o.type] || 'code ' + o.type));
+ if(o.duration) L.push('Duration: ' + (YT.duration[o.duration] || 'code ' + o.duration));
+ o.flags.slice().sort((a, b) => a - b).forEach(x => L.push('Feature: ' + (YT.flags[x] || 'field ' + x)));
+ return L;
+}
+
+$('yt-flags').replaceChildren(...YT_FLAG_UI.map(n => {
+ const l = document.createElement('label'); l.className = 'toggle mini';
+ const i = document.createElement('input'); i.type = 'checkbox'; i.id = 'yt-f-' + n; i.dataset.f = String(n);
+ const s = document.createElement('span'); const st = document.createElement('strong'); st.textContent = YT.flags[n]; s.appendChild(st);
+ l.append(i, s); return l;
+}));
+fill('yt-region', REGIONS.map(([v, l]) => [v.toUpperCase(), l]));
+const YT_DEFAULTS = {
+ 'yt-q':'retractable USB C 100W cable review', 'yt-exact':'', 'yt-any':'', 'yt-none':'', 'yt-channel':'',
+ 'yt-upload':'', 'yt-type':'', 'yt-duration':'', 'yt-sort':'0', 'yt-region':''
+};
+YT_FLAG_UI.forEach(n => { YT_DEFAULTS['yt-f-' + n] = false; });
+
+mountTool({
+ p:'yt', openLabel:'Open results on YouTube', facetLabel:'Filters: ', defaults:YT_DEFAULTS,
+ important:'YouTube stores all filters in one encoded <code>sp</code> code, which this page builds for you. YouTube may drop combinations it considers incompatible (for example, Live with an upload-date filter). The checker decodes whatever survives.',
+ checkTitle:'Did YouTube keep your selections?',
+ checkHint:'Open the generated URL above, then copy the address of YouTube’s results page and paste it here. You can also set filters by hand on YouTube, paste that address, and read off what each one means.',
+ pasteLabel:'URL from YouTube after opening the search', pastePlaceholder:'Paste the final YouTube results URL here',
+ pasteError:'Paste a complete YouTube results URL, beginning with https://www.youtube.com/results.',
+ help:'<strong>Tips:</strong> Type, duration and feature filters only make sense for videos, so they are left out when the type is Channel or Playlist. A channel search ignores all of them. Search operators such as quotation marks and a minus sign are supported by YouTube; <code>|</code> acts as OR.',
+ build(){
+  const notes = [], chips = [];
+  let error = '';
+  const kw = val('yt-q'), exact = noQuotes(val('yt-exact'));
+  const any = splitList(val('yt-any')).map(noQuotes).filter(Boolean);
+  const none = splitList(val('yt-none')).map(noQuotes).filter(Boolean);
+  const bits = [];
+  if(kw){ bits.push(kw); chips.push('Words: ' + kw); }
+  if(exact){ bits.push('"' + exact + '"'); chips.push('Exact: “' + exact + '”'); }
+  if(any.length){ bits.push(any.map(maybeQuote).join(' | ')); chips.push('Any of: ' + any.join(' / ')); }
+  none.forEach(n => bits.push('-' + maybeQuote(n)));
+  if(none.length) chips.push('Excluding: ' + none.join(', '));
+  const query = bits.join(' ');
+  if(!kw && !exact && !any.length) error = 'Add at least one search term.';
+
+  const o = {
+   sort:Number(val('yt-sort')), upload:Number(val('yt-upload')), type:Number(val('yt-type')),
+   duration:Number(val('yt-duration')),
+   flags:YT_FLAG_UI.filter(n => chk('yt-f-' + n))
+  };
+  const wantsFilters = Boolean(o.sort || o.upload || o.type || o.duration || o.flags.length);
+
+  const ch = val('yt-channel');
+  let url;
+  if(ch){
+   let path = '';
+   if(/^UC[A-Za-z0-9_-]{22}$/.test(ch)) path = '/channel/' + ch + '/search';
+   else if(/^@?[A-Za-z0-9._-]{3,30}$/.test(ch)) path = '/@' + ch.replace(/^@/, '') + '/search';
+   else if(!error) error = 'Enter the channel as @handle or as a UC… channel ID.';
+   url = new URL('https://www.youtube.com' + (path || '/results'));
+   url.searchParams.set(path ? 'query' : 'search_query', query);
+   chips.unshift('Channel: ' + ch);
+   if(wantsFilters) notes.push('Channel-search pages ignore type, duration, date, sort and feature filters, so they were left out.');
+   return { link:url.toString(), facets:[], chips, error, notes, q:query, labels:[], sp:'' };
+  }
+
+  if(o.type === 2 || o.type === 3){
+   if(o.upload || o.duration || o.flags.length) notes.push('Upload date, duration and feature filters only apply to videos, so they were left out for ' + YT.type[o.type].toLowerCase() + ' results.');
+   o.upload = 0; o.duration = 0; o.flags = [];
+  }
+  const labels = ytLabels(o);
+  labels.forEach(l => chips.push(l));
+  if(val('yt-region')) chips.push('Region: ' + sel('yt-region'));
+  const sp = ytEncode(o);
+
+  url = new URL('https://www.youtube.com/results');
+  url.searchParams.set('search_query', query);
+  if(sp) url.searchParams.set('sp', sp);
+  if(val('yt-region')) url.searchParams.set('gl', val('yt-region'));
+  return { link:url.toString(), facets:labels, chips, error, notes, q:query, labels, sp };
+ },
+ check(u, cur){
+  if(!/(^|\.)youtube\.com$/.test(u.hostname)) return { rows:['This is not a YouTube URL. Expected youtube.com.'], level:'warn' };
+  const rows = [];
+  const q = u.searchParams.get('search_query') || u.searchParams.get('query') || '';
+  rows.push('Search text: ' + (q ? '“' + q + '”' : 'not found') + (norm(q) === norm(cur.q) ? ' (matches the generated link)' : ' (differs from the generated link)'));
+  const sp = u.searchParams.get('sp');
+  let level = norm(q) === norm(cur.q) ? 'good' : 'warn';
+  if(!sp){
+   rows.push('No filter code (sp) in the pasted URL.' + (cur.labels.length ? ' Missing: ' + cur.labels.join(' | ') : ''));
+   if(cur.labels.length) level = 'warn';
+  } else {
+   const d = ytDecode(sp);
+   if(!d){ rows.push('The sp filter code could not be decoded.'); level = 'warn'; }
+   else {
+    const found = ytLabels(d);
+    const kept = cur.labels.filter(l => found.includes(l));
+    const miss = cur.labels.filter(l => !found.includes(l));
+    const extra = found.filter(l => !cur.labels.includes(l));
+    rows.push('Filters in the pasted URL: ' + (found.length ? found.join(' | ') : 'none'));
+    if(cur.labels.length){
+     rows.push('Retained: ' + (kept.length ? kept.join(' | ') : 'None'));
+     rows.push('Missing: ' + (miss.length ? miss.join(' | ') : 'None'));
+    }
+    if(extra.length) rows.push('Not in your selection: ' + extra.join(' | '));
+    if(miss.length) level = 'warn';
+   }
+  }
+  return { rows, level };
+ }
+});
+
+/* ---------- tabs ---------- */
+const tabs = [...document.querySelectorAll('[role=tab]')];
+function show(id, focus){
+ if(!tabs.some(t => t.dataset.tool === id)) return false; // unknown hash: leave the current tab alone
+ tabs.forEach(t => {
+  const on = t.dataset.tool === id;
+  t.setAttribute('aria-selected', String(on));
+  t.tabIndex = on ? 0 : -1;
+  $('tool-' + t.dataset.tool).hidden = !on;
+  if(on && focus) t.focus();
+ });
+ return true;
+}
+function select(id, focus){
+ if(!show(id, focus)) return;
+ try { history.replaceState(null, '', '#' + id); } catch(_) {}
+}
+tabs.forEach((t, i) => {
+ t.addEventListener('click', () => select(t.dataset.tool));
+ t.addEventListener('keydown', e => {
+  let n = -1;
+  if(e.key === 'ArrowRight') n = (i + 1) % tabs.length;
+  else if(e.key === 'ArrowLeft') n = (i - 1 + tabs.length) % tabs.length;
+  else if(e.key === 'Home') n = 0;
+  else if(e.key === 'End') n = tabs.length - 1;
+  if(n >= 0){ e.preventDefault(); select(tabs[n].dataset.tool, true); }
+ });
+});
+window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+if(location.hash) show(location.hash.slice(1));
+})();
+</script>
+</body>
+</html>

@@ -68,4 +68,4 @@ Automated Chromium checks covered: the top-bar layout and the floating add butto
 
 ## Font
 
-Orbit uses Nunito (rounded, easy to read), bundled as `nunito.woff2` so nothing is fetched from outside. It is licensed under the SIL Open Font License; see `nunito-OFL.txt`.
+Orbit uses Noto Sans (Latin subset, variable weight), bundled as `noto-sans.woff2` so nothing is fetched from outside. Characters outside that subset fall back to the system font. It is licensed under the SIL Open Font License; see `noto-sans-OFL.txt`.
