@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#080b12"><meta name="description" content="Orbit: a local-first bookmark library with quick capture, collections and full backups."><meta name="referrer" content="no-referrer"><title>Orbit / Your entire web</title><link rel="preload" href="./nunito.woff2" as="font" type="font/woff2" crossorigin><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml"><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#080b12"><meta name="description" content="Orbit: a local-first bookmark library with quick capture, collections and full backups."><meta name="referrer" content="no-referrer"><title>Orbit / Your entire web</title><link rel="preload" href="./noto-sans.woff2" as="font" type="font/woff2" crossorigin><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml"><style>
 :root{--bg:#070910;--panel:rgba(18,21,34,.72);--panel2:rgba(255,255,255,.055);--text:#f5f7ff;--muted:#9ba3ba;--line:rgba(255,255,255,.105);--accent:#8b5cf6;--accent2:#22d3ee;--danger:#fb7185;--shadow:0 24px 70px rgba(0,0,0,.35);--radius:24px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(circle at 12% 8%,rgba(139,92,246,.22),transparent 28%),radial-gradient(circle at 85% 20%,rgba(34,211,238,.13),transparent 30%),var(--bg);color:var(--text)}
 button,input,select{font:inherit}.ambient{position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:46px 46px;mask-image:linear-gradient(to bottom,black,transparent 80%)}
@@ -20,8 +20,8 @@ button,a,input,textarea,select{-webkit-tap-highlight-color:transparent}button:fo
 @media(max-width:760px){.shell{padding:16px 14px 96px}.hero{padding:24px 20px}.hero h2{font-size:38px;line-height:1.04}.hero p{font-size:14px}.hero .eyebrow{font-size:10px}.stats{gap:7px}.stat{font-size:12px;padding:8px 10px}.toolbar{grid-template-columns:1fr auto}.search{grid-column:1/-1}.actions{gap:6px}.actions .btn{padding:10px 12px}.actions .btn span{display:inline}.actions .desktop-label{display:none!important}.topbar{margin-bottom:18px}.bottomnav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:10;justify-content:space-around;background:var(--panel);backdrop-filter:blur(24px);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}.bottomnav button{background:none;border:0;color:var(--muted);font-size:11px;display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;min-width:54px;min-height:50px}.bottomnav b{font-size:20px;color:var(--text);font-weight:500}.bottomnav .capture-nav{color:#c4b5fd}.bottomnav .capture-nav b{color:#c4b5fd}.sidebar{gap:5px}.sidebar .navbtn{max-width:220px}.grid{gap:12px}.card{min-height:205px;padding:16px}.compact .card{grid-template-columns:1fr;gap:9px}.compact .card-head{justify-content:space-between}.compact .card-foot{display:none}.menu-grid{grid-template-columns:1fr}.toast{bottom:88px}.dialog-actions{flex-wrap:wrap}.dialog-actions .btn{flex:1}.section-head{align-items:flex-start}.section-title{font-size:11px}.hero .stats .stat:last-child{display:none}}
 
 /* ===== Orbit interface ===== */
-@font-face{font-family:Nunito;src:url(./nunito.woff2) format("woff2");font-weight:200 1000;font-style:normal;font-display:swap}
-:root{--read:Nunito,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ctl:40px}
+@font-face{font-family:"Noto Sans";src:url(./noto-sans.woff2) format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+:root{--read:"Noto Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ctl:40px}
 body{font-family:var(--read);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 button,input,select,textarea{font-family:inherit}
 body[data-theme="dark"]{--row:#0d121e;--row-hover:#111828;--row-sel:#161a30;--b1:rgba(167,139,250,.38);--b2:rgba(255,255,255,.06);--b3:rgba(94,234,212,.30);--h1:rgba(167,139,250,.7);--h3:rgba(94,234,212,.6)}
@@ -104,8 +104,8 @@ dialog.drawer[open]{animation:drawer-in .24s cubic-bezier(.2,.8,.2,1)}
 }
 @media(max-width:400px){.selectedlbl{display:none}}
 /* ===== Polish: soft selection, row actions ===== */
-#grid .name{font-size:14px;font-weight:500;letter-spacing:0}
-#grid .num{font-weight:600;opacity:.55}
+#grid .name{font-size:13px;font-weight:500;letter-spacing:0}
+#grid .num{font-size:10.5px;font-weight:600;opacity:.55}
 #grid .card{outline:0;border-radius:14px}
 #grid .card:hover,#grid .card:focus-within{box-shadow:0 6px 18px -12px rgba(0,0,0,.7)}
 #grid .card.selected,#grid .card.selected:hover{outline:0;box-shadow:none;background:linear-gradient(rgba(139,124,240,.10),rgba(139,124,240,.10)) padding-box,linear-gradient(var(--row),var(--row)) padding-box,linear-gradient(100deg,var(--b1),var(--b2) 48%,var(--b3)) border-box}
