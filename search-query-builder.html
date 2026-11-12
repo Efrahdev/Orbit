@@ -76,34 +76,66 @@ footer { font-size:12px; color:var(--muted); line-height:1.7; padding:6px }
  .btns { flex-direction:column }
  .btns .button,.btns .link-button { width:100% }
 }
+.smart{display:flex;gap:10px;flex-wrap:wrap}.smart input{flex:1;min-width:230px;padding:13px 14px;border-radius:12px;border:1px solid #5396c5;background:#0a1c33;color:var(--text);font:inherit;font-size:15px}
+.presets{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:0 0 4px}
+.sub{font-size:12px;color:var(--muted);margin:12px 0 0;display:flex;flex-wrap:wrap;gap:7px;align-items:center}.sub:empty{display:none}
+.presets b,.sub b{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.pill{appearance:none;border:1px solid #3b5574;background:#0d1b2f;color:#dceeff;border-radius:30px;padding:7px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.pill:hover{border-color:var(--accent);filter:brightness(1.15)}
+.meter{height:7px;border-radius:5px;background:#16283f;overflow:hidden;margin:12px 0 6px}.meter i{display:block;height:100%;width:8%;transition:width .25s,background .25s}
+body{padding:16px 14px 36px}
+header{margin-bottom:10px}
+h1{font-size:clamp(22px,3.6vw,28px);letter-spacing:-.03em;line-height:1.2;margin:0}
+.tabs{padding:2px 2px 8px;margin:0}
+.tab{min-height:40px;padding:8px 14px}
+#tab-google{margin-left:auto}
+.panel{padding:16px 18px;margin:10px 0}
+.section-title{margin:0 0 10px}
+.grid,.grid3{gap:10px 14px}
+.field{gap:5px}
+input[type=text],input[type=number],input[type=date],select,textarea{padding:8px 11px;min-height:38px;border-radius:9px}
+.separator{margin:14px 0}
+.toggle-grid{gap:8px}
+.toggle,.toggle.mini{padding:9px 12px;gap:10px}
+.toggle small{display:none}
+.field .hint{display:none}details .field .hint{display:block}
+.space{margin-top:10px}
+.urlbox{padding:10px 12px;font-size:12px}
+.urlbox:empty::before{content:attr(data-empty);color:var(--muted);font-family:inherit}
+.btns{margin-top:10px}
+.button,.link-button{min-height:40px;padding:8px 14px}
+.button.small{min-height:32px;padding:5px 11px}
+.message,.notice{margin:8px 0 0;min-height:0}
+.message:empty,.notice:empty,.facets:empty,.hint:empty{display:none}
+.facets{margin-top:10px}
+footer{padding:2px 4px}
+@media(max-width:620px){.panel{padding:13px}}
 </style>
 </head>
 <body>
 <main>
-<header>
- <div class="eyebrow">Standalone search toolkit • 4 builders</div>
- <h1>Advanced Search Builder <span style="color:#8cd6ba;font-size:17px;vertical-align:middle">Suite</span></h1>
- <p class="lead">Pick a tab: Amazon India, Google Web, Google Shopping or YouTube. Every selection updates a real search URL instantly, and each tab has its own checker that shows which filters the site appears to have kept.</p>
-</header>
+<header><h1>Search Builder</h1></header>
+<div class="panel" style="margin:0 0 6px"><div class="section-title">Smart fill</div><div class="smart"><input id="sm-in" type="text" autocomplete="off" aria-label="Describe what you want" placeholder="e.g. anker 100w usb c cable under 800 prime 4 stars last month, no refurbished"><button id="sm-go" class="link-button" type="button" style="flex:none">Fill all tabs</button></div><p id="sm-out" class="hint space" aria-live="polite">Reads price, ratings, Prime, brand, dates, file types, “no …” exclusions and “quoted phrases”. Press / to focus.</p></div>
 
 <div class="tabs" role="tablist" aria-label="Search builders">
- <button class="tab" role="tab" id="tab-amazon" data-tool="amazon" aria-controls="tool-amazon" aria-selected="true" style="--dot:#ffb454">Amazon India</button>
- <button class="tab" role="tab" id="tab-google" data-tool="google" aria-controls="tool-google" aria-selected="false" tabindex="-1" style="--dot:#8ab4f8">Google Web</button>
+ <button class="tab" role="tab" id="tab-youtube" data-tool="youtube" aria-controls="tool-youtube" aria-selected="true" style="--dot:#ff7b7b">YouTube</button>
+ <button class="tab" role="tab" id="tab-amazon" data-tool="amazon" aria-controls="tool-amazon" aria-selected="false" tabindex="-1" style="--dot:#ffb454">Amazon</button>
+ <button class="tab" role="tab" id="tab-google" data-tool="google" aria-controls="tool-google" aria-selected="false" tabindex="-1" style="--dot:#8ab4f8">Google Search</button>
  <button class="tab" role="tab" id="tab-shopping" data-tool="shopping" aria-controls="tool-shopping" aria-selected="false" tabindex="-1" style="--dot:#81c995">Google Shopping</button>
- <button class="tab" role="tab" id="tab-youtube" data-tool="youtube" aria-controls="tool-youtube" aria-selected="false" tabindex="-1" style="--dot:#ff7b7b">YouTube</button>
 </div>
 
 <!-- ============================ AMAZON INDIA ============================ -->
 <div id="tool-amazon" class="tool" role="tabpanel" aria-labelledby="tab-amazon">
  <div class="panel" aria-label="Amazon search criteria">
   <div class="section-title">Product and brand</div>
-  <div class="field"><label for="am-query">Product keywords and exact technical requirements</label><input id="am-query" type="text" autocomplete="off"><p class="hint">Example: “USB C to USB C 100W retractable 1 metre”.</p></div>
+  <div class="field"><label for="am-query">Product keywords and exact technical requirements</label><input id="am-query" type="text" autocomplete="off" placeholder="e.g. retractable USB C 100W charging cable"><p class="hint">Example: “USB C to USB C 100W retractable 1 metre”.</p></div>
+  <div class="field space"><label for="am-none">Words to exclude (optional)</label><input id="am-none" type="text" placeholder="case, adapter, refurbished" autocomplete="off"><p class="hint">Comma-separated. Each becomes <code>-word</code>; Amazon applies this loosely.</p></div>
   <div class="grid space">
    <div class="field"><label for="am-category">Amazon department</label><select id="am-category"><option value="">All departments (recommended initially)</option><option value="electronics">Electronics</option><option value="computers">Computers &amp; Accessories</option><option value="kitchen">Home &amp; Kitchen</option><option value="automotive">Car &amp; Motorbike</option><option value="office-products">Office Products</option><option value="fashion">Fashion</option><option value="beauty">Beauty</option><option value="sporting">Sports &amp; Outdoors</option><option value="toys">Toys &amp; Games</option><option value="stripbooks">Books</option></select></div>
    <div class="field"><label for="am-brand">Brand restriction</label><select id="am-brand"><option value="">All brands</option><option>UGREEN</option><option>Anker</option><option>Belkin</option><option>Baseus</option><option>Spigen</option><option>Ambrane</option><option>Portronics</option><option>boAt</option><option>Stuffcool</option><option>Amazon Basics</option><option>Samsung</option><option>Apple</option><option>Lenovo</option><option>HP</option><option>Dell</option><option>Logitech</option><option>Sony</option><option>Philips</option><option>Xiaomi</option><option value="__custom">Other brand…</option></select></div>
   </div>
   <div id="am-customContainer" class="field space hidden"><label for="am-customBrand">Enter custom brand name</label><input id="am-customBrand" type="text" placeholder="Brand as shown on Amazon"></div>
-  <div class="space"><label class="toggle"><input id="am-brandKeyword" type="checkbox" checked><span><strong>Also add brand to search keywords</strong><small>Fallback if Amazon ignores the strict brand filter. Matching is still not guaranteed.</small></span></label></div>
+  <div class="space"><label class="toggle"><input id="am-brandKeyword" type="checkbox"><span><strong>Also add brand to search keywords</strong><small>Fallback if Amazon ignores the strict brand filter. Matching is still not guaranteed.</small></span></label></div>
   <hr class="separator">
   <div class="section-title">Amazon filters</div>
   <div class="toggle-grid">
@@ -131,7 +163,7 @@ footer { font-size:12px; color:var(--muted); line-height:1.7; padding:6px }
  <div class="panel" aria-label="Google Web search criteria">
   <div class="section-title">What to find</div>
   <div class="grid">
-   <div class="field"><label for="gw-all">All of these words</label><input id="gw-all" type="text" autocomplete="off"><p class="hint">Plain keywords. Use <code>*</code> as a wildcard for an unknown word.</p></div>
+   <div class="field"><label for="gw-all">All of these words</label><input id="gw-all" type="text" autocomplete="off" placeholder="e.g. retractable USB C 100W cable"><p class="hint">Plain keywords. Use <code>*</code> as a wildcard for an unknown word.</p></div>
    <div class="field"><label for="gw-exact">This exact phrase</label><input id="gw-exact" type="text" placeholder="e.g. 100W PD 3.1" autocomplete="off"><p class="hint">Wrapped in quotation marks so the words must appear together.</p></div>
    <div class="field"><label for="gw-any">Any of these words</label><input id="gw-any" type="text" placeholder="anker, ugreen, baseus" autocomplete="off"><p class="hint">Comma-separated. Becomes <code>(a OR b OR c)</code>.</p></div>
    <div class="field"><label for="gw-none">None of these words</label><input id="gw-none" type="text" placeholder="used, refurbished, fake" autocomplete="off"><p class="hint">Comma-separated. Each becomes <code>-word</code>.</p></div>
@@ -148,8 +180,7 @@ footer { font-size:12px; color:var(--muted); line-height:1.7; padding:6px }
    <div class="field"><label for="gw-inurl">In the web address</label><input id="gw-inurl" type="text" placeholder="datasheet" autocomplete="off"></div>
    <div class="field"><label for="gw-intext">In the page text</label><input id="gw-intext" type="text" placeholder="E-marker chip" autocomplete="off"></div>
   </div>
-  <p class="hint space">Each of these three takes comma-separated words or phrases. Multi-word items are quoted automatically.</p>
-  <hr class="separator">
+    <hr class="separator">
   <div class="section-title">Numbers, dates and language</div>
   <div class="grid3">
    <div class="field"><label for="gw-numfrom">Number range from</label><input id="gw-numfrom" type="number" step="any" placeholder="e.g. 500"></div>
@@ -183,9 +214,10 @@ footer { font-size:12px; color:var(--muted); line-height:1.7; padding:6px }
  <div class="panel" aria-label="Google Shopping criteria">
   <div class="section-title">Product</div>
   <div class="grid">
-   <div class="field"><label for="gs-q">Product keywords and technical requirements</label><input id="gs-q" type="text" autocomplete="off"></div>
+   <div class="field"><label for="gs-q">Product keywords and technical requirements</label><input id="gs-q" type="text" autocomplete="off" placeholder="e.g. retractable USB C 100W charging cable"></div>
    <div class="field"><label for="gs-brand">Brand (optional)</label><input id="gs-brand" type="text" placeholder="e.g. UGREEN" autocomplete="off"><p class="hint">Added to the keywords. Google Shopping has no stable brand code in the URL.</p></div>
   </div>
+  <div class="field space"><label for="gs-none">Words to exclude (optional)</label><input id="gs-none" type="text" placeholder="case, refurbished" autocomplete="off"><p class="hint">Comma-separated. Each becomes <code>-word</code>.</p></div>
   <hr class="separator">
   <div class="section-title">Price and condition</div>
   <div class="grid3">
@@ -218,7 +250,7 @@ footer { font-size:12px; color:var(--muted); line-height:1.7; padding:6px }
  <div class="panel" aria-label="YouTube search criteria">
   <div class="section-title">What to find</div>
   <div class="grid">
-   <div class="field"><label for="yt-q">Keywords</label><input id="yt-q" type="text" autocomplete="off"></div>
+   <div class="field"><label for="yt-q">Keywords</label><input id="yt-q" type="text" autocomplete="off" placeholder="e.g. retractable USB C 100W cable review"></div>
    <div class="field"><label for="yt-exact">This exact phrase</label><input id="yt-exact" type="text" placeholder="e.g. teardown" autocomplete="off"><p class="hint">Wrapped in quotation marks.</p></div>
    <div class="field"><label for="yt-any">Any of these words</label><input id="yt-any" type="text" placeholder="review, unboxing" autocomplete="off"><p class="hint">Comma-separated. Joined with <code>|</code> (OR).</p></div>
    <div class="field"><label for="yt-none">None of these words</label><input id="yt-none" type="text" placeholder="shorts, reaction" autocomplete="off"><p class="hint">Comma-separated. Each becomes <code>-word</code>.</p></div>
@@ -227,7 +259,7 @@ footer { font-size:12px; color:var(--muted); line-height:1.7; padding:6px }
   <hr class="separator">
   <div class="section-title">Filters</div>
   <div class="grid3">
-   <div class="field"><label for="yt-upload">Upload date</label><select id="yt-upload"><option value="">Any time</option><option value="1">Last hour</option><option value="2">Today</option><option value="3">This week</option><option value="4">This month</option><option value="5">This year</option></select></div>
+   <div class="field"><label for="yt-upload">Upload date</label><select id="yt-upload"><option value="">Any time</option><option value="1">Last hour</option><option value="2">Today</option><option value="3">This week</option><option value="4">This month</option><option value="5">This year</option><option value="y3">Last 3 years</option></select></div>
    <div class="field"><label for="yt-type">Type</label><select id="yt-type"><option value="">Any type</option><option value="1">Video</option><option value="2">Channel</option><option value="3">Playlist</option><option value="4">Movie</option></select></div>
    <div class="field"><label for="yt-duration">Duration</label><select id="yt-duration"><option value="">Any length</option><option value="1">Under 4 minutes</option><option value="3">4–20 minutes</option><option value="2">Over 20 minutes</option></select></div>
   </div>
@@ -242,7 +274,7 @@ footer { font-size:12px; color:var(--muted); line-height:1.7; padding:6px }
  <div id="yt-out"></div>
 </div>
 
-<footer>No login, API key or network connection is required to build a link. This page does not scrape any site, check live results or bypass any site’s restrictions. Search sites change their URL parameters from time to time, which is why every tab includes a checker.</footer>
+<footer>Links open each site’s own results page. Nothing is sent anywhere else.</footer>
 </main>
 
 <script>
@@ -259,6 +291,7 @@ const maybeQuote = t => /\s/.test(t) ? '"' + t + '"' : t;
 const norm = s => s.replace(/\s+/g, ' ').trim().toLowerCase();
 const isNum = s => s !== '' && Number.isFinite(Number(s));
 const sel = id => $(id).selectedOptions[0].textContent;
+const negate = (q, id) => [q, ...splitList(val(id)).map(noQuotes).filter(Boolean).map(n => '-' + maybeQuote(n))].join(' ').trim();
 
 function fill(id, list){
  $(id).replaceChildren(...list.map(([v, l]) => { const o = document.createElement('option'); o.value = v; o.textContent = l; return o; }));
@@ -272,47 +305,155 @@ function setAll(map){
 
 const REGIONS = [['','Default (no region hint)'],['in','India'],['us','United States'],['gb','United Kingdom'],['au','Australia'],['ca','Canada'],['sg','Singapore'],['ae','United Arab Emirates'],['de','Germany']];
 const LANGS = [['','Any language'],['en','English'],['hi','Hindi'],['ta','Tamil'],['te','Telugu'],['bn','Bengali'],['mr','Marathi'],['gu','Gujarati'],['kn','Kannada'],['ml','Malayalam'],['pa','Punjabi'],['ur','Urdu'],['es','Spanish'],['fr','French'],['de','German'],['ja','Japanese'],['ar','Arabic']];
-const DEFAULT_QUERY = 'retractable USB C 100W charging cable';
+const DEFAULT_QUERY = '';
 
-/* ---------- shared output + checker UI, one instance per tab ---------- */
+/* ---------- shared output UI, one instance per tab ---------- */
 function outputHTML(c){
  const p = c.p;
  return `
-<div class="panel" aria-label="Generated URL">
- <div class="meta"><div class="section-title" style="margin:0">Live generated URL</div><button id="${p}-reset" type="button" class="button">Clear filters</button></div>
- <div id="${p}-url" class="urlbox mono space" aria-live="polite"></div>
- <div id="${p}-chips" class="facets" aria-live="polite"></div>
+<div class="panel" aria-label="Generated link">
+ <div class="meta"><div class="section-title" style="margin:0">Your link</div><button id="${p}-reset" type="button" class="button small">Clear all</button></div>
+ <div id="${p}-url" class="urlbox mono space" data-empty="Your link appears here once you add keywords" aria-live="polite"></div>
+ <div class="btns"><a id="${p}-open" class="link-button" href="#" target="_blank" rel="noopener noreferrer">${c.openLabel} ↗</a><button id="${p}-copy" class="button" type="button">Copy URL</button></div>
  <p id="${p}-message" class="message" role="alert"></p>
  <p id="${p}-notes" class="notice" aria-live="polite"></p>
- <div class="btns"><a id="${p}-open" class="link-button" href="#" target="_blank" rel="noopener noreferrer">${c.openLabel} ↗</a><button id="${p}-copy" class="button" type="button">Copy URL</button></div>
- <p class="hint space"><strong>Important:</strong> ${c.important}</p>
- <details class="space"><summary>Show the decoded URL and individual filter codes</summary><div id="${p}-decoded" class="urlbox mono space"></div><div id="${p}-facetList" class="hint space"></div></details>
-</div>
-<div class="panel" aria-label="Filter checker">
- <div class="section-title">${c.checkTitle}</div>
- <p class="hint">${c.checkHint}</p>
- <div class="field space"><label for="${p}-returned">${c.pasteLabel}</label><textarea id="${p}-returned" placeholder="${c.pastePlaceholder}"></textarea></div>
- <div class="btns"><button class="button" id="${p}-check" type="button">Check retained filters</button><button class="button" id="${p}-clearCheck" type="button">Clear check</button></div>
- <div id="${p}-result" class="result" aria-live="polite"></div>
-</div>
-<div class="help">${c.help}</div>`;
+ <div id="${p}-chips" class="facets" aria-live="polite"></div>
+ <div class="meter" aria-hidden="true"><i id="${p}-meter"></i></div><p id="${p}-health" class="hint" aria-live="polite"></p>
+ <div id="${p}-alts" class="sub"></div>
+ <div id="${p}-history" class="sub"></div>
+ <details class="space"><summary>Show decoded link and codes</summary><div id="${p}-decoded" class="urlbox mono space"></div><div id="${p}-facetList" class="hint space"></div></details>
+</div>`;
+}
+
+/* ---------- intelligence layer: health, variants, history, recipes, smart fill ---------- */
+const KW = {am:'am-query', gw:'gw-all', gs:'gs-q', yt:'yt-q'};
+const TOOL = {am:'amazon', gw:'google', gs:'shopping', yt:'youtube'};
+const el = (tag, text, cls) => { const e = document.createElement(tag); if(text) e.textContent = text; if(cls) e.className = cls; return e; };
+const pill = (t, f) => { const b = el('button', t, 'pill'); b.type = 'button'; b.onclick = f; return b; };
+const fire = (id, v) => { const e = $(id); if(v !== undefined) e.value = v; e.dispatchEvent(new Event('input', {bubbles:true})); };
+
+const WEIGHT = [[/^(Exact|Only on|File type|Channel)/,3],[/^(In title|In URL|In text|Range|Brand|Price)|discount/,2],[/^(Prime|4★|Excluding|Not on|After|Before|Time|Verbatim|Condition|Free|On sale|Uploaded|Type:|Duration|Feature)/,1]];
+const VAR = [
+ [/\b(?:usb[- ]?c|type[- ]?c)\b/i, ['USB C','USB-C','Type-C','Type C']],
+ [/\b(\d+)\s?(?:w|watts?)\b/i, m => [m[1] + 'W', m[1] + ' watt']],
+ [/\b(\d+(?:\.\d+)?)\s?(?:m|metres?|meters?)\b/i, m => [m[1] + 'm', m[1] + ' metre', m[1] + ' meter']],
+ [/\b(\d+)\s?(gb|tb|mah|hz)\b/i, m => [m[1] + m[2].toUpperCase(), m[1] + ' ' + m[2].toUpperCase()]]
+];
+function variants(q){
+ const out = new Set();
+ for(const [re, alt] of VAR){
+  const m = q.match(re); if(!m) continue;
+  (typeof alt === 'function' ? alt(m) : alt).forEach(o => { const v = q.replace(re, o); if(norm(v) !== norm(q)) out.add(v); });
+ }
+ return [...out].slice(0, 5);
+}
+function insights(cfg, cur){
+ const p = cfg.p, hits = []; let score = 0;
+ cur.chips.forEach(c => { const w = WEIGHT.find(([r]) => r.test(c)); if(w){ score += w[1]; hits.push([w[1], c]); } });
+ const lvl = score <= 2 ? 0 : score <= 6 ? 1 : 2, on = hits.length > 0;
+ const m = $(p + '-meter'); m.parentElement.hidden = !on; m.style.width = Math.min(100, 8 + score * 9) + '%'; m.style.background = ['#88e0b3','#7ec8ff','#ffb454'][lvl];
+ hits.sort((a, b) => b[0] - a[0]);
+ $(p + '-health').textContent = on ? ['Light filtering: expect plenty of results.','Balanced: focused, and should still return results.','Very narrow: expect few or no results. If it comes back empty, drop these first: ' + hits.slice(0, 2).map(h => h[1]).join(', then ') + '.'][lvl] : '';
+ const vs = variants($(KW[p]).value);
+ const box = $(p + '-alts'), key = vs.join('\n');
+ if(box.dataset.key !== key){ box.dataset.key = key; box.replaceChildren(...(vs.length ? [el('b', 'Try other phrasing'), ...vs.map(v => pill(v, () => fire(KW[p], v)))] : [])); }
+}
+
+const HKEY = 'sqb-history-v2';
+const loadH = () => { try { return JSON.parse(localStorage.getItem(HKEY)) || []; } catch(_) { return []; } };
+function remember(cfg){
+ const snap = {}; Object.keys(cfg.defaults).forEach(id => { const e = $(id); snap[id] = e.type === 'checkbox' ? e.checked : e.value; });
+ const label = (snap[KW[cfg.p]] || '').slice(0, 38);
+ const list = loadH().filter(h => !(h.p === cfg.p && h.label === label));
+ list.unshift({p:cfg.p, label, snap});
+ try { localStorage.setItem(HKEY, JSON.stringify(list.slice(0, 24))); } catch(_) {}
+ recent();
+}
+function recent(){
+ const list = loadH();
+ Object.keys(KW).forEach(p => {
+  const mine = list.filter(h => h.p === p).slice(0, 4);
+  $(p + '-history').replaceChildren(...(mine.length ? [el('b', 'Recent'), ...mine.map(h => pill('↺ ' + (h.label || '(empty)'), () => { setAll(h.snap); fire(KW[p]); }))] : []));
+ });
+}
+
+const PRESETS = {
+ am:[['Best value',{'am-stars':true,'am-prime':true,'am-sort':'review-rank'}],['Cheapest 4★+',{'am-stars':true,'am-sort':'price-asc-rank'}],['Deals 30%+',{'am-discount':'30','am-sort':'review-rank'}],['Newest',{'am-sort':'date-desc-rank'}]],
+ gw:[['Real opinions',{'gw-site':'reddit.com, quora.com'}],['Manuals & datasheets',{'gw-filetype':'pdf','gw-intitle':'datasheet, manual'}],['Past month, newest',{'gw-recent':'m','gw-sortdate':true}],['Government (.gov.in)',{'gw-site':'.gov.in'}],['Exact words only',{'gw-verbatim':true}]],
+ gs:[['Cheapest new',{'gs-cond':'new:1','gs-sort':'p_ord:p','gs-free':true}],['Top rated',{'gs-sort':'p_ord:rv'}],['On sale',{'gs-sale':true,'gs-sort':'p_ord:p'}]],
+ yt:[['Default YT search',() => Object.assign({'yt-type':'1','yt-sort':'3','yt-upload':'y3','yt-duration':'3'}, ...YT_FLAG_UI.map(n => ({['yt-f-' + n]:false})))],['Deep dives',{'yt-type':'1','yt-duration':'2','yt-sort':'3'}],['Latest this week',{'yt-upload':'3','yt-sort':'2'}],['Quick answers',{'yt-type':'1','yt-duration':'1'}],['HD with captions',{'yt-f-4':true,'yt-f-5':true}]]
+};
+function mountPresets(){
+ Object.entries(PRESETS).forEach(([p, list]) => {
+  const row = el('div', '', 'presets'); row.append(el('b', 'Quick recipes'), ...list.map(([l, f]) => pill(l, () => { setAll(typeof f === 'function' ? f() : f); fire(KW[p]); })));
+  $('tool-' + TOOL[p]).prepend(row);
+ });
+}
+
+function smart(raw){
+ let t = ' ' + raw.replace(/[“”]/g, '"') + ' ';
+ const F = {}, seen = [], ex = [], phrase = [];
+ const num = (s, k) => Math.round(Number(s.replace(/,/g, '')) * (k ? 1000 : 1));
+ const take = (re, fn) => { const m = re.exec(t); if(!m) return false; t = t.replace(re, ' '); fn(m); return true; };
+ take(/"([^"]+)"/, m => { phrase.push(m[1]); seen.push('Exact “' + m[1] + '”'); });
+ t = t.replace(/\b(?:no|without|exclude|excluding|not)\s+([a-z0-9-]+)|\s-([a-z0-9-]+)/gi, (_, a, b) => { ex.push(a || b); return ' '; });
+ if(ex.length) seen.push('Excluding ' + ex.join(', '));
+ take(/\b(?:over|longer than|more than)\s*20\s*min\w*/i, () => { F['yt-duration'] = '2'; seen.push('Over 20 min'); });
+ take(/\b(?:under|shorter than|less than)\s*4\s*min\w*/i, () => { F['yt-duration'] = '1'; seen.push('Under 4 min'); });
+ const cur = '(?:rs\\.?|inr|₹)?\\s*';
+ let lo, hi;
+ take(new RegExp(cur + '(\\d[\\d,]{2,})\\s*(?:-|to|and)\\s*' + cur + '(\\d[\\d,]{2,})', 'i'), m => { lo = num(m[1]); hi = num(m[2]); });
+ if(hi === undefined) take(new RegExp('\\b(?:under|below|upto|up to|within|max(?:imum)?|less than)\\s*' + cur + '(\\d[\\d,]*)(k)?\\b', 'i'), m => { hi = num(m[1], m[2]); });
+ if(lo === undefined) take(new RegExp('\\b(?:over|above|from|min(?:imum)?|more than|at least)\\s*' + cur + '(\\d[\\d,]*)(k)?\\b', 'i'), m => { lo = num(m[1], m[2]); });
+ if(lo !== undefined && hi !== undefined && lo > hi) [lo, hi] = [hi, lo];
+ if(lo !== undefined || hi !== undefined){
+  const L = lo === undefined ? '' : lo, H = hi === undefined ? '' : hi;
+  Object.assign(F, {'am-minPrice':L, 'am-maxPrice':H, 'gs-min':L, 'gs-max':H});
+  seen.push('Price ₹' + (L || 0) + '–' + (H ? '₹' + H : 'any'));
+ }
+ take(/\b(?:4\s*(?:\+|plus)?\s*(?:stars?|★)(?:\s*(?:and|&)\s*(?:up|above))?|top[- ]rated|well[- ]rated)/i, () => { F['am-stars'] = true; seen.push('4★+'); });
+ take(/\bprime\b/i, () => { F['am-prime'] = true; seen.push('Prime'); });
+ take(/(\d{2})\s*%\s*(?:off|discount)?/i, m => { const d = [70,60,50,40,30,20,10].find(x => x <= Number(m[1])); if(d){ F['am-discount'] = String(d); F['gs-sale'] = true; seen.push(d + '%+ off'); } });
+ take(/\b(?:used|second[- ]hand|pre[- ]owned)\b/i, () => { F['gs-cond'] = 'used:1'; seen.push('Used'); });
+ take(/\bfree (?:delivery|shipping)\b/i, () => { F['gs-free'] = true; seen.push('Free delivery'); });
+ const R = [[/\b(?:today|past (?:24 hours|day)|last 24 hours)\b/i,'d','2','Past 24 h'],[/\b(?:this|last|past) week\b/i,'w','3','Past week'],[/\b(?:this|last|past) month\b/i,'m','4','Past month'],[/\b(?:this|last|past) year\b/i,'y','5','Past year']];
+ for(const [re, g, y, l] of R) if(take(re, () => { F['gw-recent'] = g; F['yt-upload'] = y; seen.push(l); })) break;
+ take(/\b(?:latest|newest|most recent)\b/i, () => { F['am-sort'] = 'date-desc-rank'; F['gw-sortdate'] = true; F['yt-sort'] = '2'; seen.push('Newest first'); });
+ take(/\breddit\b/i, () => { F['gw-site'] = 'reddit.com'; seen.push('Reddit only'); });
+ take(/\bgov(?:ernment)?\b/i, () => { F['gw-site'] = '.gov.in'; seen.push('.gov.in only'); });
+ take(/\b(pdf|docx?|xlsx?|pptx?|csv)\b/i, m => { F['gw-filetype'] = m[1].toLowerCase(); seen.push(m[1].toUpperCase() + ' files'); });
+ const brand = [...$('am-brand').options].map(o => o.value).find(b => b && b !== '__custom' && new RegExp('\\b' + b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i').test(t));
+ if(brand){ F['am-brand'] = brand; seen.push('Brand ' + brand); }
+ const kw = t.replace(/\b(?:please|find me|find|show me|search for|i want|looking for)\b/gi, ' ').replace(/[,;]+/g, ' ').replace(/\s+/g, ' ').trim();
+ const Q = (kw + (phrase.length ? ' "' + phrase.join('" "') + '"' : '')).trim(), exs = ex.join(', ');
+ return { seen, ok:Boolean(Q), fields:Object.assign({'am-query':Q, 'gs-q':Q, 'gw-all':kw, 'yt-q':kw, 'gw-exact':phrase[0] || '', 'yt-exact':phrase[0] || '', 'am-none':exs, 'gs-none':exs, 'gw-none':exs, 'yt-none':exs}, F) };
+}
+function applySmart(){
+ const raw = $('sm-in').value.trim(), out = $('sm-out');
+ if(!raw){ out.textContent = 'Type what you are looking for first, for example: sony headphones under 5000 prime.'; return; }
+ const r = smart(raw);
+ if(!r.ok){ out.textContent = 'Add the product or topic as well, for example “pdf manual for dell xps”.'; return; }
+ setAll(Object.assign({}, AM_DEFAULTS, GW_DEFAULTS, GS_DEFAULTS, YT_DEFAULTS, r.fields));
+ Object.values(KW).forEach(id => fire(id));
+ out.textContent = 'Understood: ' + (r.seen.length ? r.seen.join(' · ') : 'keywords only') + '. Applied to every tab.';
 }
 
 function mountTool(cfg){
  const p = cfg.p;
  const g = s => $(p + '-' + s);
- let current = null;
+ let current = null, touched = false;
+ const on = () => { touched = true; render(); };
  $(p + '-out').innerHTML = outputHTML(cfg);
 
  function render(){
   if(cfg.onRender) cfg.onRender();
   current = cfg.build();
-  g('url').textContent = current.link;
+  g('url').textContent = current.error ? '' : current.link;
   let decoded = current.link;
   try { decoded = decodeURIComponent(current.link.replace(/\+/g, '%20')); } catch(_) {}
-  g('decoded').textContent = decoded;
+  g('decoded').textContent = current.error ? '' : decoded;
   g('facetList').textContent = current.facets.length ? cfg.facetLabel + current.facets.join('   |   ') : 'No additional filters selected.';
-  g('message').textContent = current.error || '';
+  g('message').textContent = touched ? (current.error || '') : '';
   g('notes').textContent = (current.notes || []).join(' ');
   const bad = Boolean(current.error);
   g('copy').disabled = bad;
@@ -320,18 +461,19 @@ function mountTool(cfg){
   open.href = bad ? '#' : current.link;
   open.classList.toggle('disabled', bad);
   open.setAttribute('aria-disabled', String(bad));
-  const chips = current.chips.length ? current.chips : ['No filters selected'];
+  insights(cfg, current);
+  const chips = current.chips;
   g('chips').replaceChildren(...chips.map(t => { const s = document.createElement('span'); s.className = 'chip'; s.textContent = t; return s; }));
  }
 
  for(const id of Object.keys(cfg.defaults)){
-  $(id).addEventListener('input', render);
-  $(id).addEventListener('change', render);
+  $(id).addEventListener('input', on);
+  $(id).addEventListener('change', on);
  }
- g('open').addEventListener('click', e => { if(current.error) e.preventDefault(); });
+ g('open').addEventListener('click', e => { if(current.error) e.preventDefault(); else remember(cfg); });
  g('copy').addEventListener('click', async () => {
   if(current.error) return;
-  const btn = g('copy'), text = current.link;
+  remember(cfg); const btn = g('copy'), text = current.link;
   const done = ok => { btn.textContent = ok ? 'Copied ✓' : 'Select the URL text to copy'; setTimeout(() => { btn.textContent = 'Copy URL'; }, 2000); };
   try { await navigator.clipboard.writeText(text); done(true); }
   catch(e){
@@ -340,22 +482,7 @@ function mountTool(cfg){
    t.remove(); done(ok);
   }
  });
- g('reset').addEventListener('click', () => {
-  setAll(cfg.defaults);
-  g('returned').value = ''; g('result').textContent = ''; g('result').className = 'result';
-  render();
- });
- g('clearCheck').addEventListener('click', () => { g('returned').value = ''; g('result').textContent = ''; g('result').className = 'result'; });
- g('check').addEventListener('click', () => {
-  const target = g('result'); target.className = 'result';
-  let parsed;
-  try { parsed = new URL(g('returned').value.trim()); }
-  catch(e){ target.textContent = cfg.pasteError; target.classList.add('warn'); return; }
-  const out = cfg.check(parsed, current);
-  target.textContent = out.rows.join('\n');
-  target.classList.add(out.level);
- });
-
+ g('reset').addEventListener('click', () => { setAll(cfg.defaults); touched = false; render(); });
  setAll(cfg.defaults);
  render();
 }
@@ -365,18 +492,12 @@ function mountTool(cfg){
    ====================================================================== */
 const AM_TOKENS = { stars:'p_72:1318476031', prime:'p_85:10440599031' };
 const AM_DEFAULTS = {
- 'am-query':DEFAULT_QUERY, 'am-category':'', 'am-brand':'', 'am-customBrand':'', 'am-brandKeyword':true,
- 'am-stars':false, 'am-prime':false, 'am-minPrice':'', 'am-maxPrice':'', 'am-discount':'0', 'am-sort':'', 'am-page':'1', 'am-extra':''
+ 'am-query':DEFAULT_QUERY, 'am-category':'', 'am-brand':'', 'am-customBrand':'', 'am-brandKeyword':false,
+ 'am-stars':false, 'am-prime':false, 'am-minPrice':'', 'am-maxPrice':'', 'am-discount':'0', 'am-sort':'', 'am-page':'1', 'am-extra':'', 'am-none':''
 };
 
 mountTool({
  p:'am', openLabel:'Open results on Amazon', facetLabel:'Filter codes: ', defaults:AM_DEFAULTS,
- important:'The URL updates when you change a filter. Amazon may remove or ignore an incompatible filter after loading. Encoding such as <code>%3A</code> is correct.',
- checkTitle:'Did Amazon retain your selections?',
- checkHint:'Open the generated URL above. Then copy the address of Amazon’s resulting <strong>search-results page</strong>, paste it here and click Check. This detects removed URL filters; it cannot guarantee that each product satisfies them.',
- pasteLabel:'URL from Amazon after opening the search', pastePlaceholder:'Paste the final Amazon search-results URL here',
- pasteError:'Paste a complete Amazon.in URL, beginning with https://www.amazon.in/.',
- help:'<strong>Reliable troubleshooting:</strong> Begin with keywords alone, then enable 4★, Prime and brand one at a time. If Amazon removes a facet, try the same filter through Amazon’s own left-side filter panel for that particular search. Too many filters can legitimately return no matches.',
  onRender(){ $('am-customContainer').classList.toggle('hidden', val('am-brand') !== '__custom'); },
  build(){
   const chosen = val('am-brand');
@@ -388,7 +509,7 @@ mountTool({
   else if((low !== '' && (!Number.isFinite(Number(low)) || Number(low) < 0)) || (high !== '' && (!Number.isFinite(Number(high)) || Number(high) < 0))) error = 'Price values must be zero or above.';
   else if(low !== '' && high !== '' && Number(low) > Number(high)) error = 'Minimum price cannot exceed maximum price.';
   else if(chosen === '__custom' && !brand) error = 'Enter a custom brand or select All brands.';
-  const query = brand && chk('am-brandKeyword') && !rawQuery.toLowerCase().includes(brand.toLowerCase()) ? rawQuery + ' ' + brand : rawQuery;
+  const query = negate(brand && chk('am-brandKeyword') && !rawQuery.toLowerCase().includes(brand.toLowerCase()) ? rawQuery + ' ' + brand : rawQuery, 'am-none');
   const facets = [];
   if(low !== '' || high !== '') facets.push('p_36:' + (low !== '' ? Math.round(Number(low) * 100) : '') + '-' + (high !== '' ? Math.round(Number(high) * 100) : ''));
   if(chk('am-stars')) facets.push(AM_TOKENS.stars);
@@ -413,48 +534,11 @@ mountTool({
   if(val('am-minPrice') || val('am-maxPrice')) chips.push('Price: ₹' + (val('am-minPrice') || '0') + '–₹' + (val('am-maxPrice') || '∞'));
   if(Number(val('am-discount')) > 0) chips.push(val('am-discount') + '%+ discount');
   if(val('am-category')) chips.push('Department: ' + val('am-category'));
+  if(val('am-none')) chips.push('Excluding: ' + splitList(val('am-none')).join(', '));
   if(val('am-sort')) chips.push('Sort: ' + sel('am-sort'));
-  return { link:url.toString(), facets, chips, error, notes:[] };
+  return { link:url.toString(), facets, chips, error, notes:[], q:query };
  },
- check(u, cur){
-  if(!u.hostname.endsWith('amazon.in') && !u.hostname.endsWith('amazon.com')) return { rows:['This is not an Amazon search URL.'], level:'warn' };
-  const rh = u.searchParams.get('rh') || u.searchParams.get('refinements') || '';
-  const found = rh.split(',').map(s => s.trim()).filter(Boolean);
-  const missing = cur.facets.filter(f => !found.includes(f));
-  const kept = cur.facets.filter(f => found.includes(f));
-  const rows = ['Expected ' + cur.facets.length + ' filter(s). Found ' + found.length + ' Amazon facet(s) in the pasted URL.'];
-  rows.push('Retained: ' + (kept.length ? kept.join(' | ') : 'None / not detectable'));
-  rows.push('Missing: ' + (missing.length ? missing.join(' | ') : 'None'));
-  if(u.pathname !== '/s' && u.pathname !== '/s/') rows.push('Warning: paste a SEARCH results URL, not a product /dp/ link.');
-  rows.push('Note: Retained codes do not prove that Amazon applied the filters to every listing.');
-  return { rows, level: missing.length ? 'warn' : 'good' };
- }
 });
-
-/* ======================================================================
-   shared Google checker (used by Web and Shopping)
-   ====================================================================== */
-function googleCheck(u, cur){
- if(!/(^|\.)google\.[a-z.]{2,}$/.test(u.hostname)) return { rows:['This is not a Google URL. Expected google.com or a country domain such as google.co.in.'], level:'warn' };
- if(u.pathname !== '/search') return { rows:['Paste a Google results URL; its path should be /search.'], level:'warn' };
- const foundQ = norm(u.searchParams.get('q') || '');
- const keptQ = cur.parts.filter(x => foundQ.includes(norm(x)));
- const missQ = cur.parts.filter(x => !foundQ.includes(norm(x)));
- const foundTbs = (u.searchParams.get('tbs') || '').split(',').filter(Boolean);
- const keptP = [], missP = [], expTbs = [];
- for(const [k, v] of Object.entries(cur.params)){
-  if(k === 'tbs') v.split(',').forEach(t => { expTbs.push(t); (foundTbs.includes(t) ? keptP : missP).push('tbs=' + t); });
-  else (u.searchParams.get(k) === v ? keptP : missP).push(k + '=' + v);
- }
- const kept = [...keptQ, ...keptP], miss = [...missQ, ...missP];
- const extra = foundTbs.filter(t => !expTbs.includes(t));
- const rows = ['Expected ' + cur.facets.length + ' item(s). Retained ' + kept.length + '.'];
- rows.push('Retained: ' + (kept.length ? kept.join(' | ') : 'None'));
- rows.push('Missing: ' + (miss.length ? miss.join(' | ') : 'None'));
- if(extra.length) rows.push('Other filter codes present in the pasted URL: ' + extra.join(' | '));
- rows.push('Note: Retained codes show that Google kept the parameters in the address; they do not prove every result matches.');
- return { rows, level: miss.length ? 'warn' : 'good' };
-}
 
 /* ======================================================================
    2. GOOGLE WEB  (advanced operators)
@@ -462,7 +546,7 @@ function googleCheck(u, cur){
 fill('gw-lang', LANGS);
 fill('gw-region', REGIONS);
 const GW_DEFAULTS = {
- 'gw-all':'retractable USB C 100W cable', 'gw-exact':'', 'gw-any':'', 'gw-none':'',
+ 'gw-all':'', 'gw-exact':'', 'gw-any':'', 'gw-none':'',
  'gw-site':'', 'gw-nosite':'', 'gw-filetype':'', 'gw-intitle':'', 'gw-inurl':'', 'gw-intext':'',
  'gw-numfrom':'', 'gw-numto':'', 'gw-numunit':'', 'gw-recent':'', 'gw-after':'', 'gw-before':'',
  'gw-lang':'', 'gw-region':'', 'gw-page':'1',
@@ -471,12 +555,6 @@ const GW_DEFAULTS = {
 
 mountTool({
  p:'gw', openLabel:'Open results on Google', facetLabel:'Operators and parameters: ', defaults:GW_DEFAULTS,
- important:'Operators go inside the <code>q</code> parameter; the other settings are separate parameters. Google may ignore or rewrite some of them, particularly SafeSearch and the web-only view, which can depend on your account.',
- checkTitle:'Did Google keep your selections?',
- checkHint:'Open the generated URL above, then copy the address of Google’s results page and paste it here. This is also handy after you adjust filters in Google’s own Tools menu: paste the address to see the codes it used.',
- pasteLabel:'URL from Google after opening the search', pastePlaceholder:'Paste the final Google results URL here',
- pasteError:'Paste a complete Google results URL, beginning with https://www.google.com/search.',
- help:'<strong>Tips:</strong> If results look thin, remove operators one at a time. <code>site:</code>, <code>filetype:</code> and <code>intitle:</code> together are very restrictive. Custom dates use the <code>after:</code> and <code>before:</code> operators and take priority over the quick time range.',
  onRender(){ $('gw-recent').disabled = Boolean(val('gw-after') || val('gw-before')); },
  build(){
   const parts = [], chips = [], notes = [], params = {};
@@ -542,7 +620,6 @@ mountTool({
   const facets = [...parts, ...Object.entries(params).map(([k, v]) => k + '=' + v)];
   return { link:url.toString(), facets, chips, error, notes, parts, params };
  },
- check: googleCheck
 });
 
 /* ======================================================================
@@ -551,22 +628,17 @@ mountTool({
 fill('gs-region', REGIONS);
 const GS_DEFAULTS = {
  'gs-q':DEFAULT_QUERY, 'gs-brand':'', 'gs-min':'', 'gs-max':'', 'gs-cond':'', 'gs-sort':'', 'gs-region':'in',
- 'gs-free':false, 'gs-sale':false, 'gs-mode':'udm', 'gs-extra':''
+ 'gs-free':false, 'gs-sale':false, 'gs-mode':'udm', 'gs-extra':'', 'gs-none':''
 };
 
 mountTool({
  p:'gs', openLabel:'Open results on Google Shopping', facetLabel:'Parameters: ', defaults:GS_DEFAULTS,
- important:'Google has changed its Shopping address format more than once, and it does not publish these codes. They are the long-standing ones, but Google may drop any of them. Use the checker below to see which survived.',
- checkTitle:'Did Google Shopping keep your selections?',
- checkHint:'Open the generated URL above, then copy the address of the Shopping results page and paste it here. If a filter was dropped, set it with the filters on Google’s page instead and paste that address here to see the codes Google uses today.',
- pasteLabel:'URL from Google Shopping after opening the search', pastePlaceholder:'Paste the final Google Shopping results URL here',
- pasteError:'Paste a complete Google results URL, beginning with https://www.google.com/search.',
- help:'<strong>Troubleshooting:</strong> Start with keywords only, then add price, condition and sort one at a time. If nothing sticks, switch the Shopping URL mode under Advanced. The brand is added to the keywords because Google Shopping has no stable brand code.',
  build(){
   const notes = [], chips = [], params = {};
   let error = '';
   const kw = val('gs-q'), brand = noQuotes(val('gs-brand'));
-  const q = brand && !kw.toLowerCase().includes(brand.toLowerCase()) ? (kw + ' ' + brand).trim() : kw;
+  const q0 = brand && !kw.toLowerCase().includes(brand.toLowerCase()) ? (kw + ' ' + brand).trim() : kw;
+  const q = q0 ? negate(q0, 'gs-none') : '';
   const low = val('gs-min'), high = val('gs-max');
   if(!q) error = 'Please enter product keywords.';
   else if((low !== '' && (!isNum(low) || Number(low) < 0)) || (high !== '' && (!isNum(high) || Number(high) < 0))) error = 'Price values must be zero or above.';
@@ -600,7 +672,6 @@ mountTool({
   const facets = [...parts, ...Object.entries(params).map(([k, v]) => k + '=' + v)];
   return { link:url.toString(), facets, chips, error, notes, parts, params };
  },
- check: googleCheck
 });
 
 /* ======================================================================
@@ -619,6 +690,8 @@ const YT = {
 const YT_FLAG_UI = [4,5,6,8,14,15,26,25,7]; // features offered in the UI
 
 const varint = n => { const out = []; while(n > 127){ out.push((n % 128) | 128); n = Math.floor(n / 128); } out.push(n); return out; };
+/* today minus n years as yyyy-mm-dd (local date); 29 Feb falls back to 28 Feb */
+const yearsAgo = n => { const t = new Date(), d = new Date(t.getFullYear() - n, t.getMonth(), t.getDate()); if(d.getMonth() !== t.getMonth()) d.setDate(0); return [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-'); };
 
 function ytEncode(o){
  const f = [];
@@ -634,38 +707,11 @@ function ytEncode(o){
  if(filt.length) bytes.push(...varint(2 * 8 + 2), ...varint(filt.length), ...filt);
  return bytes.length ? btoa(String.fromCharCode(...bytes)) : '';
 }
-function pbParse(b){
- const out = []; let i = 0;
- const rv = () => { let r = 0, s = 0, x; do { if(i >= b.length) throw new Error('eof'); x = b[i++]; r += (x & 127) * Math.pow(2, s); s += 7; } while(x & 128); return r; };
- while(i < b.length){
-  const tag = rv(), fld = Math.floor(tag / 8), w = tag % 8;
-  if(w === 0) out.push([fld, w, rv()]);
-  else if(w === 2){ const n = rv(); if(i + n > b.length) throw new Error('len'); out.push([fld, w, b.slice(i, i + n)]); i += n; }
-  else throw new Error('wire');
- }
- return out;
-}
-function ytDecode(sp){
- try {
-  let s = sp.replace(/ /g, '+').replace(/-/g, '+').replace(/_/g, '/');
-  while(s.length % 4) s += '=';
-  const bytes = [...atob(s)].map(c => c.charCodeAt(0));
-  const o = { sort:0, upload:0, type:0, duration:0, flags:[] };
-  pbParse(bytes).forEach(([fld, w, v]) => {
-   if(fld === 1 && w === 0) o.sort = v;
-   else if(fld === 2 && w === 2) pbParse(v).forEach(([g2, w2, x]) => {
-    if(w2 !== 0) return;
-    if(g2 === 1) o.upload = x; else if(g2 === 2) o.type = x; else if(g2 === 3) o.duration = x;
-    else if(x === 1) o.flags.push(g2);
-   });
-  });
-  return o;
- } catch(e){ return null; }
-}
 function ytLabels(o){
  const L = [];
  if(o.sort) L.push('Sort: ' + (YT.sort[o.sort] || 'code ' + o.sort));
  if(o.upload) L.push('Uploaded: ' + (YT.upload[o.upload] || 'code ' + o.upload));
+ if(o.after) L.push('Uploaded: last 3 years (after ' + o.after + ')');
  if(o.type) L.push('Type: ' + (YT.type[o.type] || 'code ' + o.type));
  if(o.duration) L.push('Duration: ' + (YT.duration[o.duration] || 'code ' + o.duration));
  o.flags.slice().sort((a, b) => a - b).forEach(x => L.push('Feature: ' + (YT.flags[x] || 'field ' + x)));
@@ -680,19 +726,13 @@ $('yt-flags').replaceChildren(...YT_FLAG_UI.map(n => {
 }));
 fill('yt-region', REGIONS.map(([v, l]) => [v.toUpperCase(), l]));
 const YT_DEFAULTS = {
- 'yt-q':'retractable USB C 100W cable review', 'yt-exact':'', 'yt-any':'', 'yt-none':'', 'yt-channel':'',
+ 'yt-q':'', 'yt-exact':'', 'yt-any':'', 'yt-none':'', 'yt-channel':'',
  'yt-upload':'', 'yt-type':'', 'yt-duration':'', 'yt-sort':'0', 'yt-region':''
 };
 YT_FLAG_UI.forEach(n => { YT_DEFAULTS['yt-f-' + n] = false; });
 
 mountTool({
  p:'yt', openLabel:'Open results on YouTube', facetLabel:'Filters: ', defaults:YT_DEFAULTS,
- important:'YouTube stores all filters in one encoded <code>sp</code> code, which this page builds for you. YouTube may drop combinations it considers incompatible (for example, Live with an upload-date filter). The checker decodes whatever survives.',
- checkTitle:'Did YouTube keep your selections?',
- checkHint:'Open the generated URL above, then copy the address of YouTube’s results page and paste it here. You can also set filters by hand on YouTube, paste that address, and read off what each one means.',
- pasteLabel:'URL from YouTube after opening the search', pastePlaceholder:'Paste the final YouTube results URL here',
- pasteError:'Paste a complete YouTube results URL, beginning with https://www.youtube.com/results.',
- help:'<strong>Tips:</strong> Type, duration and feature filters only make sense for videos, so they are left out when the type is Channel or Playlist. A channel search ignores all of them. Search operators such as quotation marks and a minus sign are supported by YouTube; <code>|</code> acts as OR.',
  build(){
   const notes = [], chips = [];
   let error = '';
@@ -708,12 +748,13 @@ mountTool({
   const query = bits.join(' ');
   if(!kw && !exact && !any.length) error = 'Add at least one search term.';
 
+  const last3 = val('yt-upload') === 'y3'; // not a YouTube filter code: sent as an after:date operator in the query instead
   const o = {
-   sort:Number(val('yt-sort')), upload:Number(val('yt-upload')), type:Number(val('yt-type')),
+   sort:Number(val('yt-sort')), upload:last3 ? 0 : Number(val('yt-upload')), after:last3 ? yearsAgo(3) : '', type:Number(val('yt-type')),
    duration:Number(val('yt-duration')),
    flags:YT_FLAG_UI.filter(n => chk('yt-f-' + n))
   };
-  const wantsFilters = Boolean(o.sort || o.upload || o.type || o.duration || o.flags.length);
+  const wantsFilters = Boolean(o.sort || o.upload || o.after || o.type || o.duration || o.flags.length);
 
   const ch = val('yt-channel');
   let url;
@@ -730,8 +771,8 @@ mountTool({
   }
 
   if(o.type === 2 || o.type === 3){
-   if(o.upload || o.duration || o.flags.length) notes.push('Upload date, duration and feature filters only apply to videos, so they were left out for ' + YT.type[o.type].toLowerCase() + ' results.');
-   o.upload = 0; o.duration = 0; o.flags = [];
+   if(o.upload || o.after || o.duration || o.flags.length) notes.push('Upload date, duration and feature filters only apply to videos, so they were left out for ' + YT.type[o.type].toLowerCase() + ' results.');
+   o.upload = 0; o.after = ''; o.duration = 0; o.flags = [];
   }
   const labels = ytLabels(o);
   labels.forEach(l => chips.push(l));
@@ -739,40 +780,12 @@ mountTool({
   const sp = ytEncode(o);
 
   url = new URL('https://www.youtube.com/results');
-  url.searchParams.set('search_query', query);
+  const fullQuery = (query + (o.after ? ' after:' + o.after : '')).trim();
+  url.searchParams.set('search_query', fullQuery);
   if(sp) url.searchParams.set('sp', sp);
   if(val('yt-region')) url.searchParams.set('gl', val('yt-region'));
-  return { link:url.toString(), facets:labels, chips, error, notes, q:query, labels, sp };
+  return { link:url.toString(), facets:labels, chips, error, notes, q:fullQuery, labels, sp };
  },
- check(u, cur){
-  if(!/(^|\.)youtube\.com$/.test(u.hostname)) return { rows:['This is not a YouTube URL. Expected youtube.com.'], level:'warn' };
-  const rows = [];
-  const q = u.searchParams.get('search_query') || u.searchParams.get('query') || '';
-  rows.push('Search text: ' + (q ? '“' + q + '”' : 'not found') + (norm(q) === norm(cur.q) ? ' (matches the generated link)' : ' (differs from the generated link)'));
-  const sp = u.searchParams.get('sp');
-  let level = norm(q) === norm(cur.q) ? 'good' : 'warn';
-  if(!sp){
-   rows.push('No filter code (sp) in the pasted URL.' + (cur.labels.length ? ' Missing: ' + cur.labels.join(' | ') : ''));
-   if(cur.labels.length) level = 'warn';
-  } else {
-   const d = ytDecode(sp);
-   if(!d){ rows.push('The sp filter code could not be decoded.'); level = 'warn'; }
-   else {
-    const found = ytLabels(d);
-    const kept = cur.labels.filter(l => found.includes(l));
-    const miss = cur.labels.filter(l => !found.includes(l));
-    const extra = found.filter(l => !cur.labels.includes(l));
-    rows.push('Filters in the pasted URL: ' + (found.length ? found.join(' | ') : 'none'));
-    if(cur.labels.length){
-     rows.push('Retained: ' + (kept.length ? kept.join(' | ') : 'None'));
-     rows.push('Missing: ' + (miss.length ? miss.join(' | ') : 'None'));
-    }
-    if(extra.length) rows.push('Not in your selection: ' + extra.join(' | '));
-    if(miss.length) level = 'warn';
-   }
-  }
-  return { rows, level };
- }
 });
 
 /* ---------- tabs ---------- */
@@ -804,7 +817,16 @@ tabs.forEach((t, i) => {
  });
 });
 window.addEventListener('hashchange', () => show(location.hash.slice(1)));
-if(location.hash) show(location.hash.slice(1));
+if(!(location.hash && show(location.hash.slice(1)))) show('youtube');
+mountPresets(); recent();
+$('sm-go').addEventListener('click', applySmart);
+$('sm-in').addEventListener('keydown', e => { if(e.key === 'Enter') applySmart(); });
+document.addEventListener('keydown', e => {
+ if((e.ctrlKey || e.metaKey) && e.key === 'Enter'){
+  const t = tabs.find(x => x.getAttribute('aria-selected') === 'true'), o = t && $(Object.keys(TOOL).find(k => TOOL[k] === t.dataset.tool) + '-open');
+  if(o && !o.classList.contains('disabled')) o.click();
+ } else if(e.key === '/' && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)){ e.preventDefault(); $('sm-in').focus(); }
+});
 })();
 </script>
 </body>
