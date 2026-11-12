@@ -1,6 +1,6 @@
 # Orbit Bookmarks 2.0
 
-A framework-free bookmark manager prepared for GitHub Pages. No build tools, npm packages, account or API key required.
+A framework-free bookmark manager prepared for GitHub Pages. No build tools or npm packages. Optional private sync across devices through your own Google Drive.
 
 ## Deploy
 1. Extract this ZIP.
@@ -41,7 +41,29 @@ The database uses atomic writes. Errors do not intentionally overwrite existing 
 
 Orbit 1 localStorage data is migrated only when the new database has no saved library and the old data is accessible on the same origin. The old data is retained. A local file and a hosted site have different storage: export/import to move between them.
 
-## Access from multiple devices: important
+## Google Drive sync (private, automatic)
+Orbit can keep every device in step through your own Google Drive. The library is saved as one file in Drive's hidden **app data folder**, which only Orbit can see. It doesn't appear in your Drive file list, and Orbit can't see any of your other files (scope `drive.appdata`). There is still no Orbit server: the browser talks to Google directly.
+
+### One-time setup (about 5 minutes)
+Google needs to know which website is allowed to ask for Drive access, so you create a free "OAuth client ID" once:
+1. Open https://console.cloud.google.com, sign in, and create a project (for example "Orbit").
+2. **APIs & Services → Library**: search for **Google Drive API** and click **Enable**.
+3. **Google Auth Platform** (formerly the OAuth consent screen): click **Get started**, enter the app name "Orbit" and your email, choose **External**, then finish.
+4. **Audience → Test users**: add the Google account(s) you will sign in with. In Testing mode only these accounts can connect, which is right for personal use.
+5. **Clients → Create client → Web application**. Under **Authorised JavaScript origins** add `https://efrahdev.github.io` (only the origin: no path, no trailing slash). Add `http://localhost:8000` too if you test locally. Redirect URIs are not needed. Click **Create** and copy the client ID (it ends in `.apps.googleusercontent.com`).
+6. Either paste it into `GDRIVE_CLIENT_ID` in index.html (then every device has it automatically), or open Orbit → Library → Google Drive sync → **Setup** and save it there on each device.
+
+### Using it
+- On each device: Library → **Connect Google Drive** and sign in with the same Google account. Google will show an "unverified app" notice because the app is your own testing app: choose **Continue**.
+- The first device uploads its library. Each later device merges its own bookmarks with the Drive copy, so nothing is lost on either side.
+- After that, every change syncs about 1.5 seconds later. Orbit also syncs when you return to the tab, when the connection comes back, and every 2 minutes while open.
+- The cloud button in the top bar shows the state. Teal means synced, pulsing means syncing, an amber dot means changes are waiting or sign-in has expired, and a red dot means the last sync failed. Tap it to sync now.
+- **Sign-in renewal:** a browser-only app gets 1-hour Google access tokens and cannot renew them silently without a pop-up. When the amber dot shows after a long break, tap the cloud button. The pop-up closes by itself, and your waiting changes upload. Changes are always saved locally first, so nothing is lost while signed out.
+
+### How conflicts are resolved
+Each bookmark carries an edit timestamp. When two devices change the same bookmark, the newer edit wins. Deletions are remembered for 180 days, so a deleted link doesn't come back from another device (a device offline for longer than that may bring old deletions back). If two devices separately save the same name and address, they are merged into one. Pins, pin order, notes, tags and visit counts all sync. Theme/view preferences stay per device.
+
+## Access from multiple devices without sync
 GitHub Pages hosts the application; it is NOT a private cloud database. IndexedDB belongs to the current browser and origin. There is no automatic two-way cloud sync, login or backend in this release.
 
 For public, non-sensitive bookmarks:
@@ -54,7 +76,7 @@ This is an additive snapshot, not synchronisation: existing local versions win; 
 
 Published snapshots include titles, URLs, collections, pins, notes and tags. Opening history is reset in the published file. Anyone with access to the public site can read the snapshot. Do not upload private backups, confidential work links, tokens or secrets. A private repository does not necessarily make its Pages site private.
 
-For private transfer, keep library.json empty and move a full backup between your devices yourself. True private automatic synchronisation remains a separate backend integration requiring a service choice, authentication and access rules. No credentials are embedded in these files.
+For private transfer, keep library.json empty and move a full backup between your devices yourself. For private automatic synchronisation, use Google Drive sync (above). No credentials are embedded in these files: a Google OAuth client ID is a public identifier, not a secret.
 
 ## Offline and updates
 The service worker caches the application shell, not destination websites or the published library. Previously saved bookmarks remain browsable offline; opening external destinations still needs connectivity. HTML navigation uses network-first with an offline fallback. Increase the cache version in sw.js when changing cached icons or manifest assets. Browser installation and service workers require HTTPS or localhost.
