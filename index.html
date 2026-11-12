@@ -138,10 +138,15 @@ dialog.drawer[open]{animation:drawer-in .24s cubic-bezier(.2,.8,.2,1)}
 .syncactions .btn[disabled]{opacity:.55;cursor:default;transform:none}
 .syncbox details{margin-top:12px;font-size:13px}
 .syncbox summary{cursor:pointer;color:var(--muted)}
-.syncbox .field{margin:10px 0 8px}
+.syncbox .field{margin:12px 0 4px}
+.syncsteps{margin:10px 0 0;padding-left:20px;font-size:12.5px;line-height:1.55;color:var(--muted)}
+.syncsteps li{margin:6px 0}
+.syncsteps b{color:var(--text)}
+.syncsteps a{color:var(--accent2)}
+.syncsteps .btn{padding:6px 10px;font-size:12.5px;margin-right:4px}
 .syncbox .field input{width:100%;box-sizing:border-box}
 #syncBtn{position:relative}
-#syncBtn[hidden],.syncactions [hidden]{display:none}
+#syncBtn[hidden],.syncactions [hidden],.syncbox [hidden]{display:none}
 #syncBtn.ok{color:var(--h3)}
 #syncBtn.busy svg{animation:syncpulse .8s ease-in-out infinite alternate}
 @keyframes syncpulse{to{opacity:.3}}
@@ -160,7 +165,7 @@ dialog.drawer[open]{animation:drawer-in .24s cubic-bezier(.2,.8,.2,1)}
 <button class="fab" id="captureBtn" type="button" aria-label="Add link" title="Add link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
 <dialog id="captureDialog"><form id="captureForm"><h2>Catch something good.</h2><p>Paste anything, one per line: web addresses, localhost, local files, app links. Nothing is rejected.</p><div class="field"><label for="captureText">Links to save</label><textarea id="captureText" rows="7" required placeholder="https://example.com&#10;https://another-site.com/article"></textarea></div><div class="field"><label for="captureName">Name (only when saving one link)</label><input id="captureName" maxlength="300" placeholder="e.g. Rust async guide" autocomplete="off"></div><div class="field"><label for="captureCollection">Collection</label><input id="captureCollection" list="collectionList" placeholder="Inbox" maxlength="200"></div><div class="progress" id="captureCount" aria-live="polite">Paste links to begin.</div><div class="dialog-actions"><button class="btn" type="button" data-close>Cancel</button><button class="btn" type="button" id="singleAdd">Add with notes</button><button class="btn primary" type="submit" id="saveCapture">Save all bookmarks</button></div></form></dialog>
 <dialog id="editDialog"><form id="editForm"><h2 id="editHeading">A link worth keeping.</h2><input id="editId" type="hidden"><div class="field"><label for="editTitle">Name</label><input id="editTitle" required maxlength="300" placeholder="e.g. Rust async guide"></div><div class="field"><label for="editUrl">Address or link</label><input id="editUrl" required placeholder="https://… · localhost:3000 · file:///… · anything"></div><div class="field"><label for="editCollection">Collection / folder path</label><input id="editCollection" list="collectionList" maxlength="200" placeholder="Learning / Programming"></div><div class="field"><label for="editTags">Tags, separated by commas</label><input id="editTags" maxlength="500" placeholder="research, inspiration"></div><div class="field"><label for="editNotes">Why did you save this?</label><textarea id="editNotes" rows="3" maxlength="5000" placeholder="A little context for your future self…"></textarea></div><div class="dialog-actions"><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="submit">Save bookmark</button></div></form></dialog>
-<dialog id="dataDialog" class="drawer" aria-label="Library menu"><div class="drawer-in"><div class="drawer-head"><h2>Library</h2><button class="tbtn" type="button" data-close aria-label="Close menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><p>Sync across devices, back up everything, or bring in Chrome folders.</p><section class="syncbox" aria-labelledby="syncTitle"><strong id="syncTitle">Google Drive sync</strong><small id="syncStatus" aria-live="polite">Off. Bookmarks are saved only on this device.</small><div class="syncactions"><button class="btn primary" type="button" id="syncConnect">Connect Google Drive</button><button class="btn" type="button" id="syncNow" hidden>Sync now</button><button class="btn" type="button" id="syncDisconnect" hidden>Disconnect</button></div><details id="syncSetup"><summary>Setup: Google OAuth client ID</summary><div class="field"><label for="syncClientId">OAuth client ID (Web application)</label><input id="syncClientId" placeholder="1234-abc.apps.googleusercontent.com" autocomplete="off" spellcheck="false" maxlength="200"></div><button class="btn" type="button" id="syncSaveId">Save client ID</button><small>Create it once in Google Cloud Console and add this site's address as an authorised JavaScript origin. Steps are in the README. Each device remembers the ID after you save it.</small></details></section><div class="menu-grid"><button class="btn" id="importChrome">Import Chrome HTML<small>Preserve nested folder paths. Skip duplicate URLs.</small></button><button class="btn" id="backup">Full JSON backup<small>All links, pins, notes, tags, dates and preferences.</small></button><button class="btn" id="restore">Restore JSON backup<small>Validate first, then merge or replace safely.</small></button><button class="btn" id="chromeExport">Export to Chrome<small>Standard bookmark HTML with nested folders.</small></button><button class="btn" id="publish">Publish library snapshot<small>Download library.json for your GitHub Pages repository.</small></button><button class="btn" id="refreshPublished">Load published library<small>Merge the latest library.json without deleting local changes.</small></button></div><div class="notice"><strong>Google Drive sync is private.</strong> Your library is kept in a hidden Orbit folder in your own Drive that only Orbit can read. Without sync, bookmarks stay on this device: transfer a JSON backup instead. A published snapshot is visible to anyone who can access the site. Never publish private or work-confidential links.</div></div></dialog>
+<dialog id="dataDialog" class="drawer" aria-label="Library menu"><div class="drawer-in"><div class="drawer-head"><h2>Library</h2><button class="tbtn" type="button" data-close aria-label="Close menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><p>Sync across devices, back up everything, or bring in Chrome folders.</p><section class="syncbox" aria-labelledby="syncTitle"><strong id="syncTitle">Google Drive sync</strong><small id="syncStatus" aria-live="polite">Off. Bookmarks are saved only on this device.</small><div id="syncOn" hidden><div class="syncactions"><button class="btn" type="button" id="syncNow">Sync now</button><button class="btn" type="button" id="syncCode">Copy code for another device</button><button class="btn" type="button" id="syncDisconnect">Disconnect</button></div></div><div id="syncOff"><details id="syncSetup"><summary>First device: set up in 2 minutes (no Google Cloud needed)</summary><ol class="syncsteps"><li><button class="btn" type="button" id="syncCopyScript">Copy script</button> It contains your own secret key.</li><li>Open <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">script.google.com</a> (a new project opens). Select all the sample code, then paste.</li><li>Click <b>Deploy → New deployment</b>. Click the gear icon next to “Select type” → <b>Web app</b>. Set Execute as: <b>Me</b> and Who has access: <b>Anyone</b>. Then click <b>Deploy</b>.</li><li>Click <b>Authorise access</b> and choose your account. Google warns that the app is unverified because it is your own script: click <b>Advanced → Go to … (unsafe)</b> → <b>Allow</b>.</li><li>Copy the <b>Web app URL</b> (it ends in /exec) and paste it below.</li></ol></details><div class="field"><label for="syncLink">Web app URL, or connection code from your other device</label><input id="syncLink" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off" spellcheck="false"></div><div class="syncactions"><button class="btn primary" type="button" id="syncConnect">Connect</button></div></div></section><div class="menu-grid"><button class="btn" id="importChrome">Import Chrome HTML<small>Preserve nested folder paths. Skip duplicate URLs.</small></button><button class="btn" id="backup">Full JSON backup<small>All links, pins, notes, tags, dates and preferences.</small></button><button class="btn" id="restore">Restore JSON backup<small>Validate first, then merge or replace safely.</small></button><button class="btn" id="chromeExport">Export to Chrome<small>Standard bookmark HTML with nested folders.</small></button><button class="btn" id="publish">Publish library snapshot<small>Download library.json for your GitHub Pages repository.</small></button><button class="btn" id="refreshPublished">Load published library<small>Merge the latest library.json without deleting local changes.</small></button></div><div class="notice"><strong>Google Drive sync is private.</strong> Your library is kept as a file in your own Google Drive. Only your own script can reach it, and only with your secret key. Without sync, bookmarks stay on this device: transfer a JSON backup instead. A published snapshot is visible to anyone who can access the site. Never publish private or work-confidential links.</div></div></dialog>
 <dialog id="restoreDialog"><h2>Restore your library</h2><p id="restoreSummary"></p><div class="restoremode"><label><input type="radio" name="restoreMode" value="merge" checked> Merge safely</label><label><input type="radio" name="restoreMode" value="replace"> Replace this library</label></div><div class="notice">Merge keeps existing versions of duplicate URLs. Replace removes current bookmarks and restores the backup's preferences. A recovery backup downloads before replacement.</div><div class="dialog-actions"><button class="btn" data-close>Cancel</button><button class="btn primary" id="confirmRestore">Restore</button></div></dialog>
 <dialog id="moveDialog"><form id="moveForm"><h2>Give these links a home.</h2><div class="field"><label for="moveCollection">Destination collection</label><input id="moveCollection" list="collectionList" maxlength="200" placeholder="Inbox"></div><div class="dialog-actions"><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="submit">Move selected</button></div></form></dialog>
 <dialog id="confirmDialog"><h2 id="confirmHeading">Are you sure?</h2><p id="confirmText"></p><div class="dialog-actions"><button class="btn" id="confirmNo">Cancel</button><button class="btn primary" id="confirmYes">Delete</button></div></dialog>
@@ -249,62 +254,83 @@ bind('#refreshPublished',()=>published());
 window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#search').focus()}});
 
 
-// ---------- Google Drive sync ----------
-// Paste your OAuth client ID here to hard-code it for every device, or save it in Library > Google Drive sync > Setup.
-const GDRIVE_CLIENT_ID='';
+// ---------- Google Drive sync (through the user's own Google Apps Script) ----------
+// No Google Cloud project is needed. The user deploys GAS_CODE (below) as a web app on their own account; it keeps
+// the library as one JSON file in their Drive. A random key embedded in their copy guards it. Merging happens here.
+const GAS_CODE=k=>`// Orbit sync: keeps your Orbit bookmarks in your own Google Drive.
+// Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone.
+const KEY = '${k}'; // your secret key: never share this script publicly
+const NAME = 'Orbit library (sync).json';
+const P = PropertiesService.getScriptProperties();
+function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
+function file() { const id = P.getProperty('fileId'); if (!id) return null; try { const f = DriveApp.getFileById(id); return f.isTrashed() ? null : f; } catch (e) { return null; } }
+function version() { return Number(P.getProperty('version') || 0); }
+function doGet(e) {
+  if (e.parameter.k !== KEY) return out({ error: 'bad key' });
+  const f = file(), s = f ? f.getBlob().getDataAsString() : '';
+  return out({ ok: true, version: version(), data: s ? JSON.parse(s) : null });
+}
+function doPost(e) {
+  let b; try { b = JSON.parse(e.postData.contents); } catch (x) { return out({ error: 'bad request' }); }
+  if (b.k !== KEY) return out({ error: 'bad key' });
+  const lock = LockService.getScriptLock(); lock.waitLock(20000);
+  try {
+    const v = version();
+    if (b.base !== v) return out({ ok: false, conflict: true, version: v });
+    const text = JSON.stringify(b.data), f = file();
+    if (f) f.setContent(text); else P.setProperty('fileId', DriveApp.createFile(NAME, text, 'application/json').getId());
+    P.setProperty('version', String(v + 1));
+    return out({ ok: true, version: v + 1 });
+  } finally { lock.releaseLock(); }
+}
+`;
 const Sync=(()=>{
-const SCOPE='https://www.googleapis.com/auth/drive.appdata',FILE='orbit-library.json',API='https://www.googleapis.com/drive/v3',UP='https://www.googleapis.com/upload/drive/v3',LS='orbit-gdrive';
-let cfg={},gisP=null,tc=null,tcId='',pending=null,busy=false,again=false,timer=0,state='off',lastErr='';
+const LS='orbit-gdrive',URLRE=/^https:\/\/script\.google\.com\/(?:a\/macros\/[^/\s]+|macros)\/s\/[\w-]+\/exec$/,KEYRE=/^[a-f0-9]{32,128}$/;
+let cfg={},busy=false,again=false,timer=0,state='off',lastErr='';
 try{cfg=JSON.parse(localStorage.getItem(LS)||'{}')||{}}catch{cfg={}}
+if(cfg.token||cfg.clientId)cfg={};// settings from the earlier OAuth build are no longer used
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(cfg))}catch{}};
-const clientId=()=>GDRIVE_CLIENT_ID||cfg.clientId||'';
-const authErr=()=>Object.assign(Error('Google sign-in expired. Tap sync to reconnect.'),{auth:true});
-const token=()=>cfg.token&&cfg.token.exp>Date.now()+60000?cfg.token.v:null;
-function gis(){if(window.google?.accounts?.oauth2)return Promise.resolve();return gisP??=new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=()=>res();s.onerror=()=>{gisP=null;s.remove();rej(Error('Could not load Google sign-in. Check your connection.'))};document.head.append(s)})}
-function client(){if(tc&&tcId===clientId())return tc;tcId=clientId();return tc=google.accounts.oauth2.initTokenClient({client_id:tcId,scope:SCOPE,
-callback:r=>{const p=pending;pending=null;if(!p)return;if(r.error)return p.rej(Error(r.error==='access_denied'?'Google Drive access was not granted.':'Google sign-in failed: '+r.error));if(!google.accounts.oauth2.hasGrantedAllScopes(r,SCOPE))return p.rej(Error('Tick the Google Drive permission so Orbit can store its library.'));cfg.token={v:r.access_token,exp:Date.now()+(Number(r.expires_in)||3600)*1000};save();p.res(r.access_token)},
-error_callback:e=>{const p=pending;pending=null;p?.rej(Error(e?.type==='popup_failed_to_open'?'Allow pop-ups for this site, then try again.':e?.type==='popup_closed'?'Google sign-in was closed before it finished.':'Google sign-in failed.'))}})}
-// Must start from a tap: browsers only allow the Google pop-up after a user gesture.
-async function authorise(consent){if(!clientId())throw Error('Add your Google OAuth client ID first (Setup, below).');await gis();return new Promise((res,rej)=>{pending={res,rej};client().requestAccessToken({prompt:consent?'consent':'',login_hint:cfg.email||undefined})})}
-async function api(path,opt={},base=API){const t=token();if(!t)throw authErr();let r;try{r=await fetch(base+path,{...opt,headers:{Authorization:'Bearer '+t,...opt.headers}})}catch{throw Error('Offline. Changes will sync when you reconnect.')}
-if(r.status===401){cfg.token=null;save();throw authErr()}if(!r.ok){let m='';try{m=(await r.json()).error?.message||''}catch{}throw Error('Google Drive error '+r.status+(m?': '+m:''))}return r}
-function parse(d){if(!d||d.app!=='Orbit'||!Array.isArray(d.bookmarks))throw Error('The Drive copy is not an Orbit library.');const list=[];for(const x of d.bookmarks){try{list.push(keep(x))}catch{}}return{items:list,deleted:cleanDeleted(d.deleted)}}
-function payload(m){return JSON.stringify({app:'Orbit',version:2,sync:1,exportedAt:new Date().toISOString(),settings,bookmarks:m.items,deleted:m.deleted})}
-async function upload(id,body){if(id)return api(`/files/${id}?uploadType=media`,{method:'PATCH',headers:{'Content-Type':'application/json'},body},UP);
-const b='orbit'+Math.random().toString(36).slice(2),meta=JSON.stringify({name:FILE,parents:['appDataFolder'],mimeType:'application/json'});
-return api('/files?uploadType=multipart&fields=id',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+b},body:`--${b}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${meta}\r\n--${b}\r\nContent-Type: application/json\r\n\r\n${body}\r\n--${b}--`},UP)}
-async function run(interactive=false){if(!cfg.connected||!clientId())return show();if(busy){again=true;return}busy=true;again=false;show('busy');
-try{if(!token()){if(!interactive)throw authErr();await authorise(false)}
-const q=encodeURIComponent(`name='${FILE}' and trashed=false`),files=(await(await api(`/files?spaces=appDataFolder&q=${q}&orderBy=modifiedTime desc&fields=files(id)`)).json()).files||[];
-let remote={items:[],deleted:{}};for(const f of files)remote=mergeLibs(remote,parse(await(await api(`/files/${f.id}?alt=media`)).json()));
-let merged;await commit((cur,del)=>(merged=mergeLibs({items:cur,deleted:del},remote)),settings,null,{sync:true});
-if(files.length!==1||sig(merged)!==sig(remote))await upload(files[0]?.id,payload(merged));
-for(const f of files.slice(1))await api(`/files/${f.id}`,{method:'DELETE'}).catch(()=>{});
+const on=()=>!!(cfg.url&&cfg.key);
+const newKey=()=>[...crypto.getRandomValues(new Uint8Array(24))].map(b=>b.toString(16).padStart(2,'0')).join('');
+async function call(url,key,body){let r;
+try{r=body?await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({k:key,...body}),cache:'no-store'}):await fetch(url+'?k='+encodeURIComponent(key)+'&t='+Date.now(),{cache:'no-store'})}
+catch{throw Error(navigator.onLine===false?'Offline. Changes will sync when you reconnect.':'Could not reach your Google script. If you just deployed it, check Who has access is “Anyone”.')}
+let j;try{j=await r.json()}catch{throw Error('Your Google script did not reply as expected. Check that the deployment is a Web app with access “Anyone” and the URL ends in /exec.')}
+if(j.error)throw Error(j.error==='bad key'?'The script’s key does not match. Copy the script again or use the connection code from your other device.':'Google script error: '+j.error);return j}
+function parse(d){if(!d)return{items:[],deleted:{}};if(d.app!=='Orbit'||!Array.isArray(d.bookmarks))throw Error('The Drive file is not an Orbit library.');const list=[];for(const x of d.bookmarks){try{list.push(keep(x))}catch{}}return{items:list,deleted:cleanDeleted(d.deleted)}}
+const payload=m=>({app:'Orbit',version:2,sync:2,exportedAt:new Date().toISOString(),settings,bookmarks:m.items,deleted:m.deleted});
+async function run(manual=false){if(!on())return show();if(busy){again=true;return}busy=true;again=false;show('busy');
+try{for(let i=0;;i++){const r=await call(cfg.url,cfg.key),remote=parse(r.data);let merged;
+await commit((cur,del)=>(merged=mergeLibs({items:cur,deleted:del},remote)),settings,null,{sync:true});
+if(r.data&&sig(merged)===sig(remote))break;
+const w=await call(cfg.url,cfg.key,{base:r.version,data:payload(merged)});if(w.ok)break;
+if(!w.conflict||i>=4)throw Error('Another device kept saving at the same time. Try Sync now.')}// conflict: reload and merge again
 cfg.lastSync=Date.now();if(!again)cfg.dirty=false;save();lastErr='';show('ok')}
-catch(e){console.error(e);lastErr=e.message;show(e.auth?'auth':'err');if(interactive&&!e.auth)toast(e.message)}
+catch(e){console.error(e);lastErr=e.message;show('err');if(manual)toast(e.message)}
 finally{busy=false;if(again)run(false)}}
 function rel(t){const s=(Date.now()-t)/1000;return s<60?'just now':s<3600?Math.floor(s/60)+' min ago':s<86400?Math.floor(s/3600)+' h ago':new Date(t).toLocaleDateString()}
-function show(s=state){state=s;const on=!!cfg.connected,b=$('#syncBtn'),st=$('#syncStatus');
-b.hidden=!on;b.classList.toggle('busy',s==='busy');b.classList.toggle('ok',s==='ok');b.classList.toggle('warn',s==='auth'||(on&&cfg.dirty&&s!=='busy'));b.classList.toggle('err',s==='err');
-$('#syncConnect').hidden=on;$('#syncNow').hidden=!on;$('#syncDisconnect').hidden=!on;$('#syncNow').disabled=s==='busy';
-const who=cfg.email?' · '+cfg.email:'';
-const msg=!clientId()?'Add your Google OAuth client ID in Setup below to turn on sync.':!on?'Off. Bookmarks are saved only on this device.':s==='busy'?'Syncing…':s==='auth'?`Sign-in expired${cfg.dirty?', with changes waiting':''}. Tap Sync now to reconnect.`:s==='err'?'Last sync failed: '+lastErr:cfg.lastSync?`Synced ${rel(cfg.lastSync)}${who}`:'Connected'+who;
-st.textContent=msg;b.title='Google Drive sync: '+msg;b.setAttribute('aria-label',b.title);$('#syncClientId').value=GDRIVE_CLIENT_ID||cfg.clientId||'';$('#syncClientId').disabled=!!GDRIVE_CLIENT_ID;$('#syncSetup').hidden=!!GDRIVE_CLIENT_ID}
-async function connect(){if(!clientId()){$('#syncSetup').open=true;$('#syncClientId').focus();throw Error('Paste your Google OAuth client ID first.')}
-show('busy');try{await authorise(true)}catch(e){show('off');throw e}cfg.connected=true;cfg.dirty=true;save();
-try{cfg.email=(await(await api('/about?fields=user(emailAddress)')).json()).user?.emailAddress||'';save()}catch{}
-await run(false);if(state==='ok')toast('Google Drive sync is on. Connect your other devices with the same Google account.')}
-async function disconnect(){if(!await ask('Turn off Google Drive sync on this device? Your bookmarks stay here and in Drive; they just stop syncing.'))return;
-const t=cfg.token?.v;if(t&&window.google?.accounts?.oauth2)try{google.accounts.oauth2.revoke(t,()=>{})}catch{}
-cfg={clientId:cfg.clientId};save();show('off');toast('Sync turned off on this device.')}
-function changed(){if(!cfg.connected)return;cfg.dirty=true;save();show();clearTimeout(timer);timer=setTimeout(()=>run(false),1500)}
+function show(s=state){state=s;const c=on(),b=$('#syncBtn');
+b.hidden=!c;b.classList.toggle('busy',s==='busy');b.classList.toggle('ok',s==='ok'&&!cfg.dirty);b.classList.toggle('warn',c&&!!cfg.dirty&&s!=='busy'&&s!=='err');b.classList.toggle('err',s==='err');
+$('#syncOn').hidden=!c;$('#syncOff').hidden=c;$('#syncNow').disabled=s==='busy';
+const msg=!c?'Off. Bookmarks are saved only on this device.':s==='busy'?'Syncing…':s==='err'?'Last sync failed: '+lastErr:cfg.dirty?'Changes waiting to sync.':cfg.lastSync?'Synced '+rel(cfg.lastSync)+' with your Google Drive.':'Connected.';
+$('#syncStatus').textContent=msg;b.title='Google Drive sync: '+msg;b.setAttribute('aria-label',b.title)}
+async function connect(){const v=$('#syncLink').value.trim(),[u,k]=v.split('#');
+const key=k||cfg.newKey;if(!URLRE.test(u))throw Error('Paste the Web app URL (it starts with https://script.google.com/ and ends in /exec) or a connection code.');
+if(!key||!KEYRE.test(key))throw Error(k?'That connection code is incomplete. Copy it again.':'Tap “Copy script” first (it holds your secret key), deploy it, then paste its URL. On a second device, paste the connection code instead.');
+show('busy');const btn=$('#syncConnect');btn.disabled=true;
+try{await call(u,key)}catch(e){show('off');throw e}finally{btn.disabled=false}
+cfg={url:u,key,dirty:true};save();$('#syncLink').value='';await run(false);
+if(state==='ok')toast('Google Drive sync is on. On your other device, paste the code from “Copy code for another device”.')}
+async function disconnect(){if(!await ask('Turn off Google Drive sync on this device? Your bookmarks stay here and in Drive; they just stop syncing.'))return;cfg={};save();show('off');toast('Sync turned off on this device.')}
+function changed(){if(!on())return;cfg.dirty=true;save();show();clearTimeout(timer);timer=setTimeout(()=>run(false),1500)}
 function init(){bind('#syncBtn',()=>run(true));bind('#syncNow',()=>run(true));bind('#syncConnect',connect);bind('#syncDisconnect',disconnect);
-bind('#syncSaveId',()=>{const v=$('#syncClientId').value.trim();if(v&&!/^[\w.-]+\.apps\.googleusercontent\.com$/.test(v))throw Error('That does not look like a Google client ID (it ends in .apps.googleusercontent.com).');cfg.clientId=v;tc=null;save();show();if(v)gis().catch(()=>{});toast(v?'Client ID saved. Now tap Connect Google Drive.':'Client ID cleared.')});
-$('#dataBtn').addEventListener('click',()=>{show();if(clientId())gis().catch(()=>{})});
+bind('#syncCopyScript',async()=>{if(!cfg.newKey){cfg.newKey=newKey();save()}const ok=await copyText(GAS_CODE(cfg.newKey));toast(ok?'Script copied. Paste it into script.google.com.':'Could not copy automatically.')});
+bind('#syncCode',async()=>{const ok=await copyText(cfg.url+'#'+cfg.key);toast(ok?'Connection code copied. Send it to yourself privately and paste it on the other device. Anyone who has it can read your bookmarks.':'Could not copy automatically.')});
+$('#dataBtn').addEventListener('click',()=>show());
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')run(false)});
-addEventListener('online',()=>run(false));setInterval(()=>{if(document.visibilityState==='visible'&&!busy)run(false)},120000);
-show(cfg.connected?(token()?'ok':'auth'):'off');if(cfg.connected){gis().catch(()=>{});run(false)}}
-return{init,changed,run};
+addEventListener('online',()=>run(false));setInterval(()=>{if(document.visibilityState==='visible'&&!busy)run(false)},60000);
+show(on()?'ok':'off');if(on())run(false)}
+return{init,changed,run,_code:GAS_CODE};
 })();
 
 async function init(){try{const state=await openDB();if(state){if(!Array.isArray(state.items))throw Error('Saved library could not be read. Do not clear site data. Restore a known-good backup.');const checked=validateBackup({app:'Orbit',version:2,bookmarks:[],settings:state.settings}),seen=new Set();items=[];for(const raw of state.items){const x=keep(raw),k=key(x);if(!seen.has(k)){seen.add(k);items.push(x)}}deleted=cleanDeleted(state.deleted);settings={...settings,...checked.settings}}else{let old;try{old=JSON.parse(localStorage.getItem('orbit-bookmarks-v1')||'null')}catch{toast('Old local data is unreadable. It has been left untouched.')}if(Array.isArray(old)){const migrated=[];for(const x of old){try{migrated.push(clean(x))}catch{}}await commit(migrated);toast(`${migrated.length} bookmarks migrated. Original local storage retained.`)}}applyPrefs();render();Sync.init();await published(true);if('serviceWorker'in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('./sw.js').catch(()=>toast('Offline cache unavailable. Online browsing still works.'));}catch(e){$('#grid').innerHTML='<div class="empty"><strong>We could not open your library.</strong><p>Allow site storage, leave private browsing, then reload. Existing data has not been overwritten.</p></div>';fail(e)}}

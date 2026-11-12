@@ -42,23 +42,25 @@ The database uses atomic writes. Errors do not intentionally overwrite existing 
 Orbit 1 localStorage data is migrated only when the new database has no saved library and the old data is accessible on the same origin. The old data is retained. A local file and a hosted site have different storage: export/import to move between them.
 
 ## Google Drive sync (private, automatic)
-Orbit can keep every device in step through your own Google Drive. The library is saved as one file in Drive's hidden **app data folder**, which only Orbit can see. It doesn't appear in your Drive file list, and Orbit can't see any of your other files (scope `drive.appdata`). There is still no Orbit server: the browser talks to Google directly.
+Orbit keeps every device in step through your own Google Drive. **No Google Cloud project, billing or API key is needed.** You deploy a small Google Apps Script on your own Google account. It saves the library as one file, `Orbit library (sync).json`, in your Drive, and Orbit talks to it. The script is guarded by a random secret key that Orbit puts in your copy. Merging happens inside Orbit. There is no third-party server.
 
-### One-time setup (about 5 minutes)
-Google needs to know which website is allowed to ask for Drive access, so you create a free "OAuth client ID" once:
-1. Open https://console.cloud.google.com, sign in, and create a project (for example "Orbit").
-2. **APIs & Services → Library**: search for **Google Drive API** and click **Enable**.
-3. **Google Auth Platform** (formerly the OAuth consent screen): click **Get started**, enter the app name "Orbit" and your email, choose **External**, then finish.
-4. **Audience → Test users**: add the Google account(s) you will sign in with. In Testing mode only these accounts can connect, which is right for personal use.
-5. **Clients → Create client → Web application**. Under **Authorised JavaScript origins** add `https://efrahdev.github.io` (only the origin: no path, no trailing slash). Add `http://localhost:8000` too if you test locally. Redirect URIs are not needed. Click **Create** and copy the client ID (it ends in `.apps.googleusercontent.com`).
-6. Either paste it into `GDRIVE_CLIENT_ID` in index.html (then every device has it automatically), or open Orbit → Library → Google Drive sync → **Setup** and save it there on each device.
+### First device (best done on a computer, about 2 minutes)
+1. Orbit → Library (☰) → Google Drive sync → **First device: set up** → **Copy script**.
+2. Open https://script.google.com/home/projects/create, select all the sample code, and paste.
+3. **Deploy → New deployment**, click the gear icon next to "Select type" and choose **Web app**. Set Execute as: **Me** and Who has access: **Anyone**, then click **Deploy**.
+4. **Authorise access** and pick your account. Google shows "Google hasn't verified this app" because it is your own script: click **Advanced → Go to … (unsafe) → Allow**.
+5. Copy the **Web app URL** (ending in `/exec`), paste it into Orbit and tap **Connect**. This device's bookmarks upload.
 
-### Using it
-- On each device: Library → **Connect Google Drive** and sign in with the same Google account. Google will show an "unverified app" notice because the app is your own testing app: choose **Continue**.
-- The first device uploads its library. Each later device merges its own bookmarks with the Drive copy, so nothing is lost on either side.
-- After that, every change syncs about 1.5 seconds later. Orbit also syncs when you return to the tab, when the connection comes back, and every 2 minutes while open.
-- The cloud button in the top bar shows the state. Teal means synced, pulsing means syncing, an amber dot means changes are waiting or sign-in has expired, and a red dot means the last sync failed. Tap it to sync now.
-- **Sign-in renewal:** a browser-only app gets 1-hour Google access tokens and cannot renew them silently without a pop-up. When the amber dot shows after a long break, tap the cloud button. The pop-up closes by itself, and your waiting changes upload. Changes are always saved locally first, so nothing is lost while signed out.
+"Anyone" means anyone with the URL can reach the script, but it refuses every request without your secret key. The script runs as you, which is why Google asks for Drive access: it only ever touches its own file.
+
+### Every other device
+On the first device, tap **Copy code for another device** and send the code to yourself privately (for example, email to yourself). On the other device, paste it into the same box and tap **Connect**. That device's existing bookmarks merge in, and nothing is lost on either side. Anyone holding that code can read and change your bookmarks, so never post it publicly.
+
+### Day to day
+- Every change syncs about 1.5 seconds later. Orbit also syncs when you return to the tab, when the connection comes back, and every minute while open. You never need to sign in again.
+- The cloud button in the top bar shows the state. Teal means synced, pulsing means syncing, an amber dot means changes are waiting (for example, offline), and a red dot means the last sync failed (tap it to retry and see why).
+- Changes are always saved on the device first, so being offline loses nothing.
+- If you edit the script later, use **Deploy → Manage deployments → Edit → New version** so the URL stays the same.
 
 ### How conflicts are resolved
 Each bookmark carries an edit timestamp. When two devices change the same bookmark, the newer edit wins. Deletions are remembered for 180 days, so a deleted link doesn't come back from another device (a device offline for longer than that may bring old deletions back). If two devices separately save the same name and address, they are merged into one. Pins, pin order, notes, tags and visit counts all sync. Theme/view preferences stay per device.
@@ -76,7 +78,7 @@ This is an additive snapshot, not synchronisation: existing local versions win; 
 
 Published snapshots include titles, URLs, collections, pins, notes and tags. Opening history is reset in the published file. Anyone with access to the public site can read the snapshot. Do not upload private backups, confidential work links, tokens or secrets. A private repository does not necessarily make its Pages site private.
 
-For private transfer, keep library.json empty and move a full backup between your devices yourself. For private automatic synchronisation, use Google Drive sync (above). No credentials are embedded in these files: a Google OAuth client ID is a public identifier, not a secret.
+For private transfer, keep library.json empty and move a full backup between your devices yourself. For private automatic synchronisation, use Google Drive sync (above). No credentials are embedded in these files: your secret key lives only in your own script and in each connected browser.
 
 ## Offline and updates
 The service worker caches the application shell, not destination websites or the published library. Previously saved bookmarks remain browsable offline; opening external destinations still needs connectivity. HTML navigation uses network-first with an offline fallback. Increase the cache version in sw.js when changing cached icons or manifest assets. Browser installation and service workers require HTTPS or localhost.
