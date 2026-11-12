@@ -2,831 +2,1744 @@
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="dark">
-<title>Advanced Search Builder Suite • Amazon, Google, YouTube</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#080b12">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="Build precise YouTube, Amazon India and Google searches with filters checked against the live sites.">
+<title>Search Builder</title>
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<script>try{var t=JSON.parse(localStorage.getItem('sqb-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 <style>
-:root { color-scheme:dark; --bg:#09111e; --panel:#101d30; --edge:#334964; --text:#edf4ff; --muted:#b0c2d7; --accent:#7ec8ff; --good:#88e0b3; --bad:#ffb2b7; font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif }
-* { box-sizing:border-box }
-[hidden] { display:none !important }
-body { margin:0; background:radial-gradient(ellipse at top right,#183456 0,transparent 45%),var(--bg); color:var(--text); padding:24px 14px 70px }
-main { width:min(100%,970px); margin:0 auto }
-header { margin-bottom:16px }
-.eyebrow { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.14em; color:var(--accent) }
-h1 { font-size:clamp(28px,4.5vw,42px); letter-spacing:-.04em; line-height:1.17; margin:7px 0 10px }
-.lead { font-size:14px; color:var(--muted); max-width:780px; line-height:1.6 }
-
-/* tabs */
-.tabs { display:flex; gap:8px; overflow-x:auto; padding:4px 2px 12px; margin:0 0 4px; scrollbar-width:thin }
-.tab { appearance:none; flex:none; display:inline-flex; align-items:center; gap:9px; min-height:46px; padding:11px 16px; border-radius:12px; border:1px solid #3b5574; background:#0d1b2f; color:var(--muted); font:inherit; font-size:14px; font-weight:800; cursor:pointer }
-.tab::before { content:""; width:9px; height:9px; border-radius:50%; background:var(--dot,var(--accent)) }
-.tab:hover { filter:brightness(1.15) }
-.tab[aria-selected=true] { color:var(--text); background:#173a5c; border-color:var(--dot,var(--accent)); box-shadow:0 0 0 1px var(--dot,var(--accent)) inset }
-
-.panel { background:var(--panel); border:1px solid var(--edge); border-radius:17px; padding:22px; margin:18px 0 }
-.section-title { font-weight:850; text-transform:uppercase; font-size:11px; letter-spacing:.13em; color:var(--accent); margin:0 0 16px }
-.grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px }
-.grid3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px }
-.field { display:grid; gap:7px; align-content:start }
-label { font-size:13px; font-weight:700 }
-input[type=text],input[type=number],input[type=date],select,textarea { width:100%; padding:11px 12px; border-radius:10px; min-height:45px; background:#09172a; border:1px solid #3b5574; color:var(--text); font:inherit; font-size:14px }
-textarea { min-height:90px; resize:vertical }
-input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible { outline:3px solid var(--accent); outline-offset:2px }
-select { cursor:pointer }
-select:disabled { opacity:.45; cursor:not-allowed }
-option { background:#101d30 }
-.hint { font-size:12px; color:var(--muted); line-height:1.55; margin:1px 0 0 }
-.separator { border:0; border-top:1px solid #314560; margin:21px 0 }
-.toggle-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px }
-.toggle-grid.three { grid-template-columns:repeat(3,minmax(0,1fr)) }
-.toggle { display:flex; align-items:center; gap:12px; padding:15px; border:1px solid #405474; background:#0a192c; border-radius:11px; cursor:pointer }
-.toggle.mini { padding:11px 12px; gap:10px }
-.toggle input { width:19px; height:19px; flex:none; accent-color:#68b9ef }
-.toggle:has(input:checked) { background:#123755; border-color:#72bcee }
-.toggle strong { font-size:14px; display:block }
-.toggle.mini strong { font-size:13px }
-.toggle small { display:block; color:var(--muted); font-weight:400; margin-top:3px; font-size:12px }
-.hidden { display:none }
-.space { margin-top:16px }
-code,.mono { font-family:ui-monospace,"Cascadia Code",Consolas,monospace }
-code { color:#c2e7ff; background:#142943; padding:2px 5px; border-radius:4px }
-.help { background:#0b2437; padding:14px; border-radius:10px; border:1px solid #355979; color:#cde2f7; font-size:12px; line-height:1.7 }
-.urlbox { border:1px solid #395773; border-radius:12px; background:#081522; padding:14px; overflow-wrap:anywhere; line-height:1.65; font-size:13px; color:#a8defe; user-select:all }
-.facets { display:flex; flex-wrap:wrap; gap:7px; margin-top:11px }
-.chip { border:1px solid #395875; border-radius:30px; font-size:12px; padding:5px 9px; background:#172a43; color:#dceeff }
-.btns { display:flex; gap:10px; margin-top:15px }
-.button,.link-button { appearance:none; border-radius:10px; cursor:pointer; border:1px solid #5396c5; min-height:44px; padding:12px 15px; font:inherit; font-size:13px; font-weight:800; text-align:center; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:6px }
-.button { color:#dfeeff; background:#183453 }
-.link-button { color:#071729; background:var(--accent); flex:1 }
-.button:hover,.link-button:hover { filter:brightness(1.10) }
-.button:disabled,.link-button.disabled { pointer-events:none; opacity:.4 }
-.meta { display:flex; justify-content:space-between; gap:12px; align-items:center }
-.message { margin:10px 0 0; font-size:12px; color:var(--bad); min-height:13px }
-.notice { margin:6px 0 0; font-size:12px; color:#ffd3a2; line-height:1.55 }
-.result { line-height:1.7; font-size:13px; margin-top:12px; white-space:pre-wrap; overflow-wrap:anywhere }
-.result.good { color:var(--good) }
-.result.warn { color:#ffd3a2 }
-details summary { cursor:pointer; color:#b2daff; font-size:13px; font-weight:700 }
-details[open] summary { margin-bottom:12px }
-footer { font-size:12px; color:var(--muted); line-height:1.7; padding:6px }
-@media(max-width:620px) {
- .grid,.grid3,.toggle-grid { grid-template-columns:1fr }
- .toggle-grid.three { grid-template-columns:repeat(2,minmax(0,1fr)) }
- .panel { padding:17px }
- .btns { flex-direction:column }
- .btns .button,.btns .link-button { width:100% }
-}
-.smart{display:flex;gap:10px;flex-wrap:wrap}.smart input{flex:1;min-width:230px;padding:13px 14px;border-radius:12px;border:1px solid #5396c5;background:#0a1c33;color:var(--text);font:inherit;font-size:15px}
-.presets{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:0 0 4px}
-.sub{font-size:12px;color:var(--muted);margin:12px 0 0;display:flex;flex-wrap:wrap;gap:7px;align-items:center}.sub:empty{display:none}
-.presets b,.sub b{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.pill{appearance:none;border:1px solid #3b5574;background:#0d1b2f;color:#dceeff;border-radius:30px;padding:7px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
-.pill:hover{border-color:var(--accent);filter:brightness(1.15)}
-.meter{height:7px;border-radius:5px;background:#16283f;overflow:hidden;margin:12px 0 6px}.meter i{display:block;height:100%;width:8%;transition:width .25s,background .25s}
-body{padding:16px 14px 36px}
-header{margin-bottom:10px}
-h1{font-size:clamp(22px,3.6vw,28px);letter-spacing:-.03em;line-height:1.2;margin:0}
-.tabs{padding:2px 2px 8px;margin:0}
-.tab{min-height:40px;padding:8px 14px}
-#tab-google{margin-left:auto}
-.panel{padding:16px 18px;margin:10px 0}
-.section-title{margin:0 0 10px}
-.grid,.grid3{gap:10px 14px}
-.field{gap:5px}
-input[type=text],input[type=number],input[type=date],select,textarea{padding:8px 11px;min-height:38px;border-radius:9px}
-.separator{margin:14px 0}
-.toggle-grid{gap:8px}
-.toggle,.toggle.mini{padding:9px 12px;gap:10px}
-.toggle small{display:none}
-.field .hint{display:none}details .field .hint{display:block}
-.space{margin-top:10px}
-.urlbox{padding:10px 12px;font-size:12px}
-.urlbox:empty::before{content:attr(data-empty);color:var(--muted);font-family:inherit}
-.btns{margin-top:10px}
-.button,.link-button{min-height:40px;padding:8px 14px}
-.button.small{min-height:32px;padding:5px 11px}
-.message,.notice{margin:8px 0 0;min-height:0}
-.message:empty,.notice:empty,.facets:empty,.hint:empty{display:none}
-.facets{margin-top:10px}
-footer{padding:2px 4px}
-@media(max-width:620px){.panel{padding:13px}}
+@font-face{font-family:"Noto Sans";src:url(./noto-sans.woff2) format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+:root{--bg:#080b12;--glow1:rgba(139,92,246,.20);--glow2:rgba(34,211,238,.10);--card:#0f1424;--card-2:#141a2e;--line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.17);--text:#eef1fb;--muted:#a3acc3;--faint:#78829c;--input:#0a0f1d;--chip:#131a2c;--chip-on:#241f48;--accent:#8b5cf6;--accent-2:#22d3ee;--ok:#4ade80;--warn:#fbbf24;--bad:#fb7185;--yt:#ff4e5b;--am:#ff9f1c;--gw:#7aa7ff;--gs:#4cc38a;--tool:var(--accent);--shadow:0 14px 40px rgba(0,0,0,.28);--font:"Noto Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--mono:ui-monospace,"Cascadia Code","SFMono-Regular",Consolas,monospace;color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4f5fa;--glow1:rgba(139,92,246,.10);--glow2:rgba(34,211,238,.08);--card:#fff;--card-2:#f6f7fc;--line:rgba(15,23,42,.10);--line-2:rgba(15,23,42,.20);--text:#141827;--muted:#4c556e;--faint:#79829a;--input:#fff;--chip:#f0f2f8;--chip-on:#ece6ff;--ok:#15803d;--warn:#b45309;--bad:#be123c;--accent-2:#0e7490;--yt:#d92d3a;--am:#c26400;--gw:#2f67d6;--gs:#16865a;--shadow:0 8px 24px rgba(15,23,42,.07);color-scheme:light}}
+:root[data-theme="light"]{--bg:#f4f5fa;--glow1:rgba(139,92,246,.10);--glow2:rgba(34,211,238,.08);--card:#fff;--card-2:#f6f7fc;--line:rgba(15,23,42,.10);--line-2:rgba(15,23,42,.20);--text:#141827;--muted:#4c556e;--faint:#79829a;--input:#fff;--chip:#f0f2f8;--chip-on:#ece6ff;--ok:#15803d;--warn:#b45309;--bad:#be123c;--accent-2:#0e7490;--yt:#d92d3a;--am:#c26400;--gw:#2f67d6;--gs:#16865a;--shadow:0 8px 24px rgba(15,23,42,.07);color-scheme:light}
+[data-tool="youtube"]{--tool:var(--yt)}[data-tool="amazon"]{--tool:var(--am)}[data-tool="google"]{--tool:var(--gw)}[data-tool="shopping"]{--tool:var(--gs)}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;min-height:100vh;font-family:var(--font);font-size:14px;line-height:1.5;color:var(--text);background:radial-gradient(circle at 8% 0%,var(--glow1),transparent 32%),radial-gradient(circle at 94% 10%,var(--glow2),transparent 30%),var(--bg);background-attachment:fixed;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+code,kbd{font-family:var(--mono);font-size:.92em;background:var(--chip);border:1px solid var(--line);border-radius:5px;padding:0 4px}
+.shell{width:min(1180px,100%);margin:0 auto;padding:max(14px,env(safe-area-inset-top)) 16px 40px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{flex:none;width:38px;height:38px;border-radius:13px;background:conic-gradient(from 210deg,var(--accent),var(--accent-2),#f472b6,var(--accent));position:relative;box-shadow:0 0 24px rgba(139,92,246,.32)}
+.logo::after{content:"";position:absolute;inset:7px;border-radius:9px;background:var(--bg)}
+.logo::before{content:"";position:absolute;z-index:1;left:12px;top:11px;width:10px;height:10px;border:2.5px solid var(--text);border-radius:50%;box-shadow:6px 6px 0 -4px var(--text)}
+h1{font-size:19px;margin:0;letter-spacing:-.02em;line-height:1.2}
+.eyebrow{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.top-actions{display:flex;gap:8px;flex:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:8px 14px;border-radius:12px;border:1px solid var(--line-2);background:var(--card-2);color:var(--text);font-weight:650;font-size:13px;line-height:1.2;text-decoration:none;cursor:pointer;transition:filter .15s,border-color .15s,background .15s}
+.btn:hover{border-color:var(--tool)}
+.btn.primary{border:1px solid transparent;color:#fff;background:var(--tool);background:linear-gradient(135deg,var(--tool),color-mix(in srgb,var(--tool) 62%,var(--accent)))}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.small{min-height:32px;padding:5px 10px;font-size:12px;border-radius:10px}
+.btn.icon{width:40px;padding:0;font-size:16px}
+.btn[disabled],.btn.disabled{opacity:.45;pointer-events:none}
+.smart{display:grid;gap:8px;margin:0 0 12px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--card);box-shadow:var(--shadow)}
+.smart-row{display:flex;gap:8px}
+.smart-row input{flex:1;min-width:0;font-size:15px}
+.smart-out{font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center;line-height:1.5}
+.tag-s{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;background:var(--chip-on);border:1px solid var(--line-2);color:var(--text);font-size:12px;font-weight:650}
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 0 12px;padding:2px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:8px 15px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-weight:750;cursor:pointer}
+.tab .dot{width:9px;height:9px;border-radius:50%;background:var(--dot)}
+.tab:hover{color:var(--text)}
+.tab[aria-selected="true"]{color:var(--text);border-color:var(--dot);box-shadow:inset 0 0 0 1px var(--dot);background:var(--card-2)}
+@media (max-width:480px){.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.tab{justify-content:center;gap:5px;min-height:40px;padding:7px 4px;font-size:12.5px}.tab .dot,.tab .tld{display:none}}
+@media (max-width:340px){.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,400px);gap:14px;align-items:start}
+.out{position:sticky;top:12px;min-width:0}
+.form{min-width:0}
+@media (max-width:920px){.cols{grid-template-columns:1fr}.out{position:static}}
+.card{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:14px 16px;margin:0 0 12px;box-shadow:var(--shadow);min-width:0}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:8px 10px;margin:0 0 10px;flex-wrap:wrap}
+.card-h h2{margin:0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--tool);font-weight:800}
+.card-h .hint{margin:0}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;border:1px solid var(--line-2);color:var(--muted);white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,transparent)}
+.field{display:grid;gap:5px;margin:0 0 11px;min-width:0;align-content:start}
+.field:last-child{margin-bottom:0}
+label,.label,legend{font-size:12.5px;font-weight:700;color:var(--text)}
+input[type=text],input[type=search],input[type=number],input[type=date],input[type=url],select,textarea{width:100%;min-width:0;min-height:40px;padding:8px 11px;border-radius:10px;border:1px solid var(--line-2);background:var(--input);color:var(--text);font-size:14px;outline:none}
+input[type=date]{min-height:40px}
+input:disabled,select:disabled{opacity:.5}
+input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var(--tool);box-shadow:0 0 0 3px color-mix(in srgb,var(--tool) 22%,transparent)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
+option{background:var(--card);color:var(--text)}
+.hint{margin:0;font-size:12px;color:var(--muted);line-height:1.5}
+.hint.warn{color:var(--warn)}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
+.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 12px}
+@media (max-width:640px){.row2,.row3{grid-template-columns:1fr}.card{padding:13px 13px}}
+fieldset.group{border:0;margin:0 0 12px;padding:0;min-width:0}
+fieldset.group:last-of-type{margin-bottom:6px}
+fieldset.group legend{padding:0;margin:0 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{position:relative;display:inline-flex}
+.chip input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.chip span{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:5px 12px;border-radius:999px;border:1px solid var(--line-2);background:var(--chip);font-size:13px;font-weight:600;cursor:pointer;user-select:none;transition:background .12s,border-color .12s,opacity .12s}
+.chip span:hover{border-color:var(--tool)}
+.chip input:checked+span{background:var(--chip-on);border-color:var(--tool);box-shadow:inset 0 0 0 1px var(--tool)}
+.chip input[type=checkbox]:checked+span::before{content:"✓";font-size:11px;font-weight:800;color:var(--tool)}
+.chip input:focus-visible+span{outline:2px solid var(--accent-2);outline-offset:2px}
+.chip.clash span{opacity:.5;border-style:dashed}
+.mini{font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-2);border:1px solid currentColor;border-radius:6px;padding:0 4px;line-height:1.5}
+.pills{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pills:empty{display:none}
+.pills b,.recipe-row b{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);font-weight:800;margin-right:2px}
+.pill{appearance:none;display:inline-flex;align-items:center;gap:5px;min-height:30px;padding:4px 11px;border-radius:999px;border:1px solid var(--line-2);background:var(--card-2);color:var(--text);font-size:12px;font-weight:650;cursor:pointer;max-width:100%;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill:hover{border-color:var(--tool)}
+.pill.on{background:var(--chip-on);border-color:var(--tool)}
+.pill.ghost{background:transparent;color:var(--muted)}
+.pill-pair{display:inline-flex;max-width:100%}
+.pill-pair .pill:first-child{border-radius:999px 0 0 999px;border-right:0}
+.pill-pair .pill:last-child{border-radius:0 999px 999px 0;padding:4px 9px;color:var(--muted)}
+.recipes{display:grid;gap:8px}
+.recipe-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.recipe-row b{min-width:58px}
+.sub{margin-top:8px}
+.out-card{border-color:color-mix(in srgb,var(--tool) 38%,var(--line))}
+.summary{margin:0 0 10px;font-size:13.5px;line-height:1.55;font-weight:600}
+.summary:empty::before{content:attr(data-empty);color:var(--muted);font-weight:500}
+.url{font-family:var(--mono);font-size:12px;line-height:1.55;color:var(--accent-2);background:var(--input);border:1px solid var(--line);border-radius:10px;padding:9px 11px;overflow-wrap:anywhere;word-break:break-all;max-height:150px;overflow:auto;user-select:all}
+.url:empty::before{content:attr(data-empty);color:var(--faint);font-family:var(--font);word-break:normal}
+.btns{display:flex;gap:8px;margin:10px 0 0;flex-wrap:wrap}
+.btns .primary{flex:1 1 160px}
+.meter{height:6px;border-radius:4px;background:var(--chip);overflow:hidden;margin:12px 0 5px}
+.meter i{display:block;height:100%;width:0;transition:width .25s,background .25s}
+.warns{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+.warns:empty{display:none}
+.warns li{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.45;padding:8px 10px;border-radius:10px;background:var(--card-2);border:1px solid var(--line)}
+.warns li>span:first-of-type{flex:1;min-width:0}
+.warns li::before{content:"i";flex:none;width:18px;height:18px;margin-top:1px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;background:var(--accent-2);color:#06121a}
+.warns li.tip::before{content:"★";background:var(--accent);color:#fff;font-size:10px}
+.warns li.warn::before{content:"!";background:var(--warn);color:#1a1200}
+.warns li.bad{border-color:color-mix(in srgb,var(--bad) 50%,transparent)}
+.warns li.bad::before{content:"×";background:var(--bad);color:#fff}
+.warns li .btn{flex:none}
+.sec-title{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:800;margin:14px 0 6px}
+.routes{display:grid;gap:6px}
+.routes:empty{display:none}
+.route{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:12px;background:var(--card-2);padding:3px 4px 3px 0}
+.route:hover{border-color:var(--tool)}
+.route a{flex:1;min-width:0;display:grid;gap:1px;padding:5px 10px;text-decoration:none}
+.route .t{font-weight:700;font-size:13px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.route .d{font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.route .btn{flex:none;min-height:30px;width:34px;padding:0;font-size:14px}
+.note{font-size:12px;color:var(--muted);padding:8px 10px;border-radius:10px;border:1px dashed var(--line-2)}
+details.more>summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--muted);list-style:none;display:flex;align-items:center;gap:6px}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:"▸";font-size:11px}
+details.more[open]>summary::before{content:"▾"}
+details.card.more>summary{color:var(--tool);font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:800}
+.kv{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:6px 10px;margin:10px 0 0;font-size:12px}
+.kv dt{font-family:var(--mono);color:var(--accent-2);white-space:nowrap}
+.kv dd{margin:0;color:var(--muted);overflow-wrap:anywhere}
+.kv dd code{color:var(--text)}
+.dock{display:none}
+@media (max-width:920px){.dock{display:grid;gap:6px;position:fixed;left:0;right:0;bottom:0;z-index:20;padding:8px 14px max(10px,env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-top:1px solid var(--line)}.dock-row{display:flex;gap:8px}.dock .primary{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.shell{padding-bottom:118px}}
+.dock-sum{appearance:none;border:0;background:none;padding:0;min-height:20px;color:var(--muted);font-size:12px;font-weight:650;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.dock-sum.warn{color:var(--warn)}.dock-sum.bad{color:var(--bad)}
+.toast{position:fixed;left:50%;bottom:24px;z-index:30;transform:translate(-50%,16px);opacity:0;pointer-events:none;background:var(--text);color:var(--bg);padding:9px 15px;border-radius:12px;font-weight:700;font-size:13px;transition:opacity .2s,transform .2s;max-width:calc(100vw - 32px)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width:920px){.toast{bottom:112px}}
+footer{color:var(--faint);font-size:12px;line-height:1.6;padding:6px 2px}
+footer p{margin:0 0 6px}
 </style>
 </head>
-<body>
-<main>
-<header><h1>Search Builder</h1></header>
-<div class="panel" style="margin:0 0 6px"><div class="section-title">Smart fill</div><div class="smart"><input id="sm-in" type="text" autocomplete="off" aria-label="Describe what you want" placeholder="e.g. anker 100w usb c cable under 800 prime 4 stars last month, no refurbished"><button id="sm-go" class="link-button" type="button" style="flex:none">Fill all tabs</button></div><p id="sm-out" class="hint space" aria-live="polite">Reads price, ratings, Prime, brand, dates, file types, “no …” exclusions and “quoted phrases”. Press / to focus.</p></div>
+<body data-tool="youtube">
+<div class="shell">
+ <header class="top">
+  <div class="brand"><div class="logo" aria-hidden="true"></div><div><h1>Search Builder</h1><div class="eyebrow">Find the right result, skip the junk</div></div></div>
+  <div class="top-actions">
+   <button id="themeBtn" class="btn icon" type="button" aria-label="Switch between light and dark theme" title="Light or dark theme"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/></svg></button>
+   <a class="btn" href="./" title="Back to Orbit bookmarks">Orbit</a>
+  </div>
+ </header>
 
-<div class="tabs" role="tablist" aria-label="Search builders">
- <button class="tab" role="tab" id="tab-youtube" data-tool="youtube" aria-controls="tool-youtube" aria-selected="true" style="--dot:#ff7b7b">YouTube</button>
- <button class="tab" role="tab" id="tab-amazon" data-tool="amazon" aria-controls="tool-amazon" aria-selected="false" tabindex="-1" style="--dot:#ffb454">Amazon</button>
- <button class="tab" role="tab" id="tab-google" data-tool="google" aria-controls="tool-google" aria-selected="false" tabindex="-1" style="--dot:#8ab4f8">Google Search</button>
- <button class="tab" role="tab" id="tab-shopping" data-tool="shopping" aria-controls="tool-shopping" aria-selected="false" tabindex="-1" style="--dot:#81c995">Google Shopping</button>
-</div>
+ <section class="smart" aria-label="Smart fill">
+  <div class="smart-row">
+   <input id="sm-in" type="search" autocomplete="off" enterkeyhint="go" aria-label="Describe what you want, or paste a YouTube or Amazon link" placeholder="Describe it, or paste a YouTube / Amazon link">
+   <button id="sm-go" class="btn primary" type="button">Fill</button>
+  </div>
+  <div id="sm-out" class="smart-out" aria-live="polite"><span>Try: <em>usb c cable review no shorts last 6 months 4k</em> or <em>anker 100w charger under 2k prime 4 stars</em>. Understands durations, dates, “no Shorts”, captions, @channels, prices, Prime, ratings, discounts, “no …” and “quoted phrases”. Press <kbd>/</kbd> to type here.</span></div>
+ </section>
 
-<!-- ============================ AMAZON INDIA ============================ -->
-<div id="tool-amazon" class="tool" role="tabpanel" aria-labelledby="tab-amazon">
- <div class="panel" aria-label="Amazon search criteria">
-  <div class="section-title">Product and brand</div>
-  <div class="field"><label for="am-query">Product keywords and exact technical requirements</label><input id="am-query" type="text" autocomplete="off" placeholder="e.g. retractable USB C 100W charging cable"><p class="hint">Example: “USB C to USB C 100W retractable 1 metre”.</p></div>
-  <div class="field space"><label for="am-none">Words to exclude (optional)</label><input id="am-none" type="text" placeholder="case, adapter, refurbished" autocomplete="off"><p class="hint">Comma-separated. Each becomes <code>-word</code>; Amazon applies this loosely.</p></div>
-  <div class="grid space">
-   <div class="field"><label for="am-category">Amazon department</label><select id="am-category"><option value="">All departments (recommended initially)</option><option value="electronics">Electronics</option><option value="computers">Computers &amp; Accessories</option><option value="kitchen">Home &amp; Kitchen</option><option value="automotive">Car &amp; Motorbike</option><option value="office-products">Office Products</option><option value="fashion">Fashion</option><option value="beauty">Beauty</option><option value="sporting">Sports &amp; Outdoors</option><option value="toys">Toys &amp; Games</option><option value="stripbooks">Books</option></select></div>
-   <div class="field"><label for="am-brand">Brand restriction</label><select id="am-brand"><option value="">All brands</option><option>UGREEN</option><option>Anker</option><option>Belkin</option><option>Baseus</option><option>Spigen</option><option>Ambrane</option><option>Portronics</option><option>boAt</option><option>Stuffcool</option><option>Amazon Basics</option><option>Samsung</option><option>Apple</option><option>Lenovo</option><option>HP</option><option>Dell</option><option>Logitech</option><option>Sony</option><option>Philips</option><option>Xiaomi</option><option value="__custom">Other brand…</option></select></div>
-  </div>
-  <div id="am-customContainer" class="field space hidden"><label for="am-customBrand">Enter custom brand name</label><input id="am-customBrand" type="text" placeholder="Brand as shown on Amazon"></div>
-  <div class="space"><label class="toggle"><input id="am-brandKeyword" type="checkbox"><span><strong>Also add brand to search keywords</strong><small>Fallback if Amazon ignores the strict brand filter. Matching is still not guaranteed.</small></span></label></div>
-  <hr class="separator">
-  <div class="section-title">Amazon filters</div>
-  <div class="toggle-grid">
-   <label class="toggle"><input id="am-stars" type="checkbox"><span><strong>4★ and above</strong><small>Amazon India rating refinement</small></span></label>
-   <label class="toggle"><input id="am-prime" type="checkbox"><span><strong>Prime eligible only</strong><small>Amazon India Prime refinement</small></span></label>
-  </div>
-  <div class="grid3 space">
-   <div class="field"><label for="am-minPrice">Minimum price (₹)</label><input id="am-minPrice" type="number" min="0" step="1" placeholder="No minimum"></div>
-   <div class="field"><label for="am-maxPrice">Maximum price (₹)</label><input id="am-maxPrice" type="number" min="0" step="1" placeholder="No maximum"></div>
-   <div class="field"><label for="am-discount">Advertised discount</label><select id="am-discount"><option value="0">No discount filter</option><option value="10">10% and above</option><option value="20">20% and above</option><option value="30">30% and above</option><option value="40">40% and above</option><option value="50">50% and above</option><option value="60">60% and above</option><option value="70">70% and above</option></select></div>
-  </div>
-  <hr class="separator">
-  <div class="section-title">Ranking and extended filters</div>
-  <div class="grid">
-   <div class="field"><label for="am-sort">Sort order</label><select id="am-sort"><option value="">Amazon relevance</option><option value="review-rank">Average customer reviews</option><option value="price-asc-rank">Price: low to high</option><option value="price-desc-rank">Price: high to low</option><option value="date-desc-rank">Newest arrivals</option></select></div>
-   <div class="field"><label for="am-page">Page number</label><select id="am-page"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
-  </div>
-  <details class="space"><summary>Additional custom Amazon filters (advanced)</summary><div class="field"><label for="am-extra">Paste a comma-separated list of Amazon <code>rh</code> facets</label><input id="am-extra" type="text" placeholder="p_n_feature_browse-bin:123456789"><p class="hint">Use only identifiers copied from an Amazon results-page URL. Format: <code>p_name:value,p_other:value</code></p></div></details>
- </div>
- <div id="am-out"></div>
-</div>
+ <nav class="tabs" role="tablist" aria-label="Search builders">
+  <button class="tab" role="tab" id="tab-youtube" data-tool="youtube" aria-controls="tool-youtube" aria-selected="true" style="--dot:var(--yt)"><span class="dot"></span>YouTube</button>
+  <button class="tab" role="tab" id="tab-amazon" data-tool="amazon" aria-controls="tool-amazon" aria-selected="false" tabindex="-1" style="--dot:var(--am)"><span class="dot"></span>Amazon<span class="tld">.in</span></button>
+  <button class="tab" role="tab" id="tab-google" data-tool="google" aria-controls="tool-google" aria-selected="false" tabindex="-1" style="--dot:var(--gw)"><span class="dot"></span>Google</button>
+  <button class="tab" role="tab" id="tab-shopping" data-tool="shopping" aria-controls="tool-shopping" aria-selected="false" tabindex="-1" style="--dot:var(--gs)"><span class="dot"></span>Shopping</button>
+ </nav>
 
-<!-- ============================ GOOGLE WEB ============================ -->
-<div id="tool-google" class="tool" role="tabpanel" aria-labelledby="tab-google" hidden>
- <div class="panel" aria-label="Google Web search criteria">
-  <div class="section-title">What to find</div>
-  <div class="grid">
-   <div class="field"><label for="gw-all">All of these words</label><input id="gw-all" type="text" autocomplete="off" placeholder="e.g. retractable USB C 100W cable"><p class="hint">Plain keywords. Use <code>*</code> as a wildcard for an unknown word.</p></div>
-   <div class="field"><label for="gw-exact">This exact phrase</label><input id="gw-exact" type="text" placeholder="e.g. 100W PD 3.1" autocomplete="off"><p class="hint">Wrapped in quotation marks so the words must appear together.</p></div>
-   <div class="field"><label for="gw-any">Any of these words</label><input id="gw-any" type="text" placeholder="anker, ugreen, baseus" autocomplete="off"><p class="hint">Comma-separated. Becomes <code>(a OR b OR c)</code>.</p></div>
-   <div class="field"><label for="gw-none">None of these words</label><input id="gw-none" type="text" placeholder="used, refurbished, fake" autocomplete="off"><p class="hint">Comma-separated. Each becomes <code>-word</code>.</p></div>
-  </div>
-  <hr class="separator">
-  <div class="section-title">Where it must appear</div>
-  <div class="grid3">
-   <div class="field"><label for="gw-site">Only from these sites</label><input id="gw-site" type="text" placeholder="reddit.com, .gov.in" autocomplete="off"><p class="hint">Comma-separated domains or paths.</p></div>
-   <div class="field"><label for="gw-nosite">Never from these sites</label><input id="gw-nosite" type="text" placeholder="pinterest.com" autocomplete="off"><p class="hint">Comma-separated. Becomes <code>-site:</code>.</p></div>
-   <div class="field"><label for="gw-filetype">File type</label><select id="gw-filetype"><option value="">Any format</option><option value="pdf">PDF</option><option value="doc">DOC</option><option value="docx">DOCX</option><option value="xls">XLS</option><option value="xlsx">XLSX</option><option value="ppt">PPT</option><option value="pptx">PPTX</option><option value="csv">CSV</option><option value="txt">TXT</option></select></div>
-  </div>
-  <div class="grid3 space">
-   <div class="field"><label for="gw-intitle">In the page title</label><input id="gw-intitle" type="text" placeholder="review, comparison" autocomplete="off"></div>
-   <div class="field"><label for="gw-inurl">In the web address</label><input id="gw-inurl" type="text" placeholder="datasheet" autocomplete="off"></div>
-   <div class="field"><label for="gw-intext">In the page text</label><input id="gw-intext" type="text" placeholder="E-marker chip" autocomplete="off"></div>
-  </div>
-    <hr class="separator">
-  <div class="section-title">Numbers, dates and language</div>
-  <div class="grid3">
-   <div class="field"><label for="gw-numfrom">Number range from</label><input id="gw-numfrom" type="number" step="any" placeholder="e.g. 500"></div>
-   <div class="field"><label for="gw-numto">Number range to</label><input id="gw-numto" type="number" step="any" placeholder="e.g. 2000"></div>
-   <div class="field"><label for="gw-numunit">Currency symbol</label><select id="gw-numunit"><option value="">None</option><option value="₹">₹ rupee</option><option value="$">$ dollar</option><option value="£">£ pound</option><option value="€">€ euro</option></select></div>
-  </div>
-  <div class="grid3 space">
-   <div class="field"><label for="gw-recent">Quick time range</label><select id="gw-recent"><option value="">Any time</option><option value="h">Past hour</option><option value="d">Past 24 hours</option><option value="w">Past week</option><option value="m">Past month</option><option value="y">Past year</option></select></div>
-   <div class="field"><label for="gw-after">Published after</label><input id="gw-after" type="date"></div>
-   <div class="field"><label for="gw-before">Published before</label><input id="gw-before" type="date"></div>
-  </div>
-  <div class="grid3 space">
-   <div class="field"><label for="gw-lang">Language</label><select id="gw-lang"></select></div>
-   <div class="field"><label for="gw-region">Region bias</label><select id="gw-region"></select></div>
-   <div class="field"><label for="gw-page">Page number</label><select id="gw-page"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
-  </div>
-  <hr class="separator">
-  <div class="section-title">Result behaviour</div>
-  <div class="toggle-grid">
-   <label class="toggle"><input id="gw-sortdate" type="checkbox"><span><strong>Sort by date</strong><small>Newest first instead of by relevance</small></span></label>
-   <label class="toggle"><input id="gw-verbatim" type="checkbox"><span><strong>Verbatim</strong><small>Search your exact words; no synonyms or spelling fixes</small></span></label>
-   <label class="toggle"><input id="gw-webonly" type="checkbox"><span><strong>Web results only</strong><small>Plain links view, without AI overview or widgets</small></span></label>
-   <label class="toggle"><input id="gw-safe" type="checkbox"><span><strong>SafeSearch on</strong><small>Filter explicit results</small></span></label>
-  </div>
- </div>
- <div id="gw-out"></div>
-</div>
+ <!-- ============================ YOUTUBE ============================ -->
+ <section id="tool-youtube" class="tool" role="tabpanel" aria-labelledby="tab-youtube" data-tool="youtube">
+  <div class="cols">
+   <div class="form">
+    <div class="card">
+     <div class="card-h"><h2>Quick recipes</h2><p class="hint">One tap sets a tested combination. Your keywords stay.</p></div>
+     <div id="yt-recipes" class="recipes"></div>
+    </div>
 
-<!-- ============================ GOOGLE SHOPPING ============================ -->
-<div id="tool-shopping" class="tool" role="tabpanel" aria-labelledby="tab-shopping" hidden>
- <div class="panel" aria-label="Google Shopping criteria">
-  <div class="section-title">Product</div>
-  <div class="grid">
-   <div class="field"><label for="gs-q">Product keywords and technical requirements</label><input id="gs-q" type="text" autocomplete="off" placeholder="e.g. retractable USB C 100W charging cable"></div>
-   <div class="field"><label for="gs-brand">Brand (optional)</label><input id="gs-brand" type="text" placeholder="e.g. UGREEN" autocomplete="off"><p class="hint">Added to the keywords. Google Shopping has no stable brand code in the URL.</p></div>
-  </div>
-  <div class="field space"><label for="gs-none">Words to exclude (optional)</label><input id="gs-none" type="text" placeholder="case, refurbished" autocomplete="off"><p class="hint">Comma-separated. Each becomes <code>-word</code>.</p></div>
-  <hr class="separator">
-  <div class="section-title">Price and condition</div>
-  <div class="grid3">
-   <div class="field"><label for="gs-min">Minimum price (₹)</label><input id="gs-min" type="number" min="0" step="1" placeholder="No minimum"></div>
-   <div class="field"><label for="gs-max">Maximum price (₹)</label><input id="gs-max" type="number" min="0" step="1" placeholder="No maximum"></div>
-   <div class="field"><label for="gs-cond">Condition</label><select id="gs-cond"><option value="">Any</option><option value="new:1">New</option><option value="used:1">Used</option></select></div>
-  </div>
-  <div class="toggle-grid space">
-   <label class="toggle"><input id="gs-free" type="checkbox"><span><strong>Free delivery</strong><small>Only listings that advertise free shipping</small></span></label>
-   <label class="toggle"><input id="gs-sale" type="checkbox"><span><strong>On sale</strong><small>Only listings marked as discounted</small></span></label>
-  </div>
-  <hr class="separator">
-  <div class="section-title">Ranking and region</div>
-  <div class="grid">
-   <div class="field"><label for="gs-sort">Sort order</label><select id="gs-sort"><option value="">Google default</option><option value="p_ord:p">Price: low to high</option><option value="p_ord:pd">Price: high to low</option><option value="p_ord:rv">Review score</option></select></div>
-   <div class="field"><label for="gs-region">Region</label><select id="gs-region"></select></div>
-  </div>
-  <details class="space"><summary>Advanced (Shopping mode and custom codes)</summary>
-   <div class="grid">
-    <div class="field"><label for="gs-mode">Shopping URL mode</label><select id="gs-mode"><option value="udm">Current Shopping tab (udm=28)</option><option value="tbm">Classic Shopping (tbm=shop)</option></select><p class="hint">If filters disappear, try the other mode.</p></div>
-    <div class="field"><label for="gs-extra">Custom <code>tbs</code> codes</label><input id="gs-extra" type="text" placeholder="key:value,key:value"><p class="hint">Only codes copied from a Google Shopping results URL, as <code>key:value</code>.</p></div>
+    <div class="card">
+     <div class="card-h"><h2>What to find</h2></div>
+     <div class="field"><label for="yt-q">Keywords</label><input id="yt-q" type="text" autocomplete="off" placeholder="e.g. usb c cable 240w"></div>
+     <div class="row2">
+      <div class="field"><label for="yt-exact">Exact phrase</label><input id="yt-exact" type="text" autocomplete="off" placeholder="e.g. e marker"><p class="hint">Sent in quotes. More than one? Separate with commas.</p></div>
+      <div class="field"><label for="yt-any">Any of these</label><input id="yt-any" type="text" autocomplete="off" placeholder="review, comparison, vs"><p class="hint">Comma-separated. Becomes <code>(a | b)</code>.</p></div>
+     </div>
+     <div class="field"><label for="yt-title">Title must contain</label><input id="yt-title" type="text" autocomplete="off" placeholder="e.g. review, 240w"><p class="hint">Each word becomes <code>intitle:</code>. This is the strongest way to stop off-topic results.</p><div id="yt-anchors" class="pills sub"></div></div>
+     <div class="field"><label for="yt-none">Words to avoid</label><input id="yt-none" type="text" autocomplete="off" placeholder="reaction, prank, compilation">
+      <div class="chips" id="yt-noneMode-box" role="radiogroup" aria-label="How to apply the words to avoid"></div>
+      <p class="hint">On YouTube, <code>-word</code> often <em>adds</em> that word instead of removing it (tested). By default these words go to the strict Google route.</p></div>
+     <div id="yt-boost" class="recipes"></div>
+    </div>
+
+    <div class="card">
+     <div class="card-h"><h2>YouTube filters</h2><span class="tag ok" title="Every option here was checked against live YouTube results on 12 November 2026">✓ Tested live · 12 Nov 2026</span></div>
+     <fieldset class="group"><legend>Type</legend><div class="chips" id="yt-type-box"></div></fieldset>
+     <fieldset class="group"><legend>Duration</legend><div class="chips" id="yt-dur-box"></div></fieldset>
+     <fieldset class="group"><legend>Upload date</legend><div class="chips" id="yt-up-box"></div></fieldset>
+     <fieldset class="group"><legend>Prioritise</legend><div class="chips" id="yt-sort-box"></div></fieldset>
+     <fieldset class="group"><legend>Features</legend><div class="chips" id="yt-feat-box"></div></fieldset>
+     <p class="hint">YouTube removed “Sort by upload date”, “Sort by rating” and “Last hour” in January 2026. Use the date window below instead. <i class="mini">hidden</i> options are no longer in YouTube’s menu, but they still work. Dashed options clash with what you picked, and YouTube would return an empty page, so choosing one clears the clash.</p>
+    </div>
+
+    <div class="card">
+     <div class="card-h"><h2>Date window</h2><span class="tag ok" title="before: and after: were checked against live YouTube results">✓ before: / after: tested</span></div>
+     <div class="row3">
+      <div class="field"><label for="yt-range">Uploaded within</label><select id="yt-range"></select></div>
+      <div class="field"><label for="yt-from">From (after)</label><input id="yt-from" type="date"></div>
+      <div class="field"><label for="yt-to">To (before)</label><input id="yt-to" type="date"></div>
+     </div>
+     <p class="hint" id="yt-range-hint"></p>
+    </div>
+
+    <div class="card">
+     <div class="card-h"><h2>Channel</h2></div>
+     <div class="field"><label for="yt-ch">Search inside one channel</label><input id="yt-ch" type="text" autocomplete="off" placeholder="@handle, channel link or UC… ID"><p class="hint">Opens that channel’s own search page. YouTube does not apply filters there.</p></div>
+     <div id="yt-chlinks" class="pills"></div>
+    </div>
+
+    <details class="card more">
+     <summary>Region, language and advanced</summary>
+     <div class="row2" style="margin-top:12px">
+      <div class="field"><label for="yt-gl">Region</label><select id="yt-gl"></select></div>
+      <div class="field"><label for="yt-hl">Interface language</label><select id="yt-hl"></select></div>
+     </div>
+     <div class="row2">
+      <div class="field"><label for="yt-groute">Google route uses</label><select id="yt-groute"><option value="udm">Videos tab (udm=7)</option><option value="tbm">Classic video search (tbm=vid)</option></select></div>
+      <div class="field"><label for="yt-spx">Custom <code>sp</code> code</label><input id="yt-spx" type="text" autocomplete="off" spellcheck="false" placeholder="Overrides the filter chips"><p class="hint">Paste an <code>sp=</code> value from a YouTube address. Or paste the whole address in the Smart bar to load everything.</p></div>
+     </div>
+    </details>
    </div>
-  </details>
- </div>
- <div id="gs-out"></div>
+   <aside class="out" id="yt-out" aria-label="YouTube link"></aside>
+  </div>
+ </section>
+
+ <!-- ============================ AMAZON INDIA ============================ -->
+ <section id="tool-amazon" class="tool" role="tabpanel" aria-labelledby="tab-amazon" data-tool="amazon" hidden>
+  <div class="cols">
+   <div class="form">
+    <div class="card">
+     <div class="card-h"><h2>Quick recipes</h2><p class="hint">Your keywords stay.</p></div>
+     <div id="am-recipes" class="recipes"></div>
+    </div>
+
+    <div class="card">
+     <div class="card-h"><h2>Product</h2></div>
+     <div class="field"><label for="am-q">Keywords</label><input id="am-q" type="text" autocomplete="off" placeholder="e.g. usb c to usb c cable 100w 1m"></div>
+     <div class="row2">
+      <div class="field"><label for="am-exact">Exact phrase</label><input id="am-exact" type="text" autocomplete="off" placeholder="e.g. PD 3.1"><p class="hint">Quoted. Amazon treats quotes loosely.</p></div>
+      <div class="field"><label for="am-none">Words to avoid</label><input id="am-none" type="text" autocomplete="off" placeholder="case, adapter, refurbished"><p class="hint">Each becomes <code>-word</code>. Amazon only partly honours this.</p></div>
+     </div>
+     <div class="row2">
+      <div class="field"><label for="am-dept">Department</label><select id="am-dept"></select></div>
+      <div class="field"><label for="am-brand">Brand</label><input id="am-brand" type="text" autocomplete="off" list="am-brandlist" placeholder="e.g. Anker"><datalist id="am-brandlist"></datalist></div>
+     </div>
+     <fieldset class="group"><legend>How to apply the brand</legend><div class="chips" id="am-brandMode-box"></div></fieldset>
+     <div class="field" id="am-brandId-wrap"><label for="am-brandId">Brand ID (<code>p_123</code>)</label><input id="am-brandId" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 239040"><p class="hint">Tick the brand in Amazon’s sidebar, copy the address and paste it in the Smart bar. The ID is picked up for you.</p></div>
+    </div>
+
+    <div class="card">
+     <div class="card-h"><h2>Price, rating, delivery</h2><span class="tag ok" title="Filter IDs taken from amazon.in’s own pages">✓ amazon.in filter IDs</span></div>
+     <div class="row2">
+      <div class="field"><label for="am-min">Min price (₹)</label><input id="am-min" type="number" inputmode="numeric" min="0" step="1" placeholder="No minimum"></div>
+      <div class="field"><label for="am-max">Max price (₹)</label><input id="am-max" type="number" inputmode="numeric" min="0" step="1" placeholder="No maximum"></div>
+     </div>
+     <div id="am-prices" class="pills" style="margin:-2px 0 12px"></div>
+     <fieldset class="group"><legend>Must have</legend><div class="chips" id="am-flags-box"></div></fieldset>
+     <fieldset class="group"><legend>Discount</legend><div class="chips" id="am-disc-box"></div></fieldset>
+     <fieldset class="group"><legend>Stock</legend><div class="chips" id="am-stock-box"></div></fieldset>
+    </div>
+
+    <div class="card">
+     <div class="card-h"><h2>Order</h2></div>
+     <fieldset class="group"><legend>Sort by</legend><div class="chips" id="am-sort-box"></div></fieldset>
+     <div class="row2"><div class="field"><label for="am-page">Results page</label><select id="am-page"></select></div></div>
+    </div>
+
+    <div class="card" data-skip>
+     <div class="card-h"><h2>Product inspector</h2></div>
+     <div class="field"><label for="am-prod">Paste an Amazon product link</label><input id="am-prod" type="url" autocomplete="off" spellcheck="false" placeholder="https://www.amazon.in/…/dp/B0…"><p class="hint">Gives you a clean link, critical and recent reviews, price history and video reviews.</p></div>
+     <div id="am-prodOut" class="routes"></div>
+    </div>
+
+    <details class="card more">
+     <summary>Seller and custom filters</summary>
+     <div class="row2" style="margin-top:12px">
+      <div class="field"><label for="am-me">Seller ID (<code>me=</code>)</label><input id="am-me" type="text" autocomplete="off" spellcheck="false" placeholder="e.g. A14CZOWI0VEHLG"><p class="hint">Shows one seller’s listings. It is in the seller storefront’s address.</p></div>
+      <div class="field"><label for="am-extra">Custom <code>rh</code> filters</label><input id="am-extra" type="text" autocomplete="off" spellcheck="false" placeholder="p_n_feature_browse-bin:123456789"><p class="hint">Copied from an Amazon address as <code>p_name:value</code>, comma-separated. Pasting the whole address in the Smart bar does this for you.</p></div>
+     </div>
+    </details>
+   </div>
+   <aside class="out" id="am-out" aria-label="Amazon link"></aside>
+  </div>
+ </section>
+
+ <!-- ============================ GOOGLE ============================ -->
+ <section id="tool-google" class="tool" role="tabpanel" aria-labelledby="tab-google" data-tool="google" hidden>
+  <div class="cols">
+   <div class="form">
+    <div class="card">
+     <div class="card-h"><h2>Quick recipes</h2></div>
+     <div id="gw-recipes" class="recipes"></div>
+    </div>
+    <div class="card">
+     <div class="card-h"><h2>What to find</h2></div>
+     <div class="row2">
+      <div class="field"><label for="gw-all">All of these words</label><input id="gw-all" type="text" autocomplete="off" placeholder="e.g. retractable usb c 100w cable"><p class="hint">Use <code>*</code> for an unknown word.</p></div>
+      <div class="field"><label for="gw-exact">Exact phrase</label><input id="gw-exact" type="text" autocomplete="off" placeholder="e.g. PD 3.1"><p class="hint">Quoted. Several? Separate with commas.</p></div>
+      <div class="field"><label for="gw-any">Any of these words</label><input id="gw-any" type="text" autocomplete="off" placeholder="anker, ugreen, baseus"><p class="hint">Becomes <code>(a OR b OR c)</code>.</p></div>
+      <div class="field"><label for="gw-none">None of these words</label><input id="gw-none" type="text" autocomplete="off" placeholder="used, refurbished, fake"><p class="hint">Each becomes <code>-word</code>.</p></div>
+     </div>
+    </div>
+    <div class="card">
+     <div class="card-h"><h2>Where it must appear</h2></div>
+     <div class="row2">
+      <div class="field"><label for="gw-site">Only from these sites</label><input id="gw-site" type="text" autocomplete="off" placeholder="reddit.com, .gov.in"></div>
+      <div class="field"><label for="gw-nosite">Never from these sites</label><input id="gw-nosite" type="text" autocomplete="off" placeholder="pinterest.com"></div>
+     </div>
+     <div class="row3">
+      <div class="field"><label for="gw-intitle">In the page title</label><input id="gw-intitle" type="text" autocomplete="off" placeholder="review, comparison"></div>
+      <div class="field"><label for="gw-inurl">In the web address</label><input id="gw-inurl" type="text" autocomplete="off" placeholder="datasheet"></div>
+      <div class="field"><label for="gw-intext">In the page text</label><input id="gw-intext" type="text" autocomplete="off" placeholder="e-marker chip"></div>
+     </div>
+     <div class="row3"><div class="field"><label for="gw-filetype">File type</label><select id="gw-filetype"></select></div></div>
+    </div>
+    <div class="card">
+     <div class="card-h"><h2>Dates, numbers, language</h2></div>
+     <div class="row3">
+      <div class="field"><label for="gw-recent">Quick time range</label><select id="gw-recent"></select></div>
+      <div class="field"><label for="gw-after">Published after</label><input id="gw-after" type="date"></div>
+      <div class="field"><label for="gw-before">Published before</label><input id="gw-before" type="date"></div>
+     </div>
+     <div class="row3">
+      <div class="field"><label for="gw-numfrom">Number from</label><input id="gw-numfrom" type="number" step="any" placeholder="e.g. 500"></div>
+      <div class="field"><label for="gw-numto">Number to</label><input id="gw-numto" type="number" step="any" placeholder="e.g. 2000"></div>
+      <div class="field"><label for="gw-numunit">Currency symbol</label><select id="gw-numunit"><option value="">None</option><option value="₹">₹ rupee</option><option value="$">$ dollar</option><option value="£">£ pound</option><option value="€">€ euro</option></select></div>
+     </div>
+     <div class="row3">
+      <div class="field"><label for="gw-lang">Language</label><select id="gw-lang"></select></div>
+      <div class="field"><label for="gw-region">Region</label><select id="gw-region"></select></div>
+      <div class="field"><label for="gw-page">Results page</label><select id="gw-page"></select></div>
+     </div>
+    </div>
+    <div class="card">
+     <div class="card-h"><h2>Result view</h2></div>
+     <fieldset class="group"><legend>Show</legend><div class="chips" id="gw-view-box"></div></fieldset>
+     <fieldset class="group"><legend>Options</legend><div class="chips" id="gw-opts-box"></div></fieldset>
+    </div>
+   </div>
+   <aside class="out" id="gw-out" aria-label="Google link"></aside>
+  </div>
+ </section>
+
+ <!-- ============================ GOOGLE SHOPPING ============================ -->
+ <section id="tool-shopping" class="tool" role="tabpanel" aria-labelledby="tab-shopping" data-tool="shopping" hidden>
+  <div class="cols">
+   <div class="form">
+    <div class="card">
+     <div class="card-h"><h2>Quick recipes</h2></div>
+     <div id="gs-recipes" class="recipes"></div>
+    </div>
+    <div class="card">
+     <div class="card-h"><h2>Product</h2></div>
+     <div class="row2">
+      <div class="field"><label for="gs-q">Keywords</label><input id="gs-q" type="text" autocomplete="off" placeholder="e.g. retractable usb c 100w cable"></div>
+      <div class="field"><label for="gs-brand">Brand</label><input id="gs-brand" type="text" autocomplete="off" placeholder="e.g. UGREEN"><p class="hint">Added to the keywords.</p></div>
+     </div>
+     <div class="field"><label for="gs-none">Words to avoid</label><input id="gs-none" type="text" autocomplete="off" placeholder="case, refurbished"><p class="hint">Each becomes <code>-word</code>.</p></div>
+    </div>
+    <div class="card">
+     <div class="card-h"><h2>Price and condition</h2></div>
+     <div class="row3">
+      <div class="field"><label for="gs-min">Min price (₹)</label><input id="gs-min" type="number" inputmode="numeric" min="0" step="1" placeholder="No minimum"></div>
+      <div class="field"><label for="gs-max">Max price (₹)</label><input id="gs-max" type="number" inputmode="numeric" min="0" step="1" placeholder="No maximum"></div>
+      <div class="field"><label for="gs-cond">Condition</label><select id="gs-cond"><option value="">Any</option><option value="new:1">New</option><option value="used:1">Used</option></select></div>
+     </div>
+     <fieldset class="group"><legend>Options</legend><div class="chips" id="gs-opts-box"></div></fieldset>
+    </div>
+    <div class="card">
+     <div class="card-h"><h2>Order and region</h2></div>
+     <div class="row2">
+      <div class="field"><label for="gs-sort">Sort by</label><select id="gs-sort"><option value="">Google default</option><option value="p_ord:p">Price: low to high</option><option value="p_ord:pd">Price: high to low</option><option value="p_ord:rv">Review score</option></select></div>
+      <div class="field"><label for="gs-region">Region</label><select id="gs-region"></select></div>
+     </div>
+     <details class="more" style="margin-top:4px"><summary>Advanced</summary>
+      <div class="row2" style="margin-top:10px">
+       <div class="field"><label for="gs-mode">Shopping URL mode</label><select id="gs-mode"><option value="udm">Shopping tab (udm=28)</option><option value="tbm">Classic Shopping (tbm=shop)</option></select><p class="hint">If the filters seem ignored, try the other mode.</p></div>
+       <div class="field"><label for="gs-extra">Custom <code>tbs</code> codes</label><input id="gs-extra" type="text" autocomplete="off" spellcheck="false" placeholder="key:value,key:value"></div>
+      </div>
+     </details>
+    </div>
+   </div>
+   <aside class="out" id="gs-out" aria-label="Google Shopping link"></aside>
+  </div>
+ </section>
+
+ <footer>
+  <p>Links open each site’s own results page. Nothing you type leaves this page until you open a link. History and saved searches stay in this browser.</p>
+  <p>YouTube filters and operators were tested against live YouTube results on 12 November 2026. Amazon filter IDs come from amazon.in’s own pages. Sites change their codes from time to time: if one stops working, paste a fresh address from that site into the Smart bar and the builder will read it.</p>
+ </footer>
 </div>
 
-<!-- ============================ YOUTUBE ============================ -->
-<div id="tool-youtube" class="tool" role="tabpanel" aria-labelledby="tab-youtube" hidden>
- <div class="panel" aria-label="YouTube search criteria">
-  <div class="section-title">What to find</div>
-  <div class="grid">
-   <div class="field"><label for="yt-q">Keywords</label><input id="yt-q" type="text" autocomplete="off" placeholder="e.g. retractable USB C 100W cable review"></div>
-   <div class="field"><label for="yt-exact">This exact phrase</label><input id="yt-exact" type="text" placeholder="e.g. teardown" autocomplete="off"><p class="hint">Wrapped in quotation marks.</p></div>
-   <div class="field"><label for="yt-any">Any of these words</label><input id="yt-any" type="text" placeholder="review, unboxing" autocomplete="off"><p class="hint">Comma-separated. Joined with <code>|</code> (OR).</p></div>
-   <div class="field"><label for="yt-none">None of these words</label><input id="yt-none" type="text" placeholder="shorts, reaction" autocomplete="off"><p class="hint">Comma-separated. Each becomes <code>-word</code>.</p></div>
-  </div>
-  <div class="field space"><label for="yt-channel">Search inside one channel (optional)</label><input id="yt-channel" type="text" placeholder="@handle or UC… channel ID" autocomplete="off"><p class="hint">Opens that channel’s own search page. YouTube’s type, duration, date and sort filters do not apply there, so they are left out.</p></div>
-  <hr class="separator">
-  <div class="section-title">Filters</div>
-  <div class="grid3">
-   <div class="field"><label for="yt-upload">Upload date</label><select id="yt-upload"><option value="">Any time</option><option value="1">Last hour</option><option value="2">Today</option><option value="3">This week</option><option value="4">This month</option><option value="5">This year</option><option value="y3">Last 3 years</option></select></div>
-   <div class="field"><label for="yt-type">Type</label><select id="yt-type"><option value="">Any type</option><option value="1">Video</option><option value="2">Channel</option><option value="3">Playlist</option><option value="4">Movie</option></select></div>
-   <div class="field"><label for="yt-duration">Duration</label><select id="yt-duration"><option value="">Any length</option><option value="1">Under 4 minutes</option><option value="3">4–20 minutes</option><option value="2">Over 20 minutes</option></select></div>
-  </div>
-  <div class="grid space">
-   <div class="field"><label for="yt-sort">Sort by</label><select id="yt-sort"><option value="0">Relevance</option><option value="2">Upload date</option><option value="3">View count</option><option value="1">Rating</option></select></div>
-   <div class="field"><label for="yt-region">Region</label><select id="yt-region"></select></div>
-  </div>
-  <hr class="separator">
-  <div class="section-title">Features</div>
-  <div id="yt-flags" class="toggle-grid three"></div>
+<div class="dock" id="dock" aria-label="Quick actions">
+ <button id="dock-sum" class="dock-sum" type="button" title="Show the full result"></button>
+ <div class="dock-row">
+  <a id="dock-open" class="btn primary" href="#" target="_blank" rel="noopener noreferrer">Open ↗</a>
+  <button id="dock-copy" class="btn" type="button">Copy</button>
  </div>
- <div id="yt-out"></div>
 </div>
-
-<footer>Links open each site’s own results page. Nothing is sent anywhere else.</footer>
-</main>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
-(function(){
+(function () {
 'use strict';
 
-/* ---------- helpers ---------- */
-const $ = id => document.getElementById(id);
-const val = id => $(id).value.trim();
-const chk = id => $(id).checked;
-const splitList = s => s.split(',').map(x => x.trim()).filter(Boolean);
-const noQuotes = s => s.replace(/"/g, '').trim();
-const maybeQuote = t => /\s/.test(t) ? '"' + t + '"' : t;
-const norm = s => s.replace(/\s+/g, ' ').trim().toLowerCase();
-const isNum = s => s !== '' && Number.isFinite(Number(s));
-const sel = id => $(id).selectedOptions[0].textContent;
-const negate = (q, id) => [q, ...splitList(val(id)).map(noQuotes).filter(Boolean).map(n => '-' + maybeQuote(n))].join(' ').trim();
-
-function fill(id, list){
- $(id).replaceChildren(...list.map(([v, l]) => { const o = document.createElement('option'); o.value = v; o.textContent = l; return o; }));
+/* ======================================================================
+   Basics
+   ====================================================================== */
+const D = document;
+const byId = id => D.getElementById(id);
+function el(tag, props, ...kids) {
+ const e = D.createElement(tag);
+ if (props) for (const [k, v] of Object.entries(props)) {
+  if (v == null || v === false) continue;
+  if (k === 'class') e.className = v;
+  else if (k === 'text') e.textContent = v;
+  else if (k.startsWith('on') && typeof v === 'function') e.addEventListener(k.slice(2), v);
+  else e.setAttribute(k, v === true ? '' : String(v));
+ }
+ for (const kid of kids.flat()) if (kid != null && kid !== false) e.append(kid.nodeType ? kid : D.createTextNode(String(kid)));
+ return e;
 }
-function setAll(map){
- for(const [id, v] of Object.entries(map)){
-  const e = $(id);
-  if(e.type === 'checkbox') e.checked = !!v; else e.value = v;
+const splitList = s => String(s == null ? '' : s).split(',').map(x => x.trim()).filter(Boolean);
+const unquote = s => String(s).replace(/["“”]/g, '').replace(/\s+/g, ' ').trim();
+const q1 = t => (/\s/.test(t) ? '"' + t + '"' : t);
+const squash = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+const norm = s => squash(s).toLowerCase();
+const isNum = s => s !== '' && s != null && Number.isFinite(Number(s));
+const trunc = (s, n) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
+const inr = n => '₹' + Number(n).toLocaleString('en-IN');
+const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const list = a => a.length < 3 ? a.join(' and ') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+
+/* dates (local calendar days, as YouTube's before:/after: use dates) */
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+const shiftDays = n => { const d = today(); d.setDate(d.getDate() + n); return d; };
+const shiftMonths = n => { const t = today(), d = new Date(t.getFullYear(), t.getMonth() + n, t.getDate()); if (d.getDate() !== t.getDate()) d.setDate(0); return d; };
+const isYmd = s => /^\d{4}-\d{2}-\d{2}$/.test(s || '') && !Number.isNaN(new Date(s + 'T00:00:00').getTime());
+const niceDate = s => isYmd(s) ? new Date(s + 'T00:00:00').toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'}) : s;
+const daySpan = (a, b) => Math.round((new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / 864e5);
+
+/* storage: per-browser conveniences only; every access is guarded */
+const store = {
+ get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (_) { return d; } },
+ set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (_) { return false; } }
+};
+
+/* base64url for the shareable builder state */
+const toB64u = str => { let bin = ''; new TextEncoder().encode(str).forEach(b => { bin += String.fromCharCode(b); }); return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+const fromB64u = s => { const bin = atob(s.replace(/-/g, '+').replace(/_/g, '/')); return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))); };
+
+let toastTimer;
+function toast(msg) { const t = byId('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), 1900); }
+async function copyText(text) {
+ try { await navigator.clipboard.writeText(text); return true; }
+ catch (_) {
+  const t = el('textarea', {style: 'position:fixed;top:0;left:0;opacity:0', 'aria-hidden': 'true'}); t.value = text; D.body.append(t); t.select();
+  let ok = false; try { ok = D.execCommand('copy'); } catch (_) {} t.remove(); return ok;
  }
 }
+const copyBtn = (url, label) => el('button', {class: 'btn small', type: 'button', title: 'Copy link', 'aria-label': 'Copy link: ' + label, text: '⧉', onclick: async () => toast(await copyText(url) ? 'Link copied' : 'Could not copy: select the link text instead')});
 
-const REGIONS = [['','Default (no region hint)'],['in','India'],['us','United States'],['gb','United Kingdom'],['au','Australia'],['ca','Canada'],['sg','Singapore'],['ae','United Arab Emirates'],['de','Germany']];
-const LANGS = [['','Any language'],['en','English'],['hi','Hindi'],['ta','Tamil'],['te','Telugu'],['bn','Bengali'],['mr','Marathi'],['gu','Gujarati'],['kn','Kannada'],['ml','Malayalam'],['pa','Punjabi'],['ur','Urdu'],['es','Spanish'],['fr','French'],['de','German'],['ja','Japanese'],['ar','Arabic']];
-const DEFAULT_QUERY = '';
-
-/* ---------- shared output UI, one instance per tab ---------- */
-function outputHTML(c){
- const p = c.p;
- return `
-<div class="panel" aria-label="Generated link">
- <div class="meta"><div class="section-title" style="margin:0">Your link</div><button id="${p}-reset" type="button" class="button small">Clear all</button></div>
- <div id="${p}-url" class="urlbox mono space" data-empty="Your link appears here once you add keywords" aria-live="polite"></div>
- <div class="btns"><a id="${p}-open" class="link-button" href="#" target="_blank" rel="noopener noreferrer">${c.openLabel} ↗</a><button id="${p}-copy" class="button" type="button">Copy URL</button></div>
- <p id="${p}-message" class="message" role="alert"></p>
- <p id="${p}-notes" class="notice" aria-live="polite"></p>
- <div id="${p}-chips" class="facets" aria-live="polite"></div>
- <div class="meter" aria-hidden="true"><i id="${p}-meter"></i></div><p id="${p}-health" class="hint" aria-live="polite"></p>
- <div id="${p}-alts" class="sub"></div>
- <div id="${p}-history" class="sub"></div>
- <details class="space"><summary>Show decoded link and codes</summary><div id="${p}-decoded" class="urlbox mono space"></div><div id="${p}-facetList" class="hint space"></div></details>
-</div>`;
+function fillSelect(id, items) { byId(id).replaceChildren(...items.map(([v, l]) => el('option', {value: v, text: l}))); }
+function chipGroup(boxId, name, type, items) {
+ byId(boxId).replaceChildren(...items.map(([v, label, o]) => {
+  o = o || {};
+  return el('label', {class: 'chip', title: o.title || null, 'data-title': o.title || ''},
+   el('input', {type, name, value: v}),
+   el('span', null, label, o.tag ? el('i', {class: 'mini', text: o.tag}) : null));
+ }));
 }
 
-/* ---------- intelligence layer: health, variants, history, recipes, smart fill ---------- */
-const KW = {am:'am-query', gw:'gw-all', gs:'gs-q', yt:'yt-q'};
-const TOOL = {am:'amazon', gw:'google', gs:'shopping', yt:'youtube'};
-const el = (tag, text, cls) => { const e = document.createElement(tag); if(text) e.textContent = text; if(cls) e.className = cls; return e; };
-const pill = (t, f) => { const b = el('button', t, 'pill'); b.type = 'button'; b.onclick = f; return b; };
-const fire = (id, v) => { const e = $(id); if(v !== undefined) e.value = v; e.dispatchEvent(new Event('input', {bubbles:true})); };
+/* a tiny form model: [key, element id or input name, kind, default] */
+function Model(spec) {
+ const F = spec.map(([key, id, kind, def]) => ({key, id, kind, def}));
+ const read1 = f => {
+  if (f.kind === 'radio') { const c = D.querySelector('input[name="' + f.id + '"]:checked'); return c ? c.value : f.def; }
+  if (f.kind === 'checks') return [...D.querySelectorAll('input[name="' + f.id + '"]:checked')].map(i => i.value);
+  const e = byId(f.id);
+  return f.kind === 'check' ? e.checked : e.value.trim();
+ };
+ const write1 = (f, v) => {
+  if (f.kind === 'radio') {
+   let hit = false;
+   D.querySelectorAll('input[name="' + f.id + '"]').forEach(i => { i.checked = i.value === String(v == null ? '' : v); hit = hit || i.checked; });
+   if (!hit) D.querySelectorAll('input[name="' + f.id + '"]').forEach(i => { i.checked = i.value === String(f.def); });
+   return;
+  }
+  if (f.kind === 'checks') { const set = new Set((Array.isArray(v) ? v : []).map(String)); D.querySelectorAll('input[name="' + f.id + '"]').forEach(i => { i.checked = set.has(i.value); }); return; }
+  const e = byId(f.id);
+  if (f.kind === 'check') { e.checked = !!v; return; }
+  const s = v == null ? '' : String(v);
+  if (e.tagName === 'SELECT' && s && ![...e.options].some(o => o.value === s)) {
+   const lab = e.dataset.dynamic ? e.dataset.dynamic.replace('{}', s) : s;
+   e.append(el('option', {value: s, text: lab}));
+  }
+  e.value = s;
+ };
+ const same = (a, b) => Array.isArray(b) ? (Array.isArray(a) && a.length === b.length && a.every((x, i) => String(x) === String(b[i]))) : String(a) === String(b);
+ return {
+  read: () => Object.fromEntries(F.map(f => [f.key, read1(f)])),
+  write: s => F.forEach(f => write1(f, s && f.key in s ? s[f.key] : f.def)),
+  defaults: () => Object.fromEntries(F.map(f => [f.key, Array.isArray(f.def) ? [...f.def] : f.def])),
+  compact: s => { const o = {}; F.forEach(f => { if (!same(s[f.key], f.def)) o[f.key] = s[f.key]; }); return o; },
+  keys: F.map(f => f.key)
+ };
+}
 
-const WEIGHT = [[/^(Exact|Only on|File type|Channel)/,3],[/^(In title|In URL|In text|Range|Brand|Price)|discount/,2],[/^(Prime|4★|Excluding|Not on|After|Before|Time|Verbatim|Condition|Free|On sale|Uploaded|Type:|Duration|Feature)/,1]];
+/* ======================================================================
+   Shared output panel, tool registry, history
+   ====================================================================== */
+const TOOLS = {};
+let active = 'youtube';
+const HKEY = 'sqb-history-v3', SKEY = 'sqb-saved-v1';
+
+function outputCard(p, openLabel) {
+ return el('div', {class: 'card out-card'},
+  el('div', {class: 'card-h'}, el('h2', {text: 'Your search'}), el('button', {class: 'btn small', type: 'button', id: p + '-reset', text: 'Clear all'})),
+  el('p', {class: 'summary', id: p + '-summary', 'data-empty': 'Start typing keywords. The link builds itself.', 'aria-live': 'polite'}),
+  el('div', {class: 'url', id: p + '-url', 'data-empty': 'Your link appears here'}),
+  el('div', {class: 'btns'},
+   el('a', {class: 'btn primary', id: p + '-open', href: '#', target: '_blank', rel: 'noopener noreferrer', text: openLabel + ' ↗'}),
+   el('button', {class: 'btn', type: 'button', id: p + '-copy', text: 'Copy'}),
+   navigator.share ? el('button', {class: 'btn', type: 'button', id: p + '-share', text: 'Share'}) : null),
+  el('div', {class: 'meter', 'aria-hidden': 'true'}, el('i', {id: p + '-meter'})),
+  el('p', {class: 'hint', id: p + '-health'}),
+  el('ul', {class: 'warns', id: p + '-warns'}),
+  el('div', {class: 'sec-title', id: p + '-routes-t', text: 'Search plan · other angles on the same search'}),
+  el('div', {class: 'routes', id: p + '-routes'}),
+  el('div', {class: 'pills sub', id: p + '-alts'}),
+  el('div', {class: 'pills sub', id: p + '-saved'}),
+  el('div', {class: 'pills sub', id: p + '-recent'}),
+  el('details', {class: 'more', style: 'margin-top:12px'}, el('summary', {text: 'How this link works'}), el('div', {id: p + '-decoded'})),
+  el('div', {class: 'btns'},
+   el('button', {class: 'btn small', type: 'button', id: p + '-save', text: '☆ Save search'}),
+   el('button', {class: 'btn small', type: 'button', id: p + '-link', title: 'A link to this page with every field filled in, handy to keep in Orbit', text: 'Copy builder link'}))
+ );
+}
+
+function paint(t, r) {
+ const g = s => byId(t.p + '-' + s);
+ const bad = !!r.error;
+ g('summary').textContent = bad ? '' : (r.summary || '');
+ g('url').textContent = bad ? '' : r.url;
+ const open = g('open');
+ open.href = bad ? '#' : r.url;
+ open.classList.toggle('disabled', bad);
+ open.setAttribute('aria-disabled', String(bad));
+ open.textContent = (r.openLabel || t.openLabel) + ' ↗';
+ g('copy').disabled = bad;
+ if (g('share')) g('share').disabled = bad;
+ const warns = [...(r.warns || [])];
+ if (bad && t.touched) warns.unshift({level: 'bad', text: r.error});
+ g('warns').replaceChildren(...warns.map(w => el('li', {class: w.level || 'info'}, el('span', {text: w.text}),
+  w.fix ? el('button', {class: 'btn small', type: 'button', text: w.fixLabel || 'Fix', onclick: () => { w.fix(); t.touched = true; t.render(); }}) : null)));
+ const m = g('meter'), h = g('health'), sc = r.score || 0, on = !bad && (r.hits || []).length > 0;
+ m.parentElement.hidden = !on;
+ const lvl = sc <= 2.5 ? 0 : sc <= 5.5 ? 1 : sc <= 8.5 ? 2 : 3;
+ m.style.width = Math.min(100, 10 + sc * 9) + '%';
+ m.style.background = ['var(--ok)', 'var(--accent-2)', 'var(--warn)', 'var(--bad)'][lvl];
+ const top = [...(r.hits || [])].sort((a, b) => b[0] - a[0]).slice(0, 2).map(x => x[1]);
+ h.textContent = on ? ['Light filtering: plenty of results expected.', 'Focused: should still return a good list.', 'Narrow: results may be thin. If so, relax ' + list(top) + ' first.', 'Very narrow: expect few or no results. Drop ' + list(top) + ' first.'][lvl] : '';
+ const routes = bad ? [] : (r.routes || []).filter(Boolean);
+ g('routes-t').hidden = !routes.length;
+ g('routes').replaceChildren(...routes.map(rt => el('div', {class: 'route'},
+  el('a', {href: rt.url, target: '_blank', rel: 'noopener noreferrer', onclick: () => remember(t)},
+   el('span', {class: 't'}, rt.label, rt.tag ? el('i', {class: 'mini', text: rt.tag}) : null),
+   rt.desc ? el('span', {class: 'd', text: rt.desc}) : null),
+  copyBtn(rt.url, rt.label))));
+ const alts = r.alts || [];
+ const box = g('alts'), key = alts.map(a => a.label).join('\n');
+ if (box.dataset.key !== key) { box.dataset.key = key; box.replaceChildren(...(alts.length ? [el('b', {text: 'Try other phrasing'}), ...alts.map(a => el('button', {class: 'pill', type: 'button', text: a.label, onclick: a.apply}))] : [])); }
+ g('decoded').replaceChildren(...(r.decoded || []));
+ if (t.key === active) dock(t);
+}
+
+function mount(t) {
+ TOOLS[t.key] = t;
+ const g = s => byId(t.p + '-' + s);
+ byId(t.p + '-out').append(outputCard(t.p, t.openLabel));
+ t.touched = false;
+ t.render = () => {
+  const s = t.model.read();
+  t.state = s;
+  t.current = t.build(s, {ui: true});
+  paint(t, t.current);
+  if (t.afterRender) t.afterRender(s, t.current);
+ };
+ const form = byId('tool-' + t.key).querySelector('.form');
+ const onEdit = e => {
+  if (e.target.closest('[data-skip]')) return;
+  t.touched = true;
+  if (t.onChange) { const s2 = t.onChange(e, t.model.read()); if (s2) t.model.write(s2); }
+  t.render();
+ };
+ form.addEventListener('input', onEdit);
+ form.addEventListener('change', onEdit);
+ g('open').addEventListener('click', e => { if (!t.current || t.current.error) e.preventDefault(); else remember(t); });
+ g('copy').addEventListener('click', async () => { if (!t.current || t.current.error) return; remember(t); toast(await copyText(t.current.url) ? 'Link copied' : 'Could not copy: select the link text instead'); });
+ if (g('share')) g('share').addEventListener('click', () => { if (!t.current || t.current.error) return; remember(t); navigator.share({title: t.label(t.model.read()) || 'Search', url: t.current.url}).catch(() => {}); });
+ g('reset').addEventListener('click', () => { t.model.write(t.model.defaults()); t.touched = false; t.lastRecipeAny = ''; t.render(); });
+ g('link').addEventListener('click', async () => toast(await copyText(builderLink(t)) ? 'Builder link copied: it reopens this page filled in' : 'Could not copy'));
+ g('save').addEventListener('click', () => {
+  const s = t.model.read(), label = t.label(s);
+  if (!label) { toast('Add keywords first'); return; }
+  const saved = store.get(SKEY, []).filter(x => !(x.tool === t.key && x.label === label));
+  saved.unshift({id: Date.now(), tool: t.key, label, st: t.model.compact(s)});
+  toast(store.set(SKEY, saved.slice(0, 60)) ? 'Saved: ' + trunc(label, 30) : 'This browser blocks storage, so it could not be saved');
+  paintLists();
+ });
+ t.model.write(t.model.defaults());
+}
+
+function load(t, st) { t.model.write(Object.assign(t.model.defaults(), st || {})); t.touched = true; t.lastRecipeAny = ''; t.render(); }
+function remember(t) {
+ if (!t.current || t.current.error) return;
+ const s = t.model.read(), label = t.label(s);
+ if (!label) return;
+ const H = store.get(HKEY, []).filter(h => !(h.tool === t.key && h.label === label));
+ H.unshift({tool: t.key, label, st: t.model.compact(s), ts: Date.now()});
+ store.set(HKEY, H.slice(0, 40));
+ paintLists();
+}
+function paintLists() {
+ const H = store.get(HKEY, []), S = store.get(SKEY, []);
+ Object.values(TOOLS).forEach(t => {
+  const saved = S.filter(x => x.tool === t.key).slice(0, 12);
+  byId(t.p + '-saved').replaceChildren(...(saved.length ? [el('b', {text: 'Saved'}), ...saved.map(x => el('span', {class: 'pill-pair'},
+   el('button', {class: 'pill', type: 'button', title: x.label, text: '★ ' + trunc(x.label, 26), onclick: () => load(t, x.st)}),
+   el('button', {class: 'pill', type: 'button', title: 'Delete', 'aria-label': 'Delete saved search ' + x.label, text: '×', onclick: () => { store.set(SKEY, store.get(SKEY, []).filter(y => y.id !== x.id)); paintLists(); }})))] : []));
+  const mine = H.filter(h => h.tool === t.key).slice(0, 5);
+  byId(t.p + '-recent').replaceChildren(...(mine.length ? [el('b', {text: 'Recent'}), ...mine.map(h => el('button', {class: 'pill', type: 'button', title: h.label, text: '↺ ' + trunc(h.label, 26), onclick: () => load(t, h.st)}))] : []));
+ });
+}
+function builderLink(t) {
+ const st = t.model.compact(t.model.read()), base = location.href.split('#')[0];
+ return base + '#' + t.key + (Object.keys(st).length ? '?s=' + toB64u(JSON.stringify(st)) : '');
+}
+function dock(t) {
+ const r = t.current, bad = !r || !!r.error, o = byId('dock-open');
+ o.href = bad ? '#' : r.url;
+ o.classList.toggle('disabled', bad);
+ o.textContent = ((r && r.openLabel) || t.openLabel) + ' ↗';
+ byId('dock-copy').disabled = bad;
+ const issues = r ? (r.warns || []).filter(w => w.level === 'bad' || w.level === 'warn') : [];
+ const lvl = (bad && t.touched) || issues.some(w => w.level === 'bad') ? 'bad' : issues.length ? 'warn' : '';
+ const sumBtn = byId('dock-sum');
+ sumBtn.className = 'dock-sum' + (lvl ? ' ' + lvl : '');
+ sumBtn.textContent = bad ? (t.touched ? '⚠ ' + r.error : 'Type keywords to build your link') : (issues.length ? '⚠ ' + issues.length + ' note' + (issues.length > 1 ? 's' : '') + ' · ' : '') + (r.summary || 'Your link is ready') + ' ▴';
+}
+function mountRecipes(t, groups, filterKeys) {
+ const apply = (patch, label) => {
+  const cur = t.model.read(), d = t.model.defaults();
+  filterKeys.forEach(k => { cur[k] = d[k]; });
+  if ('any' in cur && t.lastRecipeAny && cur.any === t.lastRecipeAny) cur.any = '';
+  Object.assign(cur, patch);
+  t.lastRecipeAny = patch.any || '';
+  t.model.write(cur); t.touched = true; t.render();
+  toast(label ? 'Recipe: ' + label : 'Filters reset');
+ };
+ byId(t.p + '-recipes').replaceChildren(
+  ...groups.map(([name, items]) => el('div', {class: 'recipe-row'}, el('b', {text: name}),
+   ...items.map(([label, desc, patch]) => el('button', {class: 'pill', type: 'button', title: desc || label, text: label, onclick: () => apply(patch, label)})))),
+  el('div', {class: 'recipe-row'}, el('b', {text: ''}), el('button', {class: 'pill ghost', type: 'button', text: '↺ Reset filters', title: 'Clear filters, keep your words', onclick: () => apply({}, '')})));
+}
+
+/* ======================================================================
+   Shared lists
+   ====================================================================== */
+const REGIONS = [['', 'Default'], ['IN', 'India'], ['US', 'United States'], ['GB', 'United Kingdom'], ['AU', 'Australia'], ['CA', 'Canada'], ['SG', 'Singapore'], ['AE', 'United Arab Emirates'], ['DE', 'Germany'], ['JP', 'Japan']];
+const LANGS = [['', 'Any language'], ['en', 'English'], ['hi', 'Hindi'], ['ta', 'Tamil'], ['te', 'Telugu'], ['bn', 'Bengali'], ['mr', 'Marathi'], ['gu', 'Gujarati'], ['kn', 'Kannada'], ['ml', 'Malayalam'], ['pa', 'Punjabi'], ['ur', 'Urdu'], ['es', 'Spanish'], ['fr', 'French'], ['de', 'German'], ['ja', 'Japanese'], ['ar', 'Arabic']];
+const PAGES = Array.from({length: 10}, (_, i) => [String(i + 1), String(i + 1)]);
 const VAR = [
- [/\b(?:usb[- ]?c|type[- ]?c)\b/i, ['USB C','USB-C','Type-C','Type C']],
+ [/\b(?:usb[- ]?c|type[- ]?c)\b/i, ['USB C', 'USB-C', 'Type-C']],
  [/\b(\d+)\s?(?:w|watts?)\b/i, m => [m[1] + 'W', m[1] + ' watt']],
- [/\b(\d+(?:\.\d+)?)\s?(?:m|metres?|meters?)\b/i, m => [m[1] + 'm', m[1] + ' metre', m[1] + ' meter']],
- [/\b(\d+)\s?(gb|tb|mah|hz)\b/i, m => [m[1] + m[2].toUpperCase(), m[1] + ' ' + m[2].toUpperCase()]]
+ [/\b(\d+(?:\.\d+)?)\s?(?:m|metres?|meters?)\b/i, m => [m[1] + 'm', m[1] + ' metre']],
+ [/\b(\d+)\s?(gb|tb|mah|hz)\b/i, m => [m[1] + m[2].toUpperCase(), m[1] + ' ' + m[2].toUpperCase()]],
+ [/\bvs\.?(?=\s|$)/i, ['vs', 'versus', 'compared to']],
+ [/\bhow to\b/i, ['how to', 'tutorial', 'guide']]
 ];
-function variants(q){
+function phrasings(q) {
  const out = new Set();
- for(const [re, alt] of VAR){
-  const m = q.match(re); if(!m) continue;
-  (typeof alt === 'function' ? alt(m) : alt).forEach(o => { const v = q.replace(re, o); if(norm(v) !== norm(q)) out.add(v); });
+ for (const [re, alt] of VAR) {
+  const m = q.match(re); if (!m) continue;
+  (typeof alt === 'function' ? alt(m) : alt).forEach(o => { const v = q.replace(re, o); if (norm(v) !== norm(q)) out.add(v); });
  }
  return [...out].slice(0, 5);
 }
-function insights(cfg, cur){
- const p = cfg.p, hits = []; let score = 0;
- cur.chips.forEach(c => { const w = WEIGHT.find(([r]) => r.test(c)); if(w){ score += w[1]; hits.push([w[1], c]); } });
- const lvl = score <= 2 ? 0 : score <= 6 ? 1 : 2, on = hits.length > 0;
- const m = $(p + '-meter'); m.parentElement.hidden = !on; m.style.width = Math.min(100, 8 + score * 9) + '%'; m.style.background = ['#88e0b3','#7ec8ff','#ffb454'][lvl];
- hits.sort((a, b) => b[0] - a[0]);
- $(p + '-health').textContent = on ? ['Light filtering: expect plenty of results.','Balanced: focused, and should still return results.','Very narrow: expect few or no results. If it comes back empty, drop these first: ' + hits.slice(0, 2).map(h => h[1]).join(', then ') + '.'][lvl] : '';
- const vs = variants($(KW[p]).value);
- const box = $(p + '-alts'), key = vs.join('\n');
- if(box.dataset.key !== key){ box.dataset.key = key; box.replaceChildren(...(vs.length ? [el('b', 'Try other phrasing'), ...vs.map(v => pill(v, () => fire(KW[p], v)))] : [])); }
-}
-
-const HKEY = 'sqb-history-v2';
-const loadH = () => { try { return JSON.parse(localStorage.getItem(HKEY)) || []; } catch(_) { return []; } };
-function remember(cfg){
- const snap = {}; Object.keys(cfg.defaults).forEach(id => { const e = $(id); snap[id] = e.type === 'checkbox' ? e.checked : e.value; });
- const label = (snap[KW[cfg.p]] || '').slice(0, 38);
- const list = loadH().filter(h => !(h.p === cfg.p && h.label === label));
- list.unshift({p:cfg.p, label, snap});
- try { localStorage.setItem(HKEY, JSON.stringify(list.slice(0, 24))); } catch(_) {}
- recent();
-}
-function recent(){
- const list = loadH();
- Object.keys(KW).forEach(p => {
-  const mine = list.filter(h => h.p === p).slice(0, 4);
-  $(p + '-history').replaceChildren(...(mine.length ? [el('b', 'Recent'), ...mine.map(h => pill('↺ ' + (h.label || '(empty)'), () => { setAll(h.snap); fire(KW[p]); }))] : []));
- });
-}
-
-const PRESETS = {
- am:[['Best value',{'am-stars':true,'am-prime':true,'am-sort':'review-rank'}],['Cheapest 4★+',{'am-stars':true,'am-sort':'price-asc-rank'}],['Deals 30%+',{'am-discount':'30','am-sort':'review-rank'}],['Newest',{'am-sort':'date-desc-rank'}]],
- gw:[['Real opinions',{'gw-site':'reddit.com, quora.com'}],['Manuals & datasheets',{'gw-filetype':'pdf','gw-intitle':'datasheet, manual'}],['Past month, newest',{'gw-recent':'m','gw-sortdate':true}],['Government (.gov.in)',{'gw-site':'.gov.in'}],['Exact words only',{'gw-verbatim':true}]],
- gs:[['Cheapest new',{'gs-cond':'new:1','gs-sort':'p_ord:p','gs-free':true}],['Top rated',{'gs-sort':'p_ord:rv'}],['On sale',{'gs-sale':true,'gs-sort':'p_ord:p'}]],
- yt:[['Default YT search',() => Object.assign({'yt-type':'1','yt-sort':'3','yt-upload':'y3','yt-duration':'3'}, ...YT_FLAG_UI.map(n => ({['yt-f-' + n]:false})))],['Deep dives',{'yt-type':'1','yt-duration':'2','yt-sort':'3'}],['Latest this week',{'yt-upload':'3','yt-sort':'2'}],['Quick answers',{'yt-type':'1','yt-duration':'1'}],['HD with captions',{'yt-f-4':true,'yt-f-5':true}]]
-};
-function mountPresets(){
- Object.entries(PRESETS).forEach(([p, list]) => {
-  const row = el('div', '', 'presets'); row.append(el('b', 'Quick recipes'), ...list.map(([l, f]) => pill(l, () => { setAll(typeof f === 'function' ? f() : f); fire(KW[p]); })));
-  $('tool-' + TOOL[p]).prepend(row);
- });
-}
-
-function smart(raw){
- let t = ' ' + raw.replace(/[“”]/g, '"') + ' ';
- const F = {}, seen = [], ex = [], phrase = [];
- const num = (s, k) => Math.round(Number(s.replace(/,/g, '')) * (k ? 1000 : 1));
- const take = (re, fn) => { const m = re.exec(t); if(!m) return false; t = t.replace(re, ' '); fn(m); return true; };
- take(/"([^"]+)"/, m => { phrase.push(m[1]); seen.push('Exact “' + m[1] + '”'); });
- t = t.replace(/\b(?:no|without|exclude|excluding|not)\s+([a-z0-9-]+)|\s-([a-z0-9-]+)/gi, (_, a, b) => { ex.push(a || b); return ' '; });
- if(ex.length) seen.push('Excluding ' + ex.join(', '));
- take(/\b(?:over|longer than|more than)\s*20\s*min\w*/i, () => { F['yt-duration'] = '2'; seen.push('Over 20 min'); });
- take(/\b(?:under|shorter than|less than)\s*4\s*min\w*/i, () => { F['yt-duration'] = '1'; seen.push('Under 4 min'); });
- const cur = '(?:rs\\.?|inr|₹)?\\s*';
- let lo, hi;
- take(new RegExp(cur + '(\\d[\\d,]{2,})\\s*(?:-|to|and)\\s*' + cur + '(\\d[\\d,]{2,})', 'i'), m => { lo = num(m[1]); hi = num(m[2]); });
- if(hi === undefined) take(new RegExp('\\b(?:under|below|upto|up to|within|max(?:imum)?|less than)\\s*' + cur + '(\\d[\\d,]*)(k)?\\b', 'i'), m => { hi = num(m[1], m[2]); });
- if(lo === undefined) take(new RegExp('\\b(?:over|above|from|min(?:imum)?|more than|at least)\\s*' + cur + '(\\d[\\d,]*)(k)?\\b', 'i'), m => { lo = num(m[1], m[2]); });
- if(lo !== undefined && hi !== undefined && lo > hi) [lo, hi] = [hi, lo];
- if(lo !== undefined || hi !== undefined){
-  const L = lo === undefined ? '' : lo, H = hi === undefined ? '' : hi;
-  Object.assign(F, {'am-minPrice':L, 'am-maxPrice':H, 'gs-min':L, 'gs-max':H});
-  seen.push('Price ₹' + (L || 0) + '–' + (H ? '₹' + H : 'any'));
- }
- take(/\b(?:4\s*(?:\+|plus)?\s*(?:stars?|★)(?:\s*(?:and|&)\s*(?:up|above))?|top[- ]rated|well[- ]rated)/i, () => { F['am-stars'] = true; seen.push('4★+'); });
- take(/\bprime\b/i, () => { F['am-prime'] = true; seen.push('Prime'); });
- take(/(\d{2})\s*%\s*(?:off|discount)?/i, m => { const d = [70,60,50,40,30,20,10].find(x => x <= Number(m[1])); if(d){ F['am-discount'] = String(d); F['gs-sale'] = true; seen.push(d + '%+ off'); } });
- take(/\b(?:used|second[- ]hand|pre[- ]owned)\b/i, () => { F['gs-cond'] = 'used:1'; seen.push('Used'); });
- take(/\bfree (?:delivery|shipping)\b/i, () => { F['gs-free'] = true; seen.push('Free delivery'); });
- const R = [[/\b(?:today|past (?:24 hours|day)|last 24 hours)\b/i,'d','2','Past 24 h'],[/\b(?:this|last|past) week\b/i,'w','3','Past week'],[/\b(?:this|last|past) month\b/i,'m','4','Past month'],[/\b(?:this|last|past) year\b/i,'y','5','Past year']];
- for(const [re, g, y, l] of R) if(take(re, () => { F['gw-recent'] = g; F['yt-upload'] = y; seen.push(l); })) break;
- take(/\b(?:latest|newest|most recent)\b/i, () => { F['am-sort'] = 'date-desc-rank'; F['gw-sortdate'] = true; F['yt-sort'] = '2'; seen.push('Newest first'); });
- take(/\breddit\b/i, () => { F['gw-site'] = 'reddit.com'; seen.push('Reddit only'); });
- take(/\bgov(?:ernment)?\b/i, () => { F['gw-site'] = '.gov.in'; seen.push('.gov.in only'); });
- take(/\b(pdf|docx?|xlsx?|pptx?|csv)\b/i, m => { F['gw-filetype'] = m[1].toLowerCase(); seen.push(m[1].toUpperCase() + ' files'); });
- const brand = [...$('am-brand').options].map(o => o.value).find(b => b && b !== '__custom' && new RegExp('\\b' + b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i').test(t));
- if(brand){ F['am-brand'] = brand; seen.push('Brand ' + brand); }
- const kw = t.replace(/\b(?:please|find me|find|show me|search for|i want|looking for)\b/gi, ' ').replace(/[,;]+/g, ' ').replace(/\s+/g, ' ').trim();
- const Q = (kw + (phrase.length ? ' "' + phrase.join('" "') + '"' : '')).trim(), exs = ex.join(', ');
- return { seen, ok:Boolean(Q), fields:Object.assign({'am-query':Q, 'gs-q':Q, 'gw-all':kw, 'yt-q':kw, 'gw-exact':phrase[0] || '', 'yt-exact':phrase[0] || '', 'am-none':exs, 'gs-none':exs, 'gw-none':exs, 'yt-none':exs}, F) };
-}
-function applySmart(){
- const raw = $('sm-in').value.trim(), out = $('sm-out');
- if(!raw){ out.textContent = 'Type what you are looking for first, for example: sony headphones under 5000 prime.'; return; }
- const r = smart(raw);
- if(!r.ok){ out.textContent = 'Add the product or topic as well, for example “pdf manual for dell xps”.'; return; }
- setAll(Object.assign({}, AM_DEFAULTS, GW_DEFAULTS, GS_DEFAULTS, YT_DEFAULTS, r.fields));
- Object.values(KW).forEach(id => fire(id));
- out.textContent = 'Understood: ' + (r.seen.length ? r.seen.join(' · ') : 'keywords only') + '. Applied to every tab.';
-}
-
-function mountTool(cfg){
- const p = cfg.p;
- const g = s => $(p + '-' + s);
- let current = null, touched = false;
- const on = () => { touched = true; render(); };
- $(p + '-out').innerHTML = outputHTML(cfg);
-
- function render(){
-  if(cfg.onRender) cfg.onRender();
-  current = cfg.build();
-  g('url').textContent = current.error ? '' : current.link;
-  let decoded = current.link;
-  try { decoded = decodeURIComponent(current.link.replace(/\+/g, '%20')); } catch(_) {}
-  g('decoded').textContent = current.error ? '' : decoded;
-  g('facetList').textContent = current.facets.length ? cfg.facetLabel + current.facets.join('   |   ') : 'No additional filters selected.';
-  g('message').textContent = touched ? (current.error || '') : '';
-  g('notes').textContent = (current.notes || []).join(' ');
-  const bad = Boolean(current.error);
-  g('copy').disabled = bad;
-  const open = g('open');
-  open.href = bad ? '#' : current.link;
-  open.classList.toggle('disabled', bad);
-  open.setAttribute('aria-disabled', String(bad));
-  insights(cfg, current);
-  const chips = current.chips;
-  g('chips').replaceChildren(...chips.map(t => { const s = document.createElement('span'); s.className = 'chip'; s.textContent = t; return s; }));
- }
-
- for(const id of Object.keys(cfg.defaults)){
-  $(id).addEventListener('input', on);
-  $(id).addEventListener('change', on);
- }
- g('open').addEventListener('click', e => { if(current.error) e.preventDefault(); else remember(cfg); });
- g('copy').addEventListener('click', async () => {
-  if(current.error) return;
-  remember(cfg); const btn = g('copy'), text = current.link;
-  const done = ok => { btn.textContent = ok ? 'Copied ✓' : 'Select the URL text to copy'; setTimeout(() => { btn.textContent = 'Copy URL'; }, 2000); };
-  try { await navigator.clipboard.writeText(text); done(true); }
-  catch(e){
-   const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select();
-   let ok = false; try { ok = document.execCommand('copy'); } catch(_) {}
-   t.remove(); done(ok);
-  }
- });
- g('reset').addEventListener('click', () => { setAll(cfg.defaults); touched = false; render(); });
- setAll(cfg.defaults);
- render();
-}
+const altPills = (q, id, t) => phrasings(q).map(v => ({label: v, apply: () => { byId(id).value = v; t.touched = true; t.render(); }}));
+const kvList = rows => el('dl', {class: 'kv'}, ...rows.flatMap(([k, v, d]) => [el('dt', {text: k}), el('dd', null, v !== '' && v != null ? el('code', {text: String(v)}) : null, d ? (v !== '' && v != null ? ' ' : '') + d : null)]));
 
 /* ======================================================================
-   1. AMAZON INDIA  (logic unchanged from the original builder)
+   1. YOUTUBE
+   The sp parameter is a base64 protobuf: field 1 = sort, field 2 = filter
+   message {1 upload date, 2 type, 3 duration, then one field per feature}.
+   Values below were read from YouTube's own filter menu and each one was
+   checked against live results on 12 Nov 2026.
    ====================================================================== */
-const AM_TOKENS = { stars:'p_72:1318476031', prime:'p_85:10440599031' };
-const AM_DEFAULTS = {
- 'am-query':DEFAULT_QUERY, 'am-category':'', 'am-brand':'', 'am-customBrand':'', 'am-brandKeyword':false,
- 'am-stars':false, 'am-prime':false, 'am-minPrice':'', 'am-maxPrice':'', 'am-discount':'0', 'am-sort':'', 'am-page':'1', 'am-extra':'', 'am-none':''
+const YT_NAMES = {
+ type: {1: 'Videos', 9: 'Shorts', 2: 'Channels', 3: 'Playlists', 4: 'Movies'},
+ dur: {4: 'Under 3 min', 1: 'Under 4 min', 5: '3–20 min', 3: '4–20 min', 2: 'Over 20 min'},
+ up: {1: 'Last hour (removed by YouTube)', 2: 'Today', 3: 'This week', 4: 'This month', 5: 'This year'},
+ sort: {0: 'Relevance', 1: 'Rating (removed by YouTube)', 2: 'Upload date (removed by YouTube)', 3: 'Popularity'},
+ feat: {4: 'HD', 5: 'Subtitles/CC', 6: 'Creative Commons', 7: '3D', 8: 'Live', 9: 'Purchased', 14: '4K', 15: '360°', 23: 'Location', 25: 'HDR', 26: 'VR180'}
 };
+const HIDDEN_TIP = 'No longer in YouTube’s menu, but YouTube still honours it (tested 12 Nov 2026).';
+const YT_TYPE = [['', 'Any'], ['1', 'Videos', {title: 'Long-form videos only. Removes Shorts and the shelves between results.'}], ['9', 'Shorts'], ['2', 'Channels'], ['3', 'Playlists'], ['4', 'Movies']];
+const YT_DUR = [['', 'Any'], ['4', 'Under 3 min'], ['1', 'Under 4 min', {tag: 'hidden', title: HIDDEN_TIP}], ['5', '3–20 min'], ['3', '4–20 min', {tag: 'hidden', title: HIDDEN_TIP}], ['2', 'Over 20 min']];
+const YT_UP = [['', 'Any time'], ['2', 'Today'], ['3', 'This week'], ['4', 'This month'], ['5', 'This year']];
+const YT_SORT = [['', 'Relevance'], ['3', 'Popularity', {title: 'Most viewed first (YouTube renamed “View count” to “Popularity”).'}]];
+const YT_FEAT = [['14', '4K'], ['4', 'HD'], ['25', 'HDR'], ['5', 'Subtitles/CC'], ['6', 'Creative Commons'], ['8', 'Live', {title: 'Streaming now. Works with Videos, upload dates and most features, but not with Shorts, durations or 4K (tested).'}], ['15', '360°'], ['26', 'VR180'], ['7', '3D'], ['9', 'Purchased', {title: 'Only shows results when you are signed in. Cannot be combined with other filters.'}]];
+const YT_RANGES = [['', 'No limit'], ['d1', 'Last 24 hours'], ['d3', 'Last 3 days'], ['d7', 'Last 7 days'], ['d14', 'Last 2 weeks'], ['d30', 'Last 30 days'], ['m3', 'Last 3 months'], ['m6', 'Last 6 months'], ['y1', 'Last 12 months'], ['y2', 'Last 2 years'], ['y3', 'Last 3 years'], ['y5', 'Last 5 years'], ['custom', 'Custom dates']];
+const YT_HL = [['', 'Default'], ['en-GB', 'English (UK)'], ['en', 'English (US)'], ['hi', 'Hindi'], ['ta', 'Tamil'], ['te', 'Telugu'], ['bn', 'Bengali'], ['mr', 'Marathi'], ['gu', 'Gujarati'], ['kn', 'Kannada'], ['ml', 'Malayalam'], ['pa', 'Punjabi'], ['ur', 'Urdu'], ['es', 'Spanish'], ['fr', 'French'], ['de', 'German'], ['ja', 'Japanese'], ['ar', 'Arabic']];
+const YT_BOOST = [['Reviews', ['review', 'long term', 'vs', 'teardown', 'problems', 'worth it']], ['Learning', ['tutorial', 'explained', 'for beginners', 'step by step', 'full course']], ['Fixing', ['how to fix', 'not working', 'repair']]];
+const STOP = new Set('a an the and or of for to in on with by at from is are be how what why which best top new my me i you it this that video videos youtube review reviews vs versus latest tutorial guide explained test tested comparison unboxing honest long term'.split(' '));
 
-mountTool({
- p:'am', openLabel:'Open results on Amazon', facetLabel:'Filter codes: ', defaults:AM_DEFAULTS,
- onRender(){ $('am-customContainer').classList.toggle('hidden', val('am-brand') !== '__custom'); },
- build(){
-  const chosen = val('am-brand');
-  const brand = chosen === '__custom' ? val('am-customBrand') : chosen;
-  const rawQuery = val('am-query');
-  const low = val('am-minPrice'), high = val('am-maxPrice');
-  let error = '';
-  if(!rawQuery) error = 'Please enter product keywords.';
-  else if((low !== '' && (!Number.isFinite(Number(low)) || Number(low) < 0)) || (high !== '' && (!Number.isFinite(Number(high)) || Number(high) < 0))) error = 'Price values must be zero or above.';
-  else if(low !== '' && high !== '' && Number(low) > Number(high)) error = 'Minimum price cannot exceed maximum price.';
-  else if(chosen === '__custom' && !brand) error = 'Enter a custom brand or select All brands.';
-  const query = negate(brand && chk('am-brandKeyword') && !rawQuery.toLowerCase().includes(brand.toLowerCase()) ? rawQuery + ' ' + brand : rawQuery, 'am-none');
-  const facets = [];
-  if(low !== '' || high !== '') facets.push('p_36:' + (low !== '' ? Math.round(Number(low) * 100) : '') + '-' + (high !== '' ? Math.round(Number(high) * 100) : ''));
-  if(chk('am-stars')) facets.push(AM_TOKENS.stars);
-  if(chk('am-prime')) facets.push(AM_TOKENS.prime);
-  if(brand) facets.push('p_89:' + brand);
-  const pct = Number(val('am-discount'));
-  if(pct > 0) facets.push('p_n_pct-off-with-tax:' + pct + '-100');
-  const custom = splitList(val('am-extra'));
-  const invalidCustom = custom.filter(v => !/^[a-zA-Z0-9_\-]+:[^&#=?]+$/.test(v));
-  if(invalidCustom.length && !error) error = 'Invalid custom filter syntax: ' + invalidCustom.join(', ');
-  if(!invalidCustom.length) facets.push(...custom);
-  const url = new URL('https://www.amazon.in/s');
-  url.searchParams.set('k', query);
-  if(val('am-category')) url.searchParams.set('i', val('am-category'));
-  if(facets.length) url.searchParams.set('rh', facets.join(','));
-  if(val('am-sort')) url.searchParams.set('s', val('am-sort'));
-  if(Number(val('am-page')) > 1) url.searchParams.set('page', val('am-page'));
-  const chips = [];
-  if(brand) chips.push('Brand: ' + brand);
-  if(chk('am-stars')) chips.push('4★+');
-  if(chk('am-prime')) chips.push('Prime only');
-  if(val('am-minPrice') || val('am-maxPrice')) chips.push('Price: ₹' + (val('am-minPrice') || '0') + '–₹' + (val('am-maxPrice') || '∞'));
-  if(Number(val('am-discount')) > 0) chips.push(val('am-discount') + '%+ discount');
-  if(val('am-category')) chips.push('Department: ' + val('am-category'));
-  if(val('am-none')) chips.push('Excluding: ' + splitList(val('am-none')).join(', '));
-  if(val('am-sort')) chips.push('Sort: ' + sel('am-sort'));
-  return { link:url.toString(), facets, chips, error, notes:[], q:query };
- },
-});
+function rangeAfter(code) {
+ const m = /^([dmy])(\d{1,3})$/.exec(code || '');
+ if (!m) return '';
+ const n = +m[2];
+ return ymd(m[1] === 'd' ? shiftDays(-n) : shiftMonths(-(m[1] === 'm' ? n : 12 * n)));
+}
+function rangeLabel(code) {
+ const m = /^([dmy])(\d{1,3})$/.exec(code || ''); if (!m) return '';
+ const n = +m[2], u = {d: 'day', m: 'month', y: 'year'}[m[1]];
+ return 'Last ' + n + ' ' + u + (n > 1 ? 's' : '');
+}
+function ytDates(s) {
+ if (s.range === 'custom') return {after: isYmd(s.from) ? s.from : '', before: isYmd(s.to) ? s.to : ''};
+ return {after: rangeAfter(s.range), before: ''};
+}
 
-/* ======================================================================
-   2. GOOGLE WEB  (advanced operators)
-   ====================================================================== */
-fill('gw-lang', LANGS);
-fill('gw-region', REGIONS);
-const GW_DEFAULTS = {
- 'gw-all':'', 'gw-exact':'', 'gw-any':'', 'gw-none':'',
- 'gw-site':'', 'gw-nosite':'', 'gw-filetype':'', 'gw-intitle':'', 'gw-inurl':'', 'gw-intext':'',
- 'gw-numfrom':'', 'gw-numto':'', 'gw-numunit':'', 'gw-recent':'', 'gw-after':'', 'gw-before':'',
- 'gw-lang':'', 'gw-region':'', 'gw-page':'1',
- 'gw-sortdate':false, 'gw-verbatim':false, 'gw-webonly':false, 'gw-safe':false
-};
+/* --- compatibility, from live tests (Nov 2026). Sending a clashing pair
+   makes YouTube return an empty page:
+   · Purchased and Movies combine with nothing else (YouTube's own menu);
+   · Channels and Playlists take no duration, upload date or feature;
+   · Shorts take no duration;
+   · Live works with Videos, upload dates, HD, captions and Creative Commons,
+     but not with Shorts, Channels, Playlists, Movies, any duration or 4K. */
+function ytClash(a, b) {
+ if (a.g === b.g && a.g !== 'feat') return false;
+ const ex = x => (x.g === 'feat' && x.v === 9) || (x.g === 'type' && x.v === 4);
+ const live = x => x.g === 'feat' && x.v === 8;
+ if (a.g === 'feat' && b.g === 'feat') return ex(a) || ex(b) || (live(a) && b.v === 14) || (live(b) && a.v === 14);
+ if (ex(a) || ex(b)) return true;
+ const cp = x => x.g === 'type' && (x.v === 2 || x.v === 3);
+ if (cp(a) || cp(b)) return true;
+ if (live(a) || live(b)) { const o = live(a) ? b : a; return o.g === 'dur' || (o.g === 'type' && o.v !== 1); }
+ const sh = x => x.g === 'type' && x.v === 9;
+ return (sh(a) && b.g === 'dur') || (sh(b) && a.g === 'dur');
+}
+const ytSel = s => [...(+s.type ? [{g: 'type', v: +s.type}] : []), ...(+s.dur ? [{g: 'dur', v: +s.dur}] : []), ...(+s.up ? [{g: 'up', v: +s.up}] : []), ...(s.feat || []).map(v => ({g: 'feat', v: +v}))];
+const selLabel = x => YT_NAMES[x.g][x.v] || x.g + ' ' + x.v;
+function ytFromSel(s, sel) {
+ const n = Object.assign({}, s, {type: '', dur: '', up: '', feat: []});
+ sel.forEach(x => { if (x.g === 'feat') n.feat.push(String(x.v)); else n[x.g] = String(x.v); });
+ return n;
+}
+function ytResolve(s, changed) {
+ const dropped = [];
+ const sel = ytSel(s).filter(x => { if (x.g === changed.g && x.v === changed.v) return true; if (ytClash(changed, x)) { dropped.push(selLabel(x)); return false; } return true; });
+ return {s: ytFromSel(s, sel), dropped};
+}
+function ytSanitise(s) {
+ const kept = [], dropped = [];
+ ytSel(s).forEach(x => { if (kept.some(k => ytClash(k, x))) dropped.push(selLabel(x)); else kept.push(x); });
+ return {s: dropped.length ? ytFromSel(s, kept) : s, dropped};
+}
 
-mountTool({
- p:'gw', openLabel:'Open results on Google', facetLabel:'Operators and parameters: ', defaults:GW_DEFAULTS,
- onRender(){ $('gw-recent').disabled = Boolean(val('gw-after') || val('gw-before')); },
- build(){
-  const parts = [], chips = [], notes = [], params = {};
-  let error = '';
-  const fail = m => { if(!error) error = m; };
-
-  const all = val('gw-all');
-  if(all){ parts.push(all); chips.push('Words: ' + all); }
-  const exact = noQuotes(val('gw-exact'));
-  if(exact){ parts.push('"' + exact + '"'); chips.push('Exact: “' + exact + '”'); }
-  const any = splitList(val('gw-any')).map(noQuotes).filter(Boolean);
-  if(any.length){ parts.push(any.length > 1 ? '(' + any.map(maybeQuote).join(' OR ') + ')' : maybeQuote(any[0])); chips.push('Any of: ' + any.join(' / ')); }
-
-  const from = val('gw-numfrom'), to = val('gw-numto'), unit = val('gw-numunit');
-  if(from !== '' || to !== ''){
-   if(!isNum(from) || !isNum(to)) fail('Enter both ends of the number range.');
-   else if(Number(from) > Number(to)) fail('The number range start cannot exceed its end.');
-   else { parts.push(unit + from + '..' + unit + to); chips.push('Range: ' + unit + from + '–' + unit + to); }
-  }
-
-  [['gw-intitle','intitle','In title'],['gw-inurl','inurl','In URL'],['gw-intext','intext','In text']].forEach(([id, op, label]) => {
-   const items = splitList(val(id)).map(noQuotes).filter(Boolean);
-   items.forEach(t => parts.push(op + ':' + maybeQuote(t)));
-   if(items.length) chips.push(label + ': ' + items.join(', '));
-  });
-
-  const cleanSite = s => s.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
-  const sites = splitList(val('gw-site')).map(cleanSite);
-  const nosites = splitList(val('gw-nosite')).map(cleanSite);
-  const badSite = [...sites, ...nosites].find(s => !s || /[\s"]/.test(s));
-  if(badSite !== undefined) fail('Site entries must be domains or paths without spaces, for example reddit.com or .gov.in.');
-  if(sites.length){ parts.push(sites.length > 1 ? '(' + sites.map(s => 'site:' + s).join(' OR ') + ')' : 'site:' + sites[0]); chips.push('Only on: ' + sites.join(', ')); }
-  if(nosites.length){ nosites.forEach(s => parts.push('-site:' + s)); chips.push('Not on: ' + nosites.join(', ')); }
-
-  const ft = val('gw-filetype');
-  if(ft){ parts.push('filetype:' + ft); chips.push('File type: ' + ft.toUpperCase()); }
-  const none = splitList(val('gw-none')).map(noQuotes).filter(Boolean);
-  if(none.length){ none.forEach(t => parts.push('-' + maybeQuote(t))); chips.push('Excluding: ' + none.join(', ')); }
-
-  const after = val('gw-after'), before = val('gw-before'), tbs = [];
-  if(after && before && after > before) fail('The “published after” date cannot be later than “published before”.');
-  if(after){ parts.push('after:' + after); chips.push('After ' + after); }
-  if(before){ parts.push('before:' + before); chips.push('Before ' + before); }
-  const rec = val('gw-recent');
-  if(after || before){ if(rec) notes.push('Custom dates override the quick time range, so it was left out.'); }
-  else if(rec){ tbs.push('qdr:' + rec); chips.push('Time: ' + sel('gw-recent')); }
-  if(chk('gw-sortdate')){ tbs.push('sbd:1'); chips.push('Sorted by date'); }
-  if(chk('gw-verbatim')){ tbs.push('li:1'); chips.push('Verbatim'); }
-
-  if(chk('gw-webonly')){ params.udm = '14'; chips.push('Web results only'); }
-  if(val('gw-lang')){ params.lr = 'lang_' + val('gw-lang'); chips.push('Language: ' + sel('gw-lang')); }
-  if(val('gw-region')){ params.gl = val('gw-region'); chips.push('Region: ' + sel('gw-region')); }
-  if(chk('gw-safe')){ params.safe = 'active'; chips.push('SafeSearch'); }
-  if(tbs.length) params.tbs = tbs.join(',');
-  const page = Number(val('gw-page'));
-  if(page > 1){ params.start = String((page - 1) * 10); chips.push('Page ' + page); }
-
-  const q = parts.join(' ');
-  if(!q) fail('Add at least one search term or operator.');
-  const url = new URL('https://www.google.com/search');
-  url.searchParams.set('q', q);
-  for(const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
-  const facets = [...parts, ...Object.entries(params).map(([k, v]) => k + '=' + v)];
-  return { link:url.toString(), facets, chips, error, notes, parts, params };
- },
-});
-
-/* ======================================================================
-   3. GOOGLE SHOPPING
-   ====================================================================== */
-fill('gs-region', REGIONS);
-const GS_DEFAULTS = {
- 'gs-q':DEFAULT_QUERY, 'gs-brand':'', 'gs-min':'', 'gs-max':'', 'gs-cond':'', 'gs-sort':'', 'gs-region':'in',
- 'gs-free':false, 'gs-sale':false, 'gs-mode':'udm', 'gs-extra':'', 'gs-none':''
-};
-
-mountTool({
- p:'gs', openLabel:'Open results on Google Shopping', facetLabel:'Parameters: ', defaults:GS_DEFAULTS,
- build(){
-  const notes = [], chips = [], params = {};
-  let error = '';
-  const kw = val('gs-q'), brand = noQuotes(val('gs-brand'));
-  const q0 = brand && !kw.toLowerCase().includes(brand.toLowerCase()) ? (kw + ' ' + brand).trim() : kw;
-  const q = q0 ? negate(q0, 'gs-none') : '';
-  const low = val('gs-min'), high = val('gs-max');
-  if(!q) error = 'Please enter product keywords.';
-  else if((low !== '' && (!isNum(low) || Number(low) < 0)) || (high !== '' && (!isNum(high) || Number(high) < 0))) error = 'Price values must be zero or above.';
-  else if(low !== '' && high !== '' && Number(low) > Number(high)) error = 'Minimum price cannot exceed maximum price.';
-
-  const tbs = [];
-  if(low !== '' || high !== ''){
-   tbs.push('price:1');
-   if(low !== '') tbs.push('ppr_min:' + Math.round(Number(low)));
-   if(high !== '') tbs.push('ppr_max:' + Math.round(Number(high)));
-   chips.push('Price: ₹' + (low || '0') + '–₹' + (high || '∞'));
-  }
-  if(val('gs-cond')){ tbs.push(val('gs-cond')); chips.push('Condition: ' + sel('gs-cond')); }
-  if(chk('gs-free')){ tbs.push('free_ship:1'); chips.push('Free delivery'); }
-  if(chk('gs-sale')){ tbs.push('sales:1'); chips.push('On sale'); }
-  if(val('gs-sort')){ tbs.push(val('gs-sort')); chips.push('Sort: ' + sel('gs-sort')); }
-  const custom = splitList(val('gs-extra'));
-  const invalid = custom.filter(v => !/^[A-Za-z0-9_]+:[A-Za-z0-9_.\-]+$/.test(v));
-  if(invalid.length && !error) error = 'Invalid custom code: ' + invalid.join(', ') + '. Use key:value, for example p_ord:p.';
-  if(!invalid.length && custom.length){ tbs.push(...custom); chips.push('Custom codes: ' + custom.length); }
-  if(brand) chips.unshift('Brand: ' + brand);
-
-  if(val('gs-mode') === 'tbm') params.tbm = 'shop'; else params.udm = '28';
-  if(tbs.length) params.tbs = 'mr:1,' + tbs.join(',');
-  if(val('gs-region')){ params.gl = val('gs-region'); chips.push('Region: ' + sel('gs-region')); }
-
-  const url = new URL('https://www.google.com/search');
-  url.searchParams.set('q', q);
-  for(const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
-  const parts = q ? [q] : [];
-  const facets = [...parts, ...Object.entries(params).map(([k, v]) => k + '=' + v)];
-  return { link:url.toString(), facets, chips, error, notes, parts, params };
- },
-});
-
-/* ======================================================================
-   4. YOUTUBE
-   YouTube packs sort + filters into one protobuf blob in the "sp" parameter.
-   Fields: 1 sort (1 rating, 2 date, 3 views) | 2 filter message:
-     1 upload date, 2 type, 3 duration, then boolean features by field number.
-   ====================================================================== */
-const YT = {
- sort:{1:'Rating',2:'Upload date',3:'View count'},
- upload:{1:'Last hour',2:'Today',3:'This week',4:'This month',5:'This year'},
- type:{1:'Video',2:'Channel',3:'Playlist',4:'Movie'},
- duration:{1:'Under 4 min',2:'Over 20 min',3:'4–20 min'},
- flags:{4:'HD',5:'Subtitles/CC',6:'Creative Commons',7:'3D',8:'Live',9:'Purchased',14:'4K',15:'360°',23:'Location',25:'HDR',26:'VR180'}
-};
-const YT_FLAG_UI = [4,5,6,8,14,15,26,25,7]; // features offered in the UI
-
-const varint = n => { const out = []; while(n > 127){ out.push((n % 128) | 128); n = Math.floor(n / 128); } out.push(n); return out; };
-/* today minus n years as yyyy-mm-dd (local date); 29 Feb falls back to 28 Feb */
-const yearsAgo = n => { const t = new Date(), d = new Date(t.getFullYear() - n, t.getMonth(), t.getDate()); if(d.getMonth() !== t.getMonth()) d.setDate(0); return [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-'); };
-
-function ytEncode(o){
+/* --- sp encoding / decoding */
+function varint(n) { const o = []; while (n > 127) { o.push((n % 128) | 128); n = Math.floor(n / 128); } o.push(n); return o; }
+function ytEncode(o) {
  const f = [];
- if(o.upload) f.push([1, o.upload]);
- if(o.type) f.push([2, o.type]);
- if(o.duration) f.push([3, o.duration]);
- o.flags.forEach(x => f.push([x, 1]));
+ if (o.upload) f.push([1, o.upload]);
+ if (o.type) f.push([2, o.type]);
+ if (o.duration) f.push([3, o.duration]);
+ (o.feats || []).forEach(x => f.push([x, 1]));
+ (o.extra || []).forEach(([k, v]) => f.push([k, v]));
  f.sort((a, b) => a[0] - b[0]);
- const filt = [];
- f.forEach(([fld, v]) => filt.push(...varint(fld * 8), ...varint(v)));
- const bytes = [];
- if(o.sort) bytes.push(...varint(1 * 8), ...varint(o.sort));
- if(filt.length) bytes.push(...varint(2 * 8 + 2), ...varint(filt.length), ...filt);
- return bytes.length ? btoa(String.fromCharCode(...bytes)) : '';
+ const body = [];
+ f.forEach(([k, v]) => body.push(...varint(k * 8), ...varint(v)));
+ const out = [];
+ if (o.sort) out.push(...varint(8), ...varint(o.sort));
+ if (body.length) out.push(0x12, ...varint(body.length), ...body);
+ return out.length ? btoa(String.fromCharCode(...out)) : '';
 }
-function ytLabels(o){
- const L = [];
- if(o.sort) L.push('Sort: ' + (YT.sort[o.sort] || 'code ' + o.sort));
- if(o.upload) L.push('Uploaded: ' + (YT.upload[o.upload] || 'code ' + o.upload));
- if(o.after) L.push('Uploaded: last 3 years (after ' + o.after + ')');
- if(o.type) L.push('Type: ' + (YT.type[o.type] || 'code ' + o.type));
- if(o.duration) L.push('Duration: ' + (YT.duration[o.duration] || 'code ' + o.duration));
- o.flags.slice().sort((a, b) => a - b).forEach(x => L.push('Feature: ' + (YT.flags[x] || 'field ' + x)));
- return L;
+function spBytes(sp) {
+ let s = String(sp).trim();
+ for (let i = 0; i < 3 && /%[0-9a-f]{2}/i.test(s); i++) { try { s = decodeURIComponent(s); } catch (_) { break; } }
+ s = s.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
+ while (s.length % 4) s += '=';
+ const bin = atob(s);
+ return Uint8Array.from(bin, c => c.charCodeAt(0));
+}
+function readVarint(b, i) { let n = 0, mul = 1, x; do { if (i >= b.length) throw new Error('truncated code'); x = b[i++]; n += (x & 127) * mul; mul *= 128; } while (x & 128); return [n, i]; }
+function ytDecode(sp) {
+ const r = {sort: 0, upload: 0, type: 0, duration: 0, feats: [], extra: [], other: [], ok: true, hex: ''};
+ try {
+  const b = spBytes(sp);
+  r.hex = [...b].map(x => x.toString(16).padStart(2, '0')).join(' ');
+  let i = 0;
+  while (i < b.length) {
+   let key; [key, i] = readVarint(b, i);
+   const field = Math.floor(key / 8), wt = key & 7;
+   if (wt === 0) { let v; [v, i] = readVarint(b, i); if (field === 1) r.sort = v; else r.other.push([field, v]); }
+   else if (wt === 2) {
+    let len; [len, i] = readVarint(b, i);
+    const sub = b.slice(i, i + len); i += len;
+    if (field !== 2) { r.other.push([field, 'bytes']); continue; }
+    let j = 0;
+    while (j < sub.length) {
+     let k2; [k2, j] = readVarint(sub, j);
+     if ((k2 & 7) !== 0) throw new Error('unexpected filter format');
+     const f2 = Math.floor(k2 / 8);
+     let v2; [v2, j] = readVarint(sub, j);
+     if (f2 === 1) r.upload = v2; else if (f2 === 2) r.type = v2; else if (f2 === 3) r.duration = v2;
+     else if (v2 === 1 && YT_NAMES.feat[f2] && f2 !== 23) r.feats.push(f2); else r.extra.push([f2, v2]);
+    }
+   } else throw new Error('unsupported code format');
+  }
+ } catch (e) { r.ok = false; r.err = e.message; }
+ return r;
 }
 
-$('yt-flags').replaceChildren(...YT_FLAG_UI.map(n => {
- const l = document.createElement('label'); l.className = 'toggle mini';
- const i = document.createElement('input'); i.type = 'checkbox'; i.id = 'yt-f-' + n; i.dataset.f = String(n);
- const s = document.createElement('span'); const st = document.createElement('strong'); st.textContent = YT.flags[n]; s.appendChild(st);
- l.append(i, s); return l;
-}));
-fill('yt-region', REGIONS.map(([v, l]) => [v.toUpperCase(), l]));
-const YT_DEFAULTS = {
- 'yt-q':'', 'yt-exact':'', 'yt-any':'', 'yt-none':'', 'yt-channel':'',
- 'yt-upload':'', 'yt-type':'', 'yt-duration':'', 'yt-sort':'0', 'yt-region':''
+/* --- query parsing (for pasted YouTube addresses) and channel parsing */
+function ytParseQuery(q) {
+ let t = ' ' + String(q || '') + ' ';
+ const o = {exact: [], title: [], none: [], any: [], after: '', before: ''};
+ t = t.replace(/\bintitle:(?:"([^"]+)"|(\S+))/gi, (_, a, b) => { o.title.push(a || b); return ' '; });
+ t = t.replace(/\bafter:(\d{4}-\d{2}-\d{2})\b/gi, (_, d) => { o.after = d; return ' '; });
+ t = t.replace(/\bbefore:(\d{4}-\d{2}-\d{2})\b/gi, (_, d) => { o.before = d; return ' '; });
+ t = t.replace(/\(([^()]*\|[^()]*)\)/g, (_, inner) => { o.any.push(...inner.split('|').map(unquote).filter(Boolean)); return ' '; });
+ t = t.replace(/(\s)-(?:"([^"]+)"|([^\s"]+))/g, (_, sp, a, b) => { o.none.push(a || b); return ' '; });
+ t = t.replace(/"([^"]+)"/g, (_, p) => { o.exact.push(squash(p)); return ' '; });
+ o.q = squash(t);
+ return o;
+}
+function ytChannel(raw) {
+ let s = squash(raw);
+ if (!s) return null;
+ if (/youtube\.com|^https?:/i.test(s)) {
+  try { const u = new URL(/^https?:/i.test(s) ? s : 'https://' + s.replace(/^\/+/, '')); s = u.pathname; } catch (_) { return {error: true}; }
+  try { s = decodeURIComponent(s); } catch (_) {}
+ }
+ let m;
+ if ((m = s.match(/(?:^|\/)channel\/(UC[\w-]{22})(?:\/|$)/)) || (m = s.match(/^(UC[\w-]{22})$/))) return {path: '/channel/' + m[1], label: m[1].slice(0, 8) + '…'};
+ if ((m = s.match(/(?:^|\/)(c|user)\/([^/?#]+)/))) return {path: '/' + m[1] + '/' + encodeURIComponent(m[2]), label: m[2]};
+ if ((m = s.match(/(?:^|\/)@([^/?#\s]+)/)) || (m = s.match(/^@?([\p{L}\p{N}._-]{3,30})$/u))) return {path: '/@' + encodeURIComponent(m[1]), label: '@' + m[1]};
+ return {error: true};
+}
+
+const ytModel = Model([
+ ['q', 'yt-q', 'text', ''], ['exact', 'yt-exact', 'text', ''], ['any', 'yt-any', 'text', ''], ['title', 'yt-title', 'text', ''], ['none', 'yt-none', 'text', ''], ['noneMode', 'yt-noneMode', 'radio', 'google'],
+ ['type', 'yt-type', 'radio', ''], ['dur', 'yt-dur', 'radio', ''], ['up', 'yt-up', 'radio', ''], ['sort', 'yt-sort', 'radio', ''], ['feat', 'yt-feat', 'checks', []],
+ ['range', 'yt-range', 'text', ''], ['from', 'yt-from', 'text', ''], ['to', 'yt-to', 'text', ''],
+ ['ch', 'yt-ch', 'text', ''], ['gl', 'yt-gl', 'text', ''], ['hl', 'yt-hl', 'text', ''], ['groute', 'yt-groute', 'text', 'udm'], ['spx', 'yt-spx', 'text', '']
+]);
+
+function ytUrl(q, sp, s) {
+ const u = new URL('https://www.youtube.com/results');
+ u.searchParams.set('search_query', q);
+ if (sp) u.searchParams.set('sp', sp);
+ if (s.gl) u.searchParams.set('gl', s.gl);
+ if (s.hl) u.searchParams.set('hl', s.hl);
+ return u.toString();
+}
+function ytGoogleUrl(s, core, none, dates, o) {
+ const site = {1: 'site:youtube.com/watch', 9: 'site:youtube.com/shorts', 3: 'site:youtube.com/playlist'}[o.type] || 'site:youtube.com';
+ const gq = [...core.map(x => x.replace(/ \| /g, ' OR ')), ...none.map(n => '-' + q1(n)), site, dates.after && 'after:' + dates.after, dates.before && 'before:' + dates.before].filter(Boolean).join(' ');
+ const u = new URL('https://www.google.com/search');
+ u.searchParams.set('q', gq);
+ if (s.groute === 'tbm') u.searchParams.set('tbm', 'vid'); else u.searchParams.set('udm', '7');
+ const tbs = [];
+ const dur = {4: 's', 1: 's', 5: 'm', 3: 'm', 2: 'l'}[o.duration];
+ if (dur) tbs.push('dur:' + dur);
+ if (!dates.after && !dates.before && o.upload) tbs.push('qdr:' + {2: 'd', 3: 'w', 4: 'm', 5: 'y'}[o.upload]);
+ if (tbs.length) u.searchParams.set('tbs', tbs.join(','));
+ if (s.gl) u.searchParams.set('gl', s.gl.toLowerCase());
+ if (s.hl) u.searchParams.set('hl', s.hl);
+ return u.toString();
+}
+
+function ytBuild(s0, lite) {
+ const warns = [], hits = [], sum = [];
+ let error = '';
+ const san = ytSanitise(s0), s = san.s;
+ if (san.dropped.length) warns.push({level: 'warn', text: 'Left out ' + list(san.dropped) + ': YouTube cannot combine ' + (san.dropped.length > 1 ? 'them' : 'it') + ' with your other filters and would show an empty page.'});
+ const kw = squash(s.q);
+ const exact = splitList(s.exact).map(unquote).filter(Boolean);
+ const any = splitList(s.any).map(unquote).filter(Boolean);
+ const title = splitList(s.title).map(unquote).filter(Boolean);
+ const none = splitList(s.none).map(unquote).filter(Boolean);
+ const dates = ytDates(s);
+ const ch = s.ch ? ytChannel(s.ch) : null;
+
+ const core = [];
+ if (kw) core.push(kw);
+ exact.forEach(p => core.push('"' + p + '"'));
+ if (any.length) core.push(any.length > 1 ? '(' + any.map(q1).join(' | ') + ')' : q1(any[0]));
+ title.forEach(w => core.push('intitle:' + q1(w)));
+ const dateOps = [dates.after && 'after:' + dates.after, dates.before && 'before:' + dates.before].filter(Boolean);
+ const neg = none.map(n => '-' + q1(n));
+ const ytQ = [...core, ...dateOps, ...(s.noneMode === 'send' ? neg : [])].join(' ');
+ if (!core.length) error = 'Add keywords, an exact phrase or a title word to start.';
+
+ if (s.range === 'custom') {
+  if ((s.from && !isYmd(s.from)) || (s.to && !isYmd(s.to))) error = error || 'Use complete dates (day, month and year).';
+  else if (dates.after && dates.before && dates.after >= dates.before) error = error || 'The “from” date must be earlier than the “to” date.';
+  else if (!dates.after && !dates.before) warns.push({level: 'info', text: 'Pick a from date, a to date, or both for the custom window.'});
+ }
+
+ const o = {sort: +s.sort || 0, upload: +s.up || 0, type: +s.type || 0, duration: +s.dur || 0, feats: (s.feat || []).map(Number).sort((a, b) => a - b)};
+ let sp = ytEncode(o), custom = null;
+ if (s.spx) {
+  const d = ytDecode(s.spx);
+  if (d.ok && d.hex) { custom = d; sp = btoa(String.fromCharCode(...spBytes(s.spx))); warns.push({level: 'info', text: 'Using your custom sp code, so the filter chips are ignored.'}); }
+  else error = error || 'The custom sp code could not be read. Copy it again from the YouTube address, or clear it.';
+ }
+ const eff = custom ? {sort: custom.sort, upload: custom.upload, type: custom.type, duration: custom.duration, feats: custom.feats} : o;
+
+ let url, openLabel = 'Open on YouTube';
+ if (ch && ch.error) error = error || 'Enter the channel as @handle, a channel link or a UC… channel ID.';
+ const chOn = ch && !ch.error;
+ if (chOn) {
+  const cq = [kw, ...exact.map(p => '"' + p + '"'), ...any].filter(Boolean).join(' ');
+  const u = new URL('https://www.youtube.com' + ch.path + '/search');
+  u.searchParams.set('query', cq);
+  if (s.hl) u.searchParams.set('hl', s.hl);
+  url = u.toString();
+  openLabel = 'Search ' + trunc(ch.label, 22);
+  const ignored = [...(sp ? ['filters'] : []), ...(title.length ? ['title words'] : []), ...(dateOps.length ? ['the date window'] : [])];
+  if (ignored.length) warns.push({level: 'info', text: 'Inside a channel YouTube ignores ' + list(ignored) + '. The “All of YouTube” route below keeps them.'});
+ } else url = ytUrl(ytQ, sp, s);
+ if (lite) return {url, error};
+
+ /* what the live tests taught us, surfaced as guidance */
+ if (none.length) warns.push(s.noneMode === 'send'
+  ? {level: 'warn', text: 'Tested 12 Nov 2026: YouTube often reads -word as a search word and shows more of it (e.g. “-anker” gave 14 of 18 Anker videos). The strict Google route below removes them properly.', fixLabel: 'Google only', fix: () => setRadio('yt-noneMode', 'google')}
+  : {level: 'info', text: 'Words to avoid are applied on the strict Google route below. YouTube itself mishandles -word.'});
+ if (!custom && eff.sort === 3 && !eff.type && !eff.feats.includes(8) && !eff.feats.includes(9)) warns.push({level: 'tip', text: 'Popularity on its own loads a short first page. Adding “Videos” fixes that and removes Shorts.', fixLabel: 'Add Videos', fix: () => setRadio('yt-type', '1')});
+ else if (!custom && !chOn && !eff.type && !eff.feats.includes(8) && !eff.feats.includes(9) && core.length) warns.push({level: 'tip', text: 'Junk shield: Type “Videos” removes Shorts and the shelves between results (tested).', fixLabel: 'Add Videos', fix: () => setRadio('yt-type', '1')});
+ if (eff.upload && dateOps.length) {
+  const start = {2: shiftDays(-1), 3: shiftDays(-7), 4: shiftMonths(-1), 5: shiftMonths(-12)}[eff.upload];
+  if (start && dates.before && dates.before <= ymd(start)) warns.push({level: 'bad', text: '“' + YT_NAMES.up[eff.upload] + '” and “before ' + niceDate(dates.before) + '” cannot both be true, so this will return nothing. Clear one of them.'});
+  else warns.push({level: 'info', text: 'The upload-date chip and the date window both apply. Results must match both.'});
+ }
+ if ((eff.type === 2 || eff.type === 3) && dateOps.length) warns.push({level: 'info', text: 'The date window is meant for videos. With Channels or Playlists it can hide results.'});
+ if (eff.feats.includes(9)) warns.push({level: 'info', text: '“Purchased” only shows results when you are signed in to YouTube.'});
+ if (title.length > 3) warns.push({level: 'warn', text: 'More than three title words is very strict. Keep the most specific ones.'});
+
+ /* plain-English summary and narrowness score */
+ const T = {1: 'Long-form videos only (no Shorts)', 9: 'Shorts only', 2: 'Channels', 3: 'Playlists', 4: 'Movies'};
+ if (chOn) sum.push('Inside ' + ch.label);
+ if (eff.type) { sum.push(T[eff.type] || YT_NAMES.type[eff.type]); if (eff.type !== 1) hits.push([1, 'the type']); }
+ if (eff.duration) { sum.push(YT_NAMES.dur[eff.duration]); hits.push([eff.duration === 5 || eff.duration === 3 ? 1 : 1.5, 'the duration']); }
+ if (eff.upload) { sum.push('uploaded ' + YT_NAMES.up[eff.upload].toLowerCase()); hits.push([{2: 3, 3: 2, 4: 1.5, 5: 0.7}[eff.upload] || 1, 'the upload date']); }
+ if (dates.after || dates.before) {
+  sum.push(dates.after && dates.before ? 'uploaded ' + niceDate(dates.after) + ' to ' + niceDate(dates.before) : dates.after ? 'uploaded after ' + niceDate(dates.after) : 'uploaded before ' + niceDate(dates.before));
+  const span = daySpan(dates.after || '2005-04-23', dates.before || ymd(today()));
+  hits.push([span <= 2 ? 3 : span <= 8 ? 2 : span <= 32 ? 1.5 : span <= 190 ? 1 : span <= 400 ? 0.6 : 0.3, 'the date window']);
+ }
+ eff.feats.forEach(f => { sum.push(YT_NAMES.feat[f]); hits.push([{14: 1, 4: 0.3, 25: 2, 5: 1, 6: 2, 8: 2, 15: 2.5, 26: 3, 7: 2.5, 9: 3}[f] || 1, YT_NAMES.feat[f]]); });
+ if (eff.sort === 3) sum.push('most popular first');
+ title.forEach(w => { hits.push([1.5, 'title “' + w + '”']); });
+ if (title.length) sum.push('title has ' + title.map(w => '“' + w + '”').join(' + '));
+ if (exact.length) { sum.push('exact ' + exact.map(p => '“' + p + '”').join(' + ')); exact.forEach(p => hits.push([1, '“' + p + '”'])); }
+ if (any.length > 1) sum.push('any of ' + any.join(' / '));
+ if (none.length) sum.push('avoiding ' + none.join(', ') + (s.noneMode === 'send' ? '' : ' (Google route)'));
+ if (chOn) hits.push([2, 'the channel']);
+ if (s.gl) sum.push('region ' + (REGIONS.find(r => r[0] === s.gl) || [, s.gl])[1]);
+ const score = hits.reduce((a, h) => a + h[0], 0);
+
+ /* search plan: other angles on the same words */
+ const words = [...core, ...dateOps].join(' ');
+ const angle = (over, q) => ytUrl(q || words, ytEncode(Object.assign({sort: 0, upload: 0, type: 0, duration: 0, feats: []}, over)), s);
+ const d30 = rangeAfter('d30');
+ const spoken = [kw, ...exact.map(p => '"' + p + '"')].filter(Boolean).join(' ');
+ const routes = core.length ? [
+  {label: 'Strict: Google Videos, YouTube only', desc: (none.length ? 'Really removes ' + none.join(', ') + ' · ' : '') + (eff.type === 9 ? 'Shorts only' : eff.type === 1 ? 'skips Shorts' : 'all of YouTube') + (eff.duration ? ' · ' + YT_NAMES.dur[eff.duration] : ''), url: ytGoogleUrl(s, core, none, dates, eff)},
+  chOn ? {label: 'All of YouTube, with your filters', desc: 'The same search outside the channel', url: ytUrl(ytQ, sp, s)} : null,
+  {label: 'Most popular', desc: 'Videos · most viewed first', url: angle({type: 1, sort: 3})},
+  {label: 'Fresh: last 30 days', desc: 'Videos · after:' + d30, url: angle({type: 1}, [...core, 'after:' + d30].join(' '))},
+  {label: 'Deep dives', desc: 'Videos · over 20 min', url: angle({type: 1, duration: 2})},
+  {label: 'Quick answers', desc: 'Videos · under 4 min (hidden filter)', url: angle({type: 1, duration: 1})},
+  {label: 'Shorts only', desc: 'When a one-minute answer is enough', url: angle({type: 9})},
+  spoken ? {label: 'Spoken words: Filmot', desc: 'Searches what people actually say in videos (subtitles)', tag: 'third-party', url: 'https://filmot.com/search/' + encodeURIComponent(spoken) + '/1'} : null
+ ].filter(Boolean) : [];
+
+ /* how the link works */
+ const decoded = [];
+ if (!error) {
+  const rows = [];
+  if (chOn) rows.push(['path', ch.path + '/search', 'channel search page'], ['query', new URL(url).searchParams.get('query'), '']);
+  else {
+   rows.push(['search_query', ytQ, '']);
+   if (title.length) rows.push(['intitle:', title.join(', '), 'title must contain (strong anchor, tested)']);
+   if (exact.length) rows.push(['"…"', exact.join(', '), 'exact phrase (tested)']);
+   if (any.length > 1) rows.push(['( | )', any.join(' | '), 'any of these (tested)']);
+   if (dateOps.length) rows.push(['after:/before:', dateOps.join(' '), 'upload date window (tested)']);
+   if (s.noneMode === 'send' && none.length) rows.push(['-word', neg.join(' '), 'exclusion: unreliable on YouTube']);
+   if (sp) {
+    const d = ytDecode(sp);
+    rows.push(['sp', sp, 'filter code: base64 of bytes ' + d.hex]);
+    if (d.sort) rows.push(['  field 1', d.sort, 'prioritise: ' + (YT_NAMES.sort[d.sort] || '?')]);
+    if (d.upload) rows.push(['  field 2.1', d.upload, 'upload date: ' + (YT_NAMES.up[d.upload] || '?')]);
+    if (d.type) rows.push(['  field 2.2', d.type, 'type: ' + (YT_NAMES.type[d.type] || '?')]);
+    if (d.duration) rows.push(['  field 2.3', d.duration, 'duration: ' + (YT_NAMES.dur[d.duration] || '?')]);
+    d.feats.forEach(f => rows.push(['  field 2.' + f, 1, 'feature: ' + YT_NAMES.feat[f]]));
+    d.extra.forEach(([f, v]) => rows.push(['  field 2.' + f, v, 'unknown to this builder, passed through as is']));
+   }
+   if (s.gl) rows.push(['gl', s.gl, 'region']);
+  }
+  if (s.hl) rows.push(['hl', s.hl, 'interface language']);
+  decoded.push(kvList(rows));
+ }
+ return {url, error, warns, summary: sum.join(' · '), score, hits, routes, decoded, openLabel, kw, title, eff};
+}
+
+function setRadio(name, v) { D.querySelectorAll('input[name="' + name + '"]').forEach(i => { i.checked = i.value === v; }); const t = TOOLS.youtube; const s = t.model.read(); if (name === 'yt-type') { const r = ytResolve(s, {g: 'type', v: +v}); t.model.write(r.s); } }
+
+function ytMarks(s) {
+ const sel = ytSel(s);
+ [['yt-type', 'type'], ['yt-dur', 'dur'], ['yt-up', 'up'], ['yt-feat', 'feat']].forEach(([name, g]) => {
+  D.querySelectorAll('input[name="' + name + '"]').forEach(i => {
+   const lab = i.closest('.chip');
+   const me = {g, v: +i.value};
+   const hits = (!i.value || i.checked) ? [] : sel.filter(x => !(x.g === g && x.v === me.v) && ytClash(me, x));
+   lab.classList.toggle('clash', hits.length > 0);
+   lab.title = hits.length ? 'YouTube cannot combine this with ' + list(hits.map(selLabel)) + '. Choosing it clears ' + (hits.length > 1 ? 'them' : 'it') + '.' : (lab.dataset.title || '');
+  });
+ });
+}
+
+function ytAfter(s, r) {
+ ytMarks(ytSanitise(s).s);
+ /* range hint */
+ const d = ytDates(s), hint = byId('yt-range-hint');
+ const custom = s.range === 'custom';
+ byId('yt-from').closest('.field').style.opacity = custom ? '' : '.55';
+ byId('yt-to').closest('.field').style.opacity = custom ? '' : '.55';
+ hint.textContent = d.after || d.before ? 'Adds ' + [d.after && 'after:' + d.after, d.before && 'before:' + d.before].filter(Boolean).join(' ') + ' to the search. ' + (custom ? '' : 'The date moves with today, so saved searches stay fresh.') : 'Precise windows YouTube’s menu cannot do, such as one year, or the last 3 days. Typing a date switches to Custom.';
+ /* title anchors suggested from the keywords */
+ const have = new Set(splitList(s.title).map(norm));
+ const toks = [...new Set(norm(s.q).split(/\s+/))].filter(w => w.length >= 3 && !STOP.has(w) && !have.has(w)).slice(0, 4);
+ byId('yt-anchors').replaceChildren(...(toks.length ? [el('b', {text: 'Anchor'}), ...toks.map(w => el('button', {class: 'pill', type: 'button', title: 'Add intitle:' + w, text: '+ ' + w, onclick: () => { const f = byId('yt-title'); f.value = [...splitList(f.value), w].join(', '); TOOLS.youtube.touched = true; TOOLS.youtube.render(); }}))] : []));
+ /* intent boosters toggle words in “Any of these” */
+ const anySet = new Set(splitList(s.any).map(norm));
+ byId('yt-boost').replaceChildren(...YT_BOOST.map(([name, words]) => el('div', {class: 'recipe-row'}, el('b', {text: name}), ...words.map(w => el('button', {class: 'pill' + (anySet.has(w) ? ' on' : ''), type: 'button', 'aria-pressed': String(anySet.has(w)), text: (anySet.has(w) ? '✓ ' : '+ ') + w, onclick: () => {
+  const f = byId('yt-any'), cur = splitList(f.value);
+  f.value = (anySet.has(w) ? cur.filter(x => norm(x) !== w) : [...cur, w]).join(', ');
+  TOOLS.youtube.touched = true; TOOLS.youtube.render();
+ }})))));
+ /* channel tab shortcuts */
+ const ch = s.ch ? ytChannel(s.ch) : null;
+ byId('yt-chlinks').replaceChildren(...(ch && !ch.error ? [el('b', {text: 'Open tab'}), ...[['videos', 'Videos'], ['streams', 'Live'], ['shorts', 'Shorts'], ['playlists', 'Playlists']].map(([p, l]) => el('a', {class: 'pill', href: 'https://www.youtube.com' + ch.path + '/' + p, target: '_blank', rel: 'noopener noreferrer', text: l + ' ↗'}))] : []));
+}
+
+/* ======================================================================
+   2. AMAZON INDIA
+   rh facet IDs below come from amazon.in's own pages (Nov 2026).
+   Price p_36 is in paise: ₹500–₹1,000 is p_36:50000-100000.
+   ====================================================================== */
+const AM_ID = {
+ stars: 'p_72:1318476031', prime: 'p_85:10440599031', tomorrow: 'p_90:6741118031', free: 'p_n_free_shipping_eligible:205563695031', newc: 'p_n_condition-type:8609960031',
+ instock: 'p_n_availability:1318484031', oos: 'p_n_availability:1318485031',
+ disc: {10: '2665399031', 25: '2665400031', 35: '2665402031', 50: '2665401031', 60: '27060456031', 70: '27060457031'}
 };
-YT_FLAG_UI.forEach(n => { YT_DEFAULTS['yt-f-' + n] = false; });
+const AM_FLAG_NAMES = {stars: '4★ & up', prime: 'Prime', tomorrow: 'Get it by tomorrow', free: 'Free delivery', newc: 'New condition'};
+const AM_FLAGS = Object.entries(AM_FLAG_NAMES).map(([v, l]) => [v, l]);
+const AM_STOCK = [['', 'Default'], ['instock', 'In stock only'], ['oos', 'Include out of stock']];
+const AM_DISC = [['', 'Any'], ['10', '10%+'], ['25', '25%+'], ['35', '35%+'], ['50', '50%+'], ['60', '60%+'], ['70', '70%+']];
+const AM_SORT = [['', 'Featured'], ['exact-aware-popularity-rank', 'Best sellers'], ['review-rank', 'Avg. customer review'], ['price-asc-rank', 'Price: low to high'], ['price-desc-rank', 'Price: high to low'], ['date-desc-rank', 'Newest arrivals']];
+const AM_SORT_NAMES = Object.fromEntries(AM_SORT);
+const AM_SORT_SAY = {'exact-aware-popularity-rank': 'best sellers first', 'review-rank': 'best reviewed first', 'price-asc-rank': 'cheapest first', 'price-desc-rank': 'priciest first', 'date-desc-rank': 'newest first'};
+const AM_DEPTS = [['', 'All departments'], ['electronics', 'Electronics'], ['computers', 'Computers & Accessories'], ['amazon-devices', 'Amazon Devices'], ['appliances', 'Appliances'], ['kitchen', 'Home & Kitchen'], ['furniture', 'Furniture'], ['home-improvement', 'Tools & Home Improvement'], ['lawngarden', 'Garden & Outdoors'], ['automotive', 'Car & Motorbike'], ['office-products', 'Office Products'], ['industrial', 'Industrial & Scientific'], ['fashion', 'Amazon Fashion'], ['apparel', 'Clothing & Accessories'], ['shoes', 'Shoes & Handbags'], ['watches', 'Watches'], ['jewelry', 'Jewellery'], ['luggage', 'Luggage & Bags'], ['beauty', 'Beauty'], ['luxury-beauty', 'Luxury Beauty'], ['hpc', 'Health & Personal Care'], ['grocery', 'Grocery & Gourmet Foods'], ['baby', 'Baby'], ['toys', 'Toys & Games'], ['sporting', 'Sports, Fitness & Outdoors'], ['pets', 'Pet Supplies'], ['stripbooks', 'Books'], ['digital-text', 'Kindle Store'], ['videogames', 'Video Games'], ['software', 'Software']];
+const AM_BRANDS = ['UGREEN', 'Anker', 'Belkin', 'Baseus', 'Spigen', 'Ambrane', 'Portronics', 'boAt', 'Stuffcool', 'Amazon Basics', 'Samsung', 'Apple', 'OnePlus', 'Xiaomi', 'Redmi', 'Realme', 'Lenovo', 'HP', 'Dell', 'ASUS', 'Acer', 'Logitech', 'Sony', 'JBL', 'Philips', 'Noise', 'Fire-Boltt', 'Havells', 'Bajaj', 'Prestige', 'Pigeon', 'Milton', 'Wildcraft', 'Puma', 'Nike', 'Adidas', 'Bosch', 'LG', 'Whirlpool', 'Crompton'];
+const AM_BRANDMODE = [['kw', 'Add to keywords'], ['id', 'Brand ID (strict)', {title: 'Uses Amazon’s numeric brand filter p_123'}], ['legacy', 'Old name filter', {title: 'p_89 by name. amazon.in now uses numeric IDs, so this may be ignored.'}]];
+const AM_PRICES = [['Under ₹500', '', '500'], ['₹500–1,000', '500', '1000'], ['₹1,000–2,500', '1000', '2500'], ['₹2,500–5,000', '2500', '5000'], ['₹5,000–10,000', '5000', '10000'], ['₹10,000–25,000', '10000', '25000'], ['Over ₹25,000', '25000', '']];
 
-mountTool({
- p:'yt', openLabel:'Open results on YouTube', facetLabel:'Filters: ', defaults:YT_DEFAULTS,
- build(){
-  const notes = [], chips = [];
-  let error = '';
-  const kw = val('yt-q'), exact = noQuotes(val('yt-exact'));
-  const any = splitList(val('yt-any')).map(noQuotes).filter(Boolean);
-  const none = splitList(val('yt-none')).map(noQuotes).filter(Boolean);
-  const bits = [];
-  if(kw){ bits.push(kw); chips.push('Words: ' + kw); }
-  if(exact){ bits.push('"' + exact + '"'); chips.push('Exact: “' + exact + '”'); }
-  if(any.length){ bits.push(any.map(maybeQuote).join(' | ')); chips.push('Any of: ' + any.join(' / ')); }
-  none.forEach(n => bits.push('-' + maybeQuote(n)));
-  if(none.length) chips.push('Excluding: ' + none.join(', '));
-  const query = bits.join(' ');
-  if(!kw && !exact && !any.length) error = 'Add at least one search term.';
+const amModel = Model([
+ ['q', 'am-q', 'text', ''], ['exact', 'am-exact', 'text', ''], ['none', 'am-none', 'text', ''], ['dept', 'am-dept', 'text', ''], ['brand', 'am-brand', 'text', ''], ['brandMode', 'am-brandMode', 'radio', 'kw'], ['brandId', 'am-brandId', 'text', ''],
+ ['min', 'am-min', 'text', ''], ['max', 'am-max', 'text', ''], ['flags', 'am-flags', 'checks', []], ['disc', 'am-disc', 'radio', ''], ['stock', 'am-stock', 'radio', ''],
+ ['sort', 'am-sort', 'radio', ''], ['page', 'am-page', 'text', '1'], ['me', 'am-me', 'text', ''], ['extra', 'am-extra', 'text', '']
+]);
 
-  const last3 = val('yt-upload') === 'y3'; // not a YouTube filter code: sent as an after:date operator in the query instead
-  const o = {
-   sort:Number(val('yt-sort')), upload:last3 ? 0 : Number(val('yt-upload')), after:last3 ? yearsAgo(3) : '', type:Number(val('yt-type')),
-   duration:Number(val('yt-duration')),
-   flags:YT_FLAG_UI.filter(n => chk('yt-f-' + n))
-  };
-  const wantsFilters = Boolean(o.sort || o.upload || o.after || o.type || o.duration || o.flags.length);
+function amFacetLabel(f) {
+ const rev = {[AM_ID.stars]: '4★ & up', [AM_ID.prime]: 'Prime', [AM_ID.tomorrow]: 'Get it by tomorrow', [AM_ID.free]: 'Free delivery', [AM_ID.newc]: 'New condition', [AM_ID.instock]: 'In stock only', [AM_ID.oos]: 'Include out of stock'};
+ if (rev[f]) return rev[f];
+ let m;
+ if ((m = /^p_36:(\d*)-(\d*)$/.exec(f))) return 'price ' + (m[1] ? inr(m[1] / 100) : '₹0') + ' to ' + (m[2] ? inr(m[2] / 100) : 'any') + ' (in paise)';
+ if ((m = /^p_n_pct-off-with-tax:(\d+)$/.exec(f))) { const tier = Object.keys(AM_ID.disc).find(k => AM_ID.disc[k] === m[1]); return tier ? tier + '% off or more' : 'discount filter'; }
+ if (/^p_123:/.test(f)) return 'brand (numeric ID)';
+ if (/^p_89:/.test(f)) return 'brand by name (old filter)';
+ if (/^n:/.test(f)) return 'category node';
+ return 'custom filter';
+}
 
-  const ch = val('yt-channel');
-  let url;
-  if(ch){
-   let path = '';
-   if(/^UC[A-Za-z0-9_-]{22}$/.test(ch)) path = '/channel/' + ch + '/search';
-   else if(/^@?[A-Za-z0-9._-]{3,30}$/.test(ch)) path = '/@' + ch.replace(/^@/, '') + '/search';
-   else if(!error) error = 'Enter the channel as @handle or as a UC… channel ID.';
-   url = new URL('https://www.youtube.com' + (path || '/results'));
-   url.searchParams.set(path ? 'query' : 'search_query', query);
-   chips.unshift('Channel: ' + ch);
-   if(wantsFilters) notes.push('Channel-search pages ignore type, duration, date, sort and feature filters, so they were left out.');
-   return { link:url.toString(), facets:[], chips, error, notes, q:query, labels:[], sp:'' };
-  }
+function amBuild(s, lite) {
+ const warns = [], hits = [], sum = [];
+ let error = '';
+ const kw = squash(s.q), exact = splitList(s.exact).map(unquote).filter(Boolean), none = splitList(s.none).map(unquote).filter(Boolean);
+ const brand = unquote(s.brand);
+ const parts = [kw, ...exact.map(p => '"' + p + '"')];
+ if (brand && s.brandMode !== 'id' && !norm(kw).includes(norm(brand))) parts.push(brand);
+ parts.push(...none.map(n => '-' + q1(n)));
+ const k = squash(parts.filter(Boolean).join(' '));
+ if (!kw && !exact.length && !brand && !s.me) error = 'Add product keywords to start.';
+ const lo = s.min, hi = s.max;
+ const rh = [];
+ if ((lo !== '' && (!isNum(lo) || +lo < 0)) || (hi !== '' && (!isNum(hi) || +hi < 0))) error = error || 'Prices must be numbers of zero or more.';
+ else if (lo !== '' && hi !== '' && +lo > +hi) error = error || 'The minimum price is higher than the maximum.';
+ else if (lo !== '' || hi !== '') rh.push('p_36:' + (lo !== '' ? Math.round(+lo * 100) : '') + '-' + (hi !== '' ? Math.round(+hi * 100) : ''));
+ const flags = new Set(s.flags || []);
+ ['stars', 'prime', 'tomorrow', 'free', 'newc'].forEach(f => { if (flags.has(f)) rh.push(AM_ID[f]); });
+ if (s.stock) rh.push(AM_ID[s.stock]);
+ if (s.disc && AM_ID.disc[s.disc]) rh.push('p_n_pct-off-with-tax:' + AM_ID.disc[s.disc]);
+ if (s.brandMode === 'id') {
+  if (/^\d{3,15}(\|\d{3,15})*$/.test(s.brandId)) rh.push('p_123:' + s.brandId);
+  else if (s.brandId) error = error || 'The brand ID should be digits only. Copy it from an Amazon address, or choose “Add to keywords”.';
+  else if (brand) warns.push({level: 'warn', text: 'Brand ID mode needs the numeric ID. Until you add one, the brand is not applied at all.', fixLabel: 'Use keywords', fix: () => { D.querySelectorAll('input[name="am-brandMode"]').forEach(i => { i.checked = i.value === 'kw'; }); }});
+ }
+ if (brand && s.brandMode === 'legacy') rh.push('p_89:' + brand);
+ const extra = splitList(s.extra), badX = extra.filter(x => !/^[A-Za-z0-9_-]+:[^&#=?,\s]+$/.test(x));
+ if (badX.length) error = error || 'Custom filter not understood: ' + badX.join(', ') + '. Use p_name:value.';
+ else rh.push(...extra);
+ const u = new URL('https://www.amazon.in/s');
+ if (k) u.searchParams.set('k', k);
+ if (s.dept) u.searchParams.set('i', s.dept);
+ if (rh.length) u.searchParams.set('rh', [...new Set(rh)].join(','));
+ if (s.sort) u.searchParams.set('s', s.sort);
+ if (+s.page > 1) u.searchParams.set('page', s.page);
+ if (s.me) { if (/^[A-Z0-9]{10,16}$/i.test(s.me)) u.searchParams.set('me', s.me.toUpperCase()); else error = error || 'The seller ID looks wrong. It is 10 to 16 letters and digits, e.g. A14CZOWI0VEHLG.'; }
+ const url = u.toString();
+ if (lite) return {url, error};
 
-  if(o.type === 2 || o.type === 3){
-   if(o.upload || o.after || o.duration || o.flags.length) notes.push('Upload date, duration and feature filters only apply to videos, so they were left out for ' + YT.type[o.type].toLowerCase() + ' results.');
-   o.upload = 0; o.after = ''; o.duration = 0; o.flags = [];
-  }
-  const labels = ytLabels(o);
-  labels.forEach(l => chips.push(l));
-  if(val('yt-region')) chips.push('Region: ' + sel('yt-region'));
-  const sp = ytEncode(o);
+ /* guidance */
+ if (none.length) warns.push({level: 'info', text: 'Amazon honours -word only partly, so check the first results.'});
+ if (s.sort === 'review-rank') warns.push({level: 'tip', text: '“Avg. customer review” ignores how many reviews a product has. “Best sellers” with 4★ & up is usually a stronger signal.', fixLabel: 'Switch', fix: () => { D.querySelectorAll('input[name="am-sort"]').forEach(i => { i.checked = i.value === 'exact-aware-popularity-rank'; }); D.querySelector('input[name="am-flags"][value="stars"]').checked = true; }});
+ if (brand && s.brandMode === 'legacy') warns.push({level: 'warn', text: 'amazon.in now filters brands by numeric ID (p_123), so the old name filter may be ignored. The brand is also added to the keywords as a fallback.'});
+ if (brand && s.brandMode === 'kw') warns.push({level: 'tip', text: 'For a strict brand filter, tick the brand on Amazon, copy the address and paste it into the Smart bar. Its numeric ID is picked up.'});
+ if (+s.disc >= 60) warns.push({level: 'info', text: 'Very large “discounts” are often worked out from an inflated list price. Check the price history in the Product inspector.'});
 
-  url = new URL('https://www.youtube.com/results');
-  const fullQuery = (query + (o.after ? ' after:' + o.after : '')).trim();
-  url.searchParams.set('search_query', fullQuery);
-  if(sp) url.searchParams.set('sp', sp);
-  if(val('yt-region')) url.searchParams.set('gl', val('yt-region'));
-  return { link:url.toString(), facets:labels, chips, error, notes, q:fullQuery, labels, sp };
+ if (brand) { sum.push('brand ' + brand + (s.brandMode === 'id' && s.brandId ? ' (ID ' + s.brandId + ')' : '')); hits.push([s.brandMode === 'kw' ? 1 : 2, 'the brand']); }
+ else if (s.brandMode === 'id' && s.brandId) { sum.push('brand ID ' + s.brandId); hits.push([2, 'the brand']); }
+ if (lo !== '' || hi !== '') { sum.push(lo !== '' && hi !== '' ? inr(lo) + '–' + inr(hi) : lo !== '' ? 'over ' + inr(lo) : 'under ' + inr(hi)); hits.push([lo !== '' && hi !== '' ? 2 : 1, 'the price range']); }
+ ['stars', 'prime', 'tomorrow', 'free', 'newc'].forEach(f => { if (flags.has(f)) { sum.push(AM_FLAG_NAMES[f]); hits.push([{stars: 1, prime: 1, tomorrow: 2, free: 0.6, newc: 0.4}[f], AM_FLAG_NAMES[f]]); } });
+ if (s.disc) { sum.push(s.disc + '%+ off'); hits.push([{10: 1, 25: 1.5, 35: 2, 50: 2.5, 60: 3, 70: 3.5}[s.disc] || 1, 'the discount']); }
+ if (s.stock) sum.push(s.stock === 'instock' ? 'in stock only' : 'including out of stock');
+ if (s.sort) sum.push(AM_SORT_SAY[s.sort] || s.sort);
+ if (s.dept) { sum.push((AM_DEPTS.find(d => d[0] === s.dept) || [, s.dept])[1]); hits.push([0.5, 'the department']); }
+ if (exact.length) { sum.push('exact ' + exact.map(p => '“' + p + '”').join(' + ')); exact.forEach(p => hits.push([1, '“' + p + '”'])); }
+ if (none.length) sum.push('avoiding ' + none.join(', '));
+ if (s.me) { sum.push('one seller'); hits.push([2, 'the seller']); }
+ extra.forEach(x => hits.push([1, x]));
+ const score = hits.reduce((a, h) => a + h[0], 0);
+
+ const words = [kw, brand && !norm(kw).includes(norm(brand)) ? brand : ''].filter(Boolean).join(' ');
+ const angle = over => amBuild(Object.assign({}, s, over, {flags: [...new Set([...(s.flags || []), ...(over.flags || [])])]}), true).url;
+ const routes = (kw || brand) ? [
+  {label: 'Best sellers, 4★ & up', desc: 'What people actually buy and rate well', url: angle({sort: 'exact-aware-popularity-rank', flags: ['stars']})},
+  {label: 'Cheapest good ones', desc: '4★ & up · Prime · price low to high', url: angle({sort: 'price-asc-rank', flags: ['stars', 'prime']})},
+  {label: 'Big discounts', desc: '50%+ off · 4★ & up', url: angle({disc: '50', flags: ['stars']})},
+  {label: 'Delivered tomorrow', desc: 'Get it by tomorrow · 4★ & up', url: angle({flags: ['tomorrow', 'stars']})},
+  {label: 'Newest arrivals', desc: 'Latest listings first', url: angle({sort: 'date-desc-rank'})},
+  {label: 'Compare prices: Google Shopping', desc: 'Same words and price range across shops', url: gsBuild(Object.assign(gsModel.defaults(), {q: words, min: s.min, max: s.max, none: s.none}), true).url},
+  {label: 'Video reviews: YouTube', desc: 'Long-form reviews from the last 12 months', url: ytBuild(Object.assign(ytModel.defaults(), {q: words, any: 'review, vs, long term', type: '1', dur: '5', range: 'y1'}), true).url}
+ ] : [];
+
+ const decoded = error ? [] : [kvList([
+  ['k', k, 'keywords'],
+  ...(s.dept ? [['i', s.dept, 'department']] : []),
+  ...[...new Set(rh)].map(f => ['rh', f, amFacetLabel(f)]),
+  ...(s.sort ? [['s', s.sort, 'sort: ' + AM_SORT_NAMES[s.sort]]] : []),
+  ...(+s.page > 1 ? [['page', s.page, '']] : []),
+  ...(s.me ? [['me', s.me.toUpperCase(), 'seller']] : [])
+ ])];
+ return {url, error, warns, summary: (kw ? '“' + trunc(kw, 40) + '”' + (sum.length ? ' · ' : '') : '') + sum.join(' · '), score, hits, routes, decoded, kw};
+}
+
+/* product inspector */
+function asinFrom(raw) {
+ const s = String(raw || '').trim();
+ const m = s.match(/(?:\/dp\/|\/gp\/product\/|\/gp\/aw\/d\/|\/product-reviews\/|\/ASIN\/|[?&]asin=)([A-Z0-9]{10})(?![A-Z0-9])/i) || s.match(/^([A-Z0-9]{10})$/i);
+ return m ? m[1].toUpperCase() : '';
+}
+function slugName(raw) {
+ try {
+  const parts = new URL(raw).pathname.split('/').filter(Boolean);
+  const i = parts.findIndex(p => p === 'dp' || p === 'gp');
+  return i > 0 ? decodeURIComponent(parts[i - 1]).replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim() : '';
+ } catch (_) { return ''; }
+}
+function inspect() {
+ const raw = byId('am-prod').value.trim(), out = byId('am-prodOut');
+ if (!raw) { out.replaceChildren(); return; }
+ if (/(^|\/\/)(amzn\.(in|to|eu)|a\.co)\//i.test(raw)) { out.replaceChildren(el('div', {class: 'note', text: 'Short links hide the product code. Open the link, then copy the full address from the browser.'})); return; }
+ const asin = asinFrom(raw);
+ if (!asin) { out.replaceChildren(el('div', {class: 'note', text: 'No product code (ASIN) found. Paste the address of a product page, e.g. …/dp/B0XXXXXXXX.'})); return; }
+ const name = slugName(raw).split(' ').slice(0, 8).join(' ');
+ const rv = q => 'https://www.amazon.in/product-reviews/' + asin + '/?' + q;
+ const items = [
+  ['Clean product link', 'amazon.in/dp/' + asin + ' · no tracking codes', 'https://www.amazon.in/dp/' + asin],
+  ['Critical reviews, verified buyers', '1–3★ from verified purchases, newest first (Amazon may ask you to sign in)', rv('filterByStar=critical&reviewerType=avp_only_reviews&sortBy=recent')],
+  ['All reviews, newest first', 'Spot recent quality problems', rv('sortBy=recent')],
+  ['Price history: Keepa', 'Is today’s “deal” really low?', 'https://keepa.com/#!product/10-' + asin, 'third-party']
+ ];
+ if (name) items.push(['Video reviews: YouTube', '“' + trunc(name, 40) + '” · long-form reviews', ytBuild(Object.assign(ytModel.defaults(), {q: name, any: 'review, vs, long term', type: '1', dur: '5'}), true).url]);
+ out.replaceChildren(...items.map(([label, desc, url, tag]) => el('div', {class: 'route'},
+  el('a', {href: url, target: '_blank', rel: 'noopener noreferrer'}, el('span', {class: 't'}, label, tag ? el('i', {class: 'mini', text: tag}) : null), el('span', {class: 'd', text: desc})),
+  copyBtn(url, label))));
+}
+
+/* ======================================================================
+   3. GOOGLE WEB
+   ====================================================================== */
+const gwModel = Model([
+ ['all', 'gw-all', 'text', ''], ['exact', 'gw-exact', 'text', ''], ['any', 'gw-any', 'text', ''], ['none', 'gw-none', 'text', ''],
+ ['site', 'gw-site', 'text', ''], ['nosite', 'gw-nosite', 'text', ''], ['intitle', 'gw-intitle', 'text', ''], ['inurl', 'gw-inurl', 'text', ''], ['intext', 'gw-intext', 'text', ''], ['filetype', 'gw-filetype', 'text', ''],
+ ['recent', 'gw-recent', 'text', ''], ['after', 'gw-after', 'text', ''], ['before', 'gw-before', 'text', ''],
+ ['numfrom', 'gw-numfrom', 'text', ''], ['numto', 'gw-numto', 'text', ''], ['numunit', 'gw-numunit', 'text', ''],
+ ['lang', 'gw-lang', 'text', ''], ['region', 'gw-region', 'text', ''], ['page', 'gw-page', 'text', '1'],
+ ['view', 'gw-view', 'radio', ''], ['opts', 'gw-opts', 'checks', []]
+]);
+const GW_VIEW = [['', 'Everything'], ['web', 'Web links only', {title: 'udm=14: plain links, no AI overview or widgets'}], ['forums', 'Forums', {title: 'udm=18'}], ['news', 'News'], ['videos', 'Videos'], ['images', 'Images']];
+const GW_OPTS = [['verbatim', 'Verbatim', {title: 'Your exact words: no synonyms or spelling fixes'}], ['sortdate', 'Newest first', {title: 'Works best with the News view'}], ['safe', 'SafeSearch']];
+const GW_RECENT = [['', 'Any time'], ['h', 'Past hour'], ['d', 'Past 24 hours'], ['w', 'Past week'], ['m', 'Past month'], ['y', 'Past year']];
+const GW_FILETYPES = [['', 'Any format'], ['pdf', 'PDF'], ['doc', 'DOC'], ['docx', 'DOCX'], ['xls', 'XLS'], ['xlsx', 'XLSX'], ['ppt', 'PPT'], ['pptx', 'PPTX'], ['csv', 'CSV'], ['txt', 'TXT']];
+
+function gwBuild(s) {
+ const parts = [], sum = [], warns = [], params = {}, hits = [];
+ let error = '';
+ const fail = m => { if (!error) error = m; };
+ const all = squash(s.all);
+ if (all) parts.push(all);
+ const exact = splitList(s.exact).map(unquote).filter(Boolean);
+ exact.forEach(p => { parts.push('"' + p + '"'); hits.push([1.5, '“' + p + '”']); });
+ if (exact.length) sum.push('exact ' + exact.map(p => '“' + p + '”').join(' + '));
+ const any = splitList(s.any).map(unquote).filter(Boolean);
+ if (any.length) { parts.push(any.length > 1 ? '(' + any.map(q1).join(' OR ') + ')' : q1(any[0])); sum.push('any of ' + any.join(' / ')); }
+ const from = s.numfrom, to = s.numto, unit = s.numunit;
+ if (from !== '' || to !== '') {
+  if (!isNum(from) || !isNum(to)) fail('Enter both ends of the number range.');
+  else if (+from > +to) fail('The number range start is larger than its end.');
+  else { parts.push(unit + from + '..' + unit + to); sum.push('numbers ' + unit + from + '–' + unit + to); hits.push([2, 'the number range']); }
+ }
+ [['intitle', 'intitle', 'title has'], ['inurl', 'inurl', 'address has'], ['intext', 'intext', 'text has']].forEach(([k, op, label]) => {
+  const items = splitList(s[k]).map(unquote).filter(Boolean);
+  items.forEach(t => { parts.push(op + ':' + q1(t)); hits.push([2, op + ' ' + t]); });
+  if (items.length) sum.push(label + ' ' + items.join(', '));
+ });
+ const clean = x => x.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+ const sites = splitList(s.site).map(clean), nos = splitList(s.nosite).map(clean);
+ if ([...sites, ...nos].some(x => !x || /[\s"]/.test(x))) fail('Sites must be domains or paths without spaces, e.g. reddit.com or .gov.in.');
+ if (sites.length) { parts.push(sites.length > 1 ? '(' + sites.map(x => 'site:' + x).join(' OR ') + ')' : 'site:' + sites[0]); sum.push('only on ' + sites.join(', ')); hits.push([3, 'the site limit']); }
+ if (nos.length) { nos.forEach(x => parts.push('-site:' + x)); sum.push('not on ' + nos.join(', ')); }
+ if (s.filetype) { parts.push('filetype:' + s.filetype); sum.push(s.filetype.toUpperCase() + ' files'); hits.push([3, 'the file type']); }
+ const none = splitList(s.none).map(unquote).filter(Boolean);
+ if (none.length) { none.forEach(t => parts.push('-' + q1(t))); sum.push('avoiding ' + none.join(', ')); }
+ const tbs = [];
+ if (s.after && s.before && s.after > s.before) fail('The “published after” date is later than “published before”.');
+ if (s.after) { parts.push('after:' + s.after); sum.push('after ' + niceDate(s.after)); hits.push([1, 'the dates']); }
+ if (s.before) { parts.push('before:' + s.before); sum.push('before ' + niceDate(s.before)); hits.push([1, 'the dates']); }
+ if (s.after || s.before) { if (s.recent) warns.push({level: 'info', text: 'Custom dates replace the quick time range, so it was left out.'}); }
+ else if (s.recent) { tbs.push('qdr:' + s.recent); sum.push((GW_RECENT.find(r => r[0] === s.recent) || [, ''])[1].toLowerCase()); hits.push([{h: 3, d: 2, w: 1.5, m: 1, y: 0.5}[s.recent], 'the time range']); }
+ const opts = new Set(s.opts || []);
+ if (opts.has('sortdate')) { tbs.push('sbd:1'); sum.push('newest first'); }
+ if (opts.has('verbatim')) { tbs.push('li:1'); sum.push('verbatim'); }
+ const view = {web: ['udm', '14'], forums: ['udm', '18'], news: ['tbm', 'nws'], videos: ['udm', '7'], images: ['udm', '2']}[s.view];
+ if (view) { params[view[0]] = view[1]; sum.push((GW_VIEW.find(v => v[0] === s.view) || [, ''])[1].toLowerCase()); }
+ if (s.lang) { params.lr = 'lang_' + s.lang; sum.push((LANGS.find(l => l[0] === s.lang) || [, s.lang])[1]); }
+ if (s.region) { params.gl = s.region.toLowerCase(); sum.push('region ' + (REGIONS.find(r => r[0] === s.region) || [, s.region])[1]); }
+ if (opts.has('safe')) { params.safe = 'active'; sum.push('SafeSearch'); }
+ if (tbs.length) params.tbs = tbs.join(',');
+ if (+s.page > 1) { params.start = String((+s.page - 1) * 10); sum.push('page ' + s.page); }
+ const q = parts.join(' ');
+ if (!q) fail('Add at least one word or operator.');
+ const u = new URL('https://www.google.com/search');
+ u.searchParams.set('q', q);
+ for (const [k, v] of Object.entries(params)) u.searchParams.set(k, v);
+ const score = hits.reduce((a, h) => a + h[0], 0);
+ const base = [all, ...exact.map(p => '"' + p + '"')].filter(Boolean).join(' ');
+ const g = (extra, p) => { const x = new URL('https://www.google.com/search'); x.searchParams.set('q', [base || q, extra].filter(Boolean).join(' ')); Object.entries(p || {}).forEach(([k, v]) => x.searchParams.set(k, v)); return x.toString(); };
+ const routes = q && base ? [
+  {label: 'Real opinions: Reddit and forums', desc: 'site:reddit.com OR forums view', url: g('site:reddit.com', {})},
+  {label: 'Forums view', desc: 'Discussion threads only (udm=18)', url: g('', {udm: '18'})},
+  {label: 'Plain web links', desc: 'No AI overview or widgets (udm=14)', url: g('', {udm: '14'})},
+  {label: 'Manuals and datasheets', desc: 'PDF files only', url: g('filetype:pdf', {})},
+  {label: 'Past year only', desc: 'Skip outdated pages', url: g('', {tbs: 'qdr:y'})}
+ ] : [];
+ const decoded = error ? [] : [kvList([['q', q, ''], ...Object.entries(params).map(([k, v]) => [k, v, {udm: 'result view', tbm: 'result view', lr: 'language', gl: 'region', safe: 'SafeSearch', tbs: 'time range, sort and verbatim', start: 'result offset'}[k] || ''])])];
+ return {url: u.toString(), error, warns, summary: sum.join(' · '), score, hits, routes, decoded, kw: all};
+}
+
+/* ======================================================================
+   4. GOOGLE SHOPPING (best effort: Google changes these codes often)
+   ====================================================================== */
+const gsModel = Model([
+ ['q', 'gs-q', 'text', ''], ['brand', 'gs-brand', 'text', ''], ['none', 'gs-none', 'text', ''], ['min', 'gs-min', 'text', ''], ['max', 'gs-max', 'text', ''], ['cond', 'gs-cond', 'text', ''],
+ ['opts', 'gs-opts', 'checks', []], ['sort', 'gs-sort', 'text', ''], ['region', 'gs-region', 'text', 'IN'], ['mode', 'gs-mode', 'text', 'udm'], ['extra', 'gs-extra', 'text', '']
+]);
+const GS_OPTS = [['free', 'Free delivery'], ['sale', 'On sale']];
+function gsBuild(s, lite) {
+ const sum = [], warns = [], params = {}, hits = [];
+ let error = '';
+ const kw = squash(s.q), brand = unquote(s.brand || '');
+ const base = brand && !norm(kw).includes(norm(brand)) ? squash(kw + ' ' + brand) : kw;
+ const none = splitList(s.none).map(unquote).filter(Boolean);
+ const q = base ? squash([base, ...none.map(n => '-' + q1(n))].join(' ')) : '';
+ const lo = s.min, hi = s.max;
+ if (!q) error = 'Add product keywords to start.';
+ else if ((lo !== '' && (!isNum(lo) || +lo < 0)) || (hi !== '' && (!isNum(hi) || +hi < 0))) error = 'Prices must be numbers of zero or more.';
+ else if (lo !== '' && hi !== '' && +lo > +hi) error = 'The minimum price is higher than the maximum.';
+ const tbs = [];
+ if (lo !== '' || hi !== '') {
+  tbs.push('price:1');
+  if (lo !== '') tbs.push('ppr_min:' + Math.round(+lo));
+  if (hi !== '') tbs.push('ppr_max:' + Math.round(+hi));
+  sum.push(lo !== '' && hi !== '' ? inr(lo) + '–' + inr(hi) : lo !== '' ? 'over ' + inr(lo) : 'under ' + inr(hi)); hits.push([2, 'the price range']);
+ }
+ if (s.cond) { tbs.push(s.cond); sum.push(s.cond === 'new:1' ? 'new' : 'used'); hits.push([1, 'the condition']); }
+ const opts = new Set(s.opts || []);
+ if (opts.has('free')) { tbs.push('free_ship:1'); sum.push('free delivery'); hits.push([1, 'free delivery']); }
+ if (opts.has('sale')) { tbs.push('sales:1'); sum.push('on sale'); hits.push([1.5, 'on sale']); }
+ if (s.sort) { tbs.push(s.sort); sum.push({'p_ord:p': 'cheapest first', 'p_ord:pd': 'priciest first', 'p_ord:rv': 'best reviewed first'}[s.sort]); }
+ const custom = splitList(s.extra), bad = custom.filter(v => !/^[A-Za-z0-9_]+:[A-Za-z0-9_.-]+$/.test(v));
+ if (bad.length && !error) error = 'Custom code not understood: ' + bad.join(', ') + '. Use key:value, e.g. p_ord:p.';
+ if (!bad.length && custom.length) tbs.push(...custom);
+ if (brand) sum.unshift('brand ' + brand);
+ if (s.mode === 'tbm') params.tbm = 'shop'; else params.udm = '28';
+ if (tbs.length) params.tbs = 'mr:1,' + tbs.join(',');
+ if (s.region) { params.gl = s.region.toLowerCase(); sum.push('region ' + (REGIONS.find(r => r[0] === s.region) || [, s.region])[1]); }
+ const u = new URL('https://www.google.com/search');
+ u.searchParams.set('q', q);
+ for (const [k, v] of Object.entries(params)) u.searchParams.set(k, v);
+ if (lite) return {url: u.toString(), error};
+ if (tbs.length) warns.push({level: 'info', text: 'Google changes its Shopping filter codes often. If a filter seems ignored, switch the Shopping URL mode under Advanced.'});
+ const score = hits.reduce((a, h) => a + h[0], 0);
+ const routes = base ? [
+  {label: 'Same search on Amazon.in', desc: 'With the same price range', url: amBuild(Object.assign(amModel.defaults(), {q: base, min: s.min, max: s.max}), true).url},
+  {label: 'Video reviews: YouTube', desc: 'Long-form reviews from the last 12 months', url: ytBuild(Object.assign(ytModel.defaults(), {q: base, any: 'review, vs, long term', type: '1', dur: '5', range: 'y1'}), true).url}
+ ] : [];
+ const decoded = error ? [] : [kvList([['q', q, ''], ...Object.entries(params).map(([k, v]) => [k, v, {udm: 'Shopping tab', tbm: 'Shopping (classic)', tbs: 'filters and sort', gl: 'region'}[k] || ''])])];
+ return {url: u.toString(), error, warns, summary: (kw ? '“' + trunc(kw, 40) + '”' + (sum.length ? ' · ' : '') : '') + sum.join(' · '), score, hits, routes, decoded, kw};
+}
+
+/* ======================================================================
+   Smart fill: one sentence → every tab
+   ====================================================================== */
+function smartParse(raw) {
+ let t = ' ' + String(raw).replace(/[“”]/g, '"').replace(/[‘’]/g, "'") + ' ';
+ const seen = [], Y = {}, A = {flags: []}, G = {}, S = {opts: []};
+ const exact = [], none = [], title = [], feat = new Set();
+ const take = (re, fn) => { let hit = false; t = t.replace(re, (...m) => { hit = true; const r = fn ? fn(m) : null; return r == null ? ' ' : r; }); return hit; };
+ const num = (s, k) => Math.round(Number(String(s).replace(/,/g, '')) * (k ? 1000 : 1));
+
+ take(/"([^"]+)"/g, m => { const p = squash(m[1]); if (p) exact.push(p); });
+ if (exact.length) seen.push('Exact ' + exact.map(e => '“' + e + '”').join(' '));
+ take(/(?:\b(?:from|on|by|channel)\s+)?@([\p{L}\p{N}._-]{3,30})/gu, m => { Y.ch = '@' + m[1]; seen.push('Channel @' + m[1]); });
+ take(/\bintitle:(\S+)/gi, m => { title.push(m[1]); });
+ take(/\btitle\s*(?:has|contains|with|:)\s*([\p{L}\p{N}-]+)/giu, m => { title.push(m[1]); });
+ if (title.length) seen.push('Title has ' + title.join(', '));
+
+ /* YouTube type words (before exclusions, so “no shorts” is understood) */
+ if (take(/\b(?:no|without|exclude|excluding|skip|minus|hide)\s+shorts?\b|\bnot\s+shorts?\b|\blong[- ]?form\b/gi)) { Y.type = '1'; seen.push('No Shorts'); }
+ else if (take(/\b(?:only\s+shorts?|shorts?\s+only|youtube\s+shorts?)\b/gi) || take(/\bshorts\b/gi)) { Y.type = '9'; seen.push('Shorts only'); }
+ if (take(/\bplaylists?\b/gi)) { Y.type = '3'; seen.push('Playlists'); }
+
+ /* “no sound”, “no signal”… describe a problem, so they stay in the topic;
+    in a fixing search (“fix”, “not working”…) every “no X” stays too */
+ const fixing = /\b(?:fix(?:ed|ing)?|problems?|issues?|errors?|troubleshoot\w*|solved?|solutions?|repair\w*|not\s+working)\b/i.test(t);
+ const SYMPTOM = /^(?:signal|sound|audio|power|display|picture|image|video|internet|wifi|wi-fi|network|service|charging|charge|boot|connection|bluetooth|output|input|data|light|lights|heat|cooling|water|pressure|response|touch|sim|camera|mic|microphone|volume|speaker|battery|startup)$/i;
+ take(/(?:\b(no|without|exclude|excluding|minus|except)\s+|\s-)([\p{L}\p{N}][\p{L}\p{N}'-]*)/giu, m => {
+  const word = m[1] ? m[1].toLowerCase() : '';
+  if ((word === 'no' || word === 'without') && (fixing || SYMPTOM.test(m[2]))) return m[0];
+  none.push(m[2]);
+ });
+ if (none.length) seen.push('Avoiding ' + none.join(', '));
+
+ /* durations: [pattern, code, label, remove the words?] */
+ const DUR = [
+  [/\b(?:over|more than|longer than|above|at least)\s*20\s*min\w*|\b(?:long|full[- ]length)\s+videos?\b/gi, '2', 'Over 20 min', true],
+  [/\bdeep[- ]dives?\b|\bin[- ]depth\b|\bfull\s+(?:course|lecture|documentary|episode|movie|podcast)s?\b/gi, '2', 'Over 20 min', false],
+  [/\b(?:4|four)\s*(?:-|–|to)\s*20\s*min\w*/gi, '3', '4–20 min', true],
+  [/\b(?:3|three)\s*(?:-|–|to)\s*20\s*min\w*|\b(?:under|less than|shorter than|below|max(?:imum)?|within)\s*20\s*min\w*|\bmedium[- ]length\b/gi, '5', '3–20 min', true],
+  [/\b(?:under|less than|shorter than|below|max(?:imum)?|within)\s*4\s*min\w*|\bshort\s+videos?\b|\bquick\s+(?:video|tip|answer)s?\b/gi, '1', 'Under 4 min', true],
+  [/\b(?:under|less than|shorter than|below|max(?:imum)?|within)\s*[123]\s*min\w*/gi, '4', 'Under 3 min', true]
+ ];
+ for (const [re, code, label, rm] of DUR) {
+  if (rm ? take(re) : re.test(t)) { Y.dur = code; seen.push(label); break; }
+  re.lastIndex = 0;
+ }
+ /* features (product words such as 4k stay in the keywords) */
+ const FEAT = [
+  [/\b(?:4k|uhd|2160p)\b/gi, '14', '4K', false], [/\bhdr\b/gi, '25', 'HDR', false],
+  [/\b(?:with\s+)?(?:subtitles?|closed captions?|captions?|with cc)\b/gi, '5', 'Subtitles/CC', true],
+  [/\bcreative commons\b|\b(?:royalty|copyright)[- ]free\b/gi, '6', 'Creative Commons', true],
+  [/\b(?:live\s*now|live\s*streams?|livestreams?|streaming\s+now|currently\s+live)\b/gi, '8', 'Live', true],
+  [/\b360\s*(?:°|degrees?)(?:\s*videos?)?|\b360\s+videos?\b/gi, '15', '360°', true], [/\bvr\s?180\b/gi, '26', 'VR180', true]
+ ];
+ for (const [re, code, label, rm] of FEAT) { if (rm ? take(re) : re.test(t)) { feat.add(code); seen.push(label); } re.lastIndex = 0; }
+
+ /* order */
+ if (take(/\b(?:most\s+(?:viewed|popular|watched)|top\s+viewed|viral|popular)\b/gi)) { Y.sort = '3'; A.sort = 'exact-aware-popularity-rank'; seen.push('Most popular'); }
+ if (take(/\bbest[- ]?sell(?:ers?|ing)\b|\bbestsellers?\b/gi)) { A.sort = 'exact-aware-popularity-rank'; Y.sort = '3'; seen.push('Best sellers'); }
+ if (take(/\bcheapest\b|\blowest\s+price\b|\b(?:price\s+)?low\s+to\s+high\b/gi)) { A.sort = 'price-asc-rank'; S.sort = 'p_ord:p'; seen.push('Cheapest first'); }
+ if (take(/\bmost\s+expensive\b|\b(?:price\s+)?high\s+to\s+low\b/gi)) { A.sort = 'price-desc-rank'; S.sort = 'p_ord:pd'; seen.push('Priciest first'); }
+ if (take(/\b(?:top|highest|best|well)[- ]rated\b|\b4\s*(?:\+|plus)?\s*(?:stars?|★)(?:\s*(?:and|&)\s*(?:up|above))?/gi)) { A.flags.push('stars'); S.sort = S.sort || 'p_ord:rv'; seen.push('4★ & up'); }
+
+ /* dates: years first, so they are not mistaken for prices */
+ take(/\b(?:between\s+|from\s+)?((?:19|20)\d\d)\s*(?:-|–|to|and|until)\s*((?:19|20)\d\d)\b/gi, m => { let a = +m[1], b = +m[2]; if (a > b) [a, b] = [b, a]; Y.range = 'custom'; Y.from = a + '-01-01'; Y.to = (b + 1) + '-01-01'; G.after = Y.from; G.before = Y.to; seen.push(a + ' to ' + b); });
+ take(/\b(?:in|during)\s+((?:19|20)\d\d)\b/gi, m => { const y = +m[1]; Y.range = 'custom'; Y.from = y + '-01-01'; Y.to = (y + 1) + '-01-01'; G.after = Y.from; G.before = Y.to; seen.push('In ' + y); });
+ take(/\b(?:since|after|from)\s+((?:19|20)\d\d)\b/gi, m => { Y.range = 'custom'; Y.from = m[1] + '-01-01'; G.after = Y.from; seen.push('Since ' + m[1]); });
+ take(/\b(?:before|until|till|pre|older\s+than)\s+((?:19|20)\d\d)\b/gi, m => { Y.range = 'custom'; Y.to = m[1] + '-01-01'; G.before = Y.to; seen.push('Before ' + m[1]); });
+ take(/\b(?:last|past|previous)\s+(\d{1,3})\s*(hours?|hrs?|days?|weeks?|wks?|months?|mos?|years?|yrs?)\b/gi, m => {
+  const n = Math.max(1, +m[1]), u = m[2][0].toLowerCase();
+  const code = u === 'h' ? 'd1' : u === 'd' ? 'd' + n : u === 'w' ? 'd' + n * 7 : u === 'm' ? 'm' + n : 'y' + n;
+  Y.range = code; G.after = rangeAfter(code); seen.push(rangeLabel(code) || 'Recent');
+ });
+ take(/\b(?:last|past)\s+(24\s*hours|day|week|fortnight|month|year)\b/gi, m => { const code = {d: 'd1', w: 'd7', f: 'd14', m: 'm1', y: 'y1'}[/^24/.test(m[1]) ? 'd' : m[1][0].toLowerCase()]; Y.range = code; G.after = rangeAfter(code); seen.push(rangeLabel(code)); });
+ const NOW = [[/\btoday\b/gi, '2', 'd', 'Today'], [/\bthis\s+week\b/gi, '3', 'w', 'This week'], [/\bthis\s+month\b/gi, '4', 'm', 'This month'], [/\bthis\s+year\b/gi, '5', 'y', 'This year']];
+ for (const [re, up, g, l] of NOW) if (take(re)) { Y.up = up; G.recent = g; seen.push(l); break; }
+ if (take(/\b(?:latest|newest|most\s+recent|recently\s+uploaded|new\s+uploads?)\b/gi)) { if (!Y.up && !Y.range) Y.range = 'd30'; A.sort = A.sort || 'date-desc-rank'; G.opts = ['sortdate']; seen.push('Recent first'); }
+
+ /* shopping */
+ let lo, hi;
+ const UNIT = '(?!\\s*(?:min|mins|minutes|w\\b|watts?|mah|gb|tb|hz|m\\b|metres?|meters?|%|percent|stars?|years?|days?|months?))';
+ take(new RegExp('\\b(?:between\\s+)?(?:rs\\.?|inr|₹)?\\s*(\\d[\\d,]{2,}|\\d+(?=\\s*k\\b))\\s*(k)?\\s*(?:-|–|to|and)\\s*(?:rs\\.?|inr|₹)?\\s*(\\d[\\d,]{2,}|\\d+(?=\\s*k\\b))\\s*(k)?\\b' + UNIT, 'gi'), m => { lo = num(m[1], m[2] || m[4]); hi = num(m[3], m[4]); });
+ if (hi === undefined) take(new RegExp('\\b(?:under|below|upto|up\\s+to|within|max(?:imum)?|less\\s+than|cheaper\\s+than|budget)\\s*(?:rs\\.?|inr|₹)?\\s*(\\d[\\d,]*)\\s*(k)?\\b' + UNIT, 'gi'), m => { hi = num(m[1], m[2]); });
+ if (lo === undefined) take(new RegExp('\\b(?:over|above|min(?:imum)?|more\\s+than|at\\s+least|starting(?:\\s+at)?)\\s*(?:rs\\.?|inr|₹)?\\s*(\\d[\\d,]*)\\s*(k)?\\b' + UNIT, 'gi'), m => { lo = num(m[1], m[2]); });
+ if (lo !== undefined && hi !== undefined && lo > hi) [lo, hi] = [hi, lo];
+ const price = {};
+ if (lo !== undefined || hi !== undefined) { price.min = lo === undefined ? '' : String(lo); price.max = hi === undefined ? '' : String(hi); seen.push('Price ' + (lo !== undefined ? inr(lo) : '₹0') + '–' + (hi !== undefined ? inr(hi) : 'any')); }
+ take(/\b(\d{2})\s*(?:%|percent)\s*(?:off|discount)?(?:\s*(?:or\s+more|\+|and\s+above))?/gi, m => { const v = +m[1], tier = [70, 60, 50, 35, 25, 10].find(x => x <= v); if (tier) { A.disc = String(tier); S.opts.push('sale'); seen.push(tier + '%+ off'); } });
+ if (take(/\bprime\b/gi)) { A.flags.push('prime'); seen.push('Prime'); }
+ if (take(/\b(?:delivered\s+|delivery\s+|get\s+it\s+)?(?:by\s+)?tomorrow\b|\bnext[- ]day(?:\s+delivery)?\b|\bfast\s+delivery\b/gi)) { A.flags.push('tomorrow'); seen.push('By tomorrow'); }
+ if (take(/\bfree\s+(?:delivery|shipping)\b/gi)) { A.flags.push('free'); S.opts.push('free'); seen.push('Free delivery'); }
+ if (take(/\bin[- ]stock\b/gi)) { A.stock = 'instock'; seen.push('In stock'); }
+ if (take(/\b(?:brand[- ]new|new\s+condition)\b/gi)) { A.flags.push('newc'); S.cond = 'new:1'; seen.push('New condition'); }
+ if (take(/\b(?:used|second[- ]hand|pre[- ]owned)\b/gi)) { S.cond = 'used:1'; seen.push('Used'); }
+
+ /* google */
+ if (take(/\breddit\b/gi)) { G.site = 'reddit.com'; seen.push('Reddit'); }
+ if (take(/\b(?:gov(?:ernment)?\s+(?:sites?|pages?|india)|\.gov\.in)\b/gi)) { G.site = '.gov.in'; seen.push('.gov.in'); }
+ const ft = /\b(pdf|docx?|xlsx?|pptx?|csv)\b/i.exec(t);
+ if (ft) { G.filetype = ft[1].toLowerCase(); seen.push(ft[1].toUpperCase() + ' files'); }
+
+ const brand = AM_BRANDS.find(b => new RegExp('(^|[^\\p{L}\\p{N}])' + esc(b) + '(?=$|[^\\p{L}\\p{N}])', 'iu').test(t));
+ if (brand) { A.brand = brand; A.brandMode = 'kw'; seen.push('Brand ' + brand); }
+
+ t = t.replace(/\b(?:please|find\s+me|find|show\s+me|search\s+for|search|i\s+want(?:\s+to)?|i\s+need|looking\s+for|videos?\s+(?:about|on)|on\s+youtube|youtube)\b/gi, ' ').replace(/[,;]+/g, ' ');
+ const kw = squash(t);
+ const kwG = ft ? squash(kw.replace(new RegExp('\\b' + ft[1] + '\\b', 'i'), ' ')) : kw;
+ if (feat.has('8')) { delete Y.dur; if (Y.type && Y.type !== '1') delete Y.type; feat.delete('14'); }
+ if (Y.type === '9') delete Y.dur;
+ if (Y.type === '3') { delete Y.dur; delete Y.up; feat.clear(); }
+ const ex = exact.join(', '), no = none.join(', ');
+ return {
+  seen, ok: !!(kw || exact.length || title.length),
+  yt: Object.assign({q: kw, exact: ex, title: title.join(', '), none: no, feat: [...feat]}, Y),
+  am: Object.assign({q: kw, exact: ex, none: no}, A, price),
+  gw: Object.assign({all: kwG, exact: ex, none: no}, G),
+  gs: Object.assign({q: kw, none: no}, S, price)
+ };
+}
+
+const KEEP = {youtube: ['gl', 'hl', 'groute'], amazon: [], google: ['lang', 'region'], shopping: ['region', 'mode']};
+function applySmart() {
+ const raw = byId('sm-in').value.trim(), out = byId('sm-out');
+ if (!raw) { out.replaceChildren(el('span', {text: 'Type what you want first, e.g. “sony headphones under 5000 prime” or “python tutorial for beginners over 20 min no shorts”.'})); return; }
+ if (/^(https?:\/\/|www\.|m\.youtube|youtube\.com|youtu\.be|amazon\.)/i.test(raw)) { importUrl(raw); return; }
+ const r = smartParse(raw);
+ if (!r.ok) { out.replaceChildren(el('span', {text: 'Add the product or topic too, e.g. “pdf manual for dell xps” or “iphone 17 camera review”.'})); return; }
+ const parts = {youtube: r.yt, amazon: r.am, google: r.gw, shopping: r.gs};
+ Object.values(TOOLS).forEach(t => {
+  const cur = t.model.read(), st = Object.assign(t.model.defaults(), parts[t.key]);
+  KEEP[t.key].forEach(k => { st[k] = cur[k]; });
+  t.model.write(st); t.touched = true; t.lastRecipeAny = ''; t.render();
+ });
+ out.replaceChildren(el('b', {text: 'Understood:'}), ...(r.seen.length ? r.seen : ['keywords only']).map(x => el('span', {class: 'tag-s', text: x})), el('span', {text: 'Applied to all four tabs.'}));
+}
+
+/* ======================================================================
+   Paste-a-link import (also how the builder re-learns codes if sites change)
+   ====================================================================== */
+function importUrl(raw) {
+ const out = byId('sm-out');
+ const say = (...bits) => out.replaceChildren(...bits.map(b => typeof b === 'string' ? el('span', {text: b}) : b));
+ let u;
+ try { u = new URL(/^https?:\/\//i.test(raw) ? raw : 'https://' + raw); } catch (_) { say('That does not look like a full web address.'); return; }
+ const host = u.hostname.toLowerCase().replace(/^(www|m)\./, '');
+ if (host === 'youtube.com' || host === 'youtu.be' || host === 'music.youtube.com') {
+  const t = TOOLS.youtube, st = ytModel.defaults(), cur = t.model.read();
+  ['gl', 'hl', 'groute'].forEach(k => { st[k] = cur[k]; });
+  const chm = u.pathname.match(/^(\/(?:@[^/]+|channel\/UC[\w-]{22}|c\/[^/]+|user\/[^/]+))\/search\/?$/);
+  if (chm) {
+   st.ch = decodeURIComponent(chm[1].replace(/^\/channel\//, '').replace(/^\//, ''));
+   if (/^(c|user)\//.test(st.ch)) st.ch = 'https://www.youtube.com/' + st.ch;
+   st.q = u.searchParams.get('query') || '';
+  } else if (u.pathname === '/results' || u.pathname === '/search') {
+   const pq = ytParseQuery(u.searchParams.get('search_query') || u.searchParams.get('q') || '');
+   Object.assign(st, {q: pq.q, exact: pq.exact.join(', '), title: pq.title.join(', '), any: pq.any.join(', '), none: pq.none.join(', ')});
+   if (pq.none.length) st.noneMode = 'send';
+   if (pq.after || pq.before) Object.assign(st, {range: 'custom', from: pq.after, to: pq.before});
+   const sp = u.searchParams.get('sp'), notes = [];
+   if (sp) {
+    const d = ytDecode(sp);
+    const clean = d.ok && !d.other.length && !d.extra.length && [0, 3].includes(d.sort) && (!d.upload || YT_NAMES.up[d.upload] && d.upload !== 1) && (!d.type || YT_NAMES.type[d.type]) && (!d.duration || YT_NAMES.dur[d.duration]);
+    if (clean) Object.assign(st, {sort: d.sort ? String(d.sort) : '', up: d.upload ? String(d.upload) : '', type: d.type ? String(d.type) : '', dur: d.duration ? String(d.duration) : '', feat: d.feats.map(String)});
+    else if (d.ok) { st.spx = sp; notes.push('Its filter code has parts this builder does not know, so it is kept as a custom sp code.'); }
+    else notes.push('Its filter code could not be read, so it was skipped.');
+    if (d.ok && (d.sort === 1 || d.sort === 2 || d.upload === 1)) notes.push('It asks for a sort or “Last hour” filter that YouTube removed in January 2026.');
+   }
+   if (u.searchParams.get('gl')) st.gl = u.searchParams.get('gl').toUpperCase();
+   if (u.searchParams.get('hl')) st.hl = u.searchParams.get('hl');
+   t.model.write(st); t.touched = true; t.render(); select('youtube');
+   say(el('b', {text: 'Loaded the YouTube search.'}), ...notes);
+   return;
+  } else { say('That is a video or channel page, not a search. Paste a search results address (youtube.com/results?…) or a channel search.'); return; }
+  t.model.write(st); t.touched = true; t.render(); select('youtube');
+  say(el('b', {text: 'Loaded the channel search.'}));
+  return;
+ }
+ if (/(^|\.)amazon\./.test(host)) {
+  if (asinFrom(raw)) { byId('am-prod').value = raw; inspect(); select('amazon'); byId('am-prod').scrollIntoView({block: 'center', behavior: 'smooth'}); say(el('b', {text: 'Product loaded in the Product inspector.'})); return; }
+  const t = TOOLS.amazon, st = amModel.defaults(), extra = [], notes = [];
+  st.q = u.searchParams.get('k') || u.searchParams.get('field-keywords') || '';
+  const pq = ytParseQuery(st.q);
+  st.q = pq.q; st.exact = pq.exact.join(', '); st.none = pq.none.join(', ');
+  const i = (u.searchParams.get('i') || '').replace(/^search-alias=/, '');
+  if (i && i !== 'aps') st.dept = i;
+  if (u.searchParams.get('s')) st.sort = u.searchParams.get('s');
+  if (u.searchParams.get('page')) st.page = u.searchParams.get('page');
+  if (u.searchParams.get('me')) st.me = u.searchParams.get('me');
+  const lp = u.searchParams.get('low-price'), hp = u.searchParams.get('high-price');
+  if (lp) st.min = lp; if (hp) st.max = hp;
+  const rev = {[AM_ID.stars]: ['flags', 'stars'], [AM_ID.prime]: ['flags', 'prime'], [AM_ID.tomorrow]: ['flags', 'tomorrow'], [AM_ID.free]: ['flags', 'free'], [AM_ID.newc]: ['flags', 'newc'], [AM_ID.instock]: ['stock', 'instock'], [AM_ID.oos]: ['stock', 'oos']};
+  (u.searchParams.get('rh') || '').split(',').map(x => x.trim()).filter(Boolean).forEach(f => {
+   let m;
+   if (rev[f]) { const [k, v] = rev[f]; if (k === 'flags') st.flags.push(v); else st[k] = v; }
+   else if ((m = /^p_36:(\d*)-(\d*)$/.exec(f))) { if (m[1]) st.min = String(Math.round(m[1] / 100)); if (m[2]) st.max = String(Math.round(m[2] / 100)); }
+   else if ((m = /^p_n_pct-off-with-tax:(\d+)$/.exec(f)) && Object.values(AM_ID.disc).includes(m[1])) st.disc = Object.keys(AM_ID.disc).find(k => AM_ID.disc[k] === m[1]);
+   else if ((m = /^p_123:([\d|]+)$/.exec(f))) { st.brandMode = 'id'; st.brandId = m[1]; }
+   else if ((m = /^p_89:(.+)$/.exec(f))) { st.brandMode = 'legacy'; st.brand = m[1]; }
+   else extra.push(f);
+  });
+  st.extra = extra.join(', ');
+  if (st.brandMode === 'id') notes.push('Brand ID ' + st.brandId + ' picked up. Add the brand name in the Brand box if you like, for your own reference.');
+  if (extra.length) notes.push(extra.length + ' extra filter' + (extra.length > 1 ? 's' : '') + ' kept under “Seller and custom filters”.');
+  if (!/amazon\.in$/.test(host)) notes.push('Note: filter IDs differ between Amazon countries. This builder targets amazon.in.');
+  t.model.write(st); t.touched = true; t.render(); select('amazon');
+  say(el('b', {text: 'Loaded the Amazon search.'}), ...notes);
+  return;
+ }
+ if (/(^|\.)google\./.test(host) && u.pathname === '/search') {
+  const t = TOOLS.google, st = gwModel.defaults();
+  st.all = u.searchParams.get('q') || '';
+  const udm = u.searchParams.get('udm'), tbm = u.searchParams.get('tbm');
+  st.view = {14: 'web', 18: 'forums', 7: 'videos', 2: 'images'}[udm] || (tbm === 'nws' ? 'news' : tbm === 'vid' ? 'videos' : '');
+  if (u.searchParams.get('gl')) st.region = u.searchParams.get('gl').toUpperCase();
+  t.model.write(st); t.touched = true; t.render(); select('google');
+  say(el('b', {text: 'Loaded the Google search.'}), 'Operators stay in the “All of these words” box.');
+  return;
+ }
+ say('That site is not supported here. Paste a YouTube, Amazon or Google search address.');
+}
+
+/* ======================================================================
+   Mount everything
+   ====================================================================== */
+chipGroup('yt-type-box', 'yt-type', 'radio', YT_TYPE);
+chipGroup('yt-dur-box', 'yt-dur', 'radio', YT_DUR);
+chipGroup('yt-up-box', 'yt-up', 'radio', YT_UP);
+chipGroup('yt-sort-box', 'yt-sort', 'radio', YT_SORT);
+chipGroup('yt-feat-box', 'yt-feat', 'checkbox', YT_FEAT);
+chipGroup('yt-noneMode-box', 'yt-noneMode', 'radio', [['google', 'Strict, on the Google route', {title: 'Recommended. Google really removes these words.'}], ['send', 'Also send -word to YouTube', {title: 'Can backfire: YouTube often treats -word as a search word.'}]]);
+fillSelect('yt-range', YT_RANGES); byId('yt-range').dataset.dynamic = '{}';
+fillSelect('yt-gl', REGIONS);
+fillSelect('yt-hl', YT_HL);
+chipGroup('am-flags-box', 'am-flags', 'checkbox', AM_FLAGS);
+chipGroup('am-stock-box', 'am-stock', 'radio', AM_STOCK);
+chipGroup('am-disc-box', 'am-disc', 'radio', AM_DISC);
+chipGroup('am-sort-box', 'am-sort', 'radio', AM_SORT);
+chipGroup('am-brandMode-box', 'am-brandMode', 'radio', AM_BRANDMODE);
+fillSelect('am-dept', AM_DEPTS);
+fillSelect('am-page', PAGES);
+byId('am-brandlist').replaceChildren(...AM_BRANDS.map(b => el('option', {value: b})));
+chipGroup('gw-view-box', 'gw-view', 'radio', GW_VIEW);
+chipGroup('gw-opts-box', 'gw-opts', 'checkbox', GW_OPTS);
+fillSelect('gw-recent', GW_RECENT);
+fillSelect('gw-filetype', GW_FILETYPES);
+fillSelect('gw-lang', LANGS);
+fillSelect('gw-region', REGIONS);
+fillSelect('gw-page', PAGES);
+chipGroup('gs-opts-box', 'gs-opts', 'checkbox', GS_OPTS);
+fillSelect('gs-region', REGIONS);
+
+/* dynamic labels for range codes created by the Smart bar */
+const rangeSel = byId('yt-range');
+new MutationObserver(() => [...rangeSel.options].forEach(o => { if (o.textContent === o.value && /^[dmy]\d+$/.test(o.value)) o.textContent = rangeLabel(o.value); })).observe(rangeSel, {childList: true});
+
+mount({
+ key: 'youtube', p: 'yt', openLabel: 'Open on YouTube', model: ytModel, build: ytBuild,
+ label: s => squash(s.q || s.exact || s.title),
+ onChange(e, s) {
+  const tg = e.target;
+  if ((tg.id === 'yt-from' || tg.id === 'yt-to') && tg.value && s.range !== 'custom') return Object.assign(s, {range: 'custom'});
+  if (tg.id === 'yt-range' && tg.value !== 'custom' && (s.from || s.to)) return Object.assign(s, {from: '', to: ''});
+  const g = {'yt-type': 'type', 'yt-dur': 'dur', 'yt-up': 'up', 'yt-feat': 'feat'}[tg.name];
+  if (!g || !tg.value || (g === 'feat' && !tg.checked)) return null;
+  const r = ytResolve(s, {g, v: +tg.value});
+  if (r.dropped.length) toast('Cleared ' + list(r.dropped) + ': YouTube cannot combine ' + (r.dropped.length > 1 ? 'them' : 'it') + ' with ' + selLabel({g, v: +tg.value}));
+  return r.dropped.length ? r.s : null;
  },
+ afterRender: ytAfter
 });
+mount({key: 'amazon', p: 'am', openLabel: 'Open on Amazon.in', model: amModel, build: amBuild, label: s => squash([s.q, s.brand].filter(Boolean).join(' ')),
+ afterRender(s) {
+  byId('am-brandId-wrap').hidden = s.brandMode !== 'id';
+  byId('am-prices').replaceChildren(el('b', {text: 'Quick'}), ...AM_PRICES.map(([l, lo, hi]) => el('button', {class: 'pill' + (s.min === lo && s.max === hi ? ' on' : ''), type: 'button', text: l, onclick: () => { byId('am-min').value = lo; byId('am-max').value = hi; TOOLS.amazon.touched = true; TOOLS.amazon.render(); }})));
+ }
+});
+mount({key: 'google', p: 'gw', openLabel: 'Open on Google', model: gwModel, build: gwBuild, label: s => squash(s.all || s.exact || s.intitle),
+ afterRender(s) { byId('gw-recent').disabled = !!(s.after || s.before); }
+});
+mount({key: 'shopping', p: 'gs', openLabel: 'Open Google Shopping', model: gsModel, build: gsBuild, label: s => squash([s.q, s.brand].filter(Boolean).join(' '))});
+
+/* phrasing suggestions need the tool object, so they are attached after mounting */
+[['youtube', 'yt-q'], ['amazon', 'am-q'], ['google', 'gw-all'], ['shopping', 'gs-q']].forEach(([k, id]) => {
+ const t = TOOLS[k], build = t.build;
+ t.build = (s, ctx) => { const r = build(s); if (ctx && ctx.ui) r.alts = altPills(byId(id).value, id, t); return r; };
+});
+
+mountRecipes(TOOLS.youtube, [
+ ['Clean', [['Junk shield', 'Videos only: no Shorts, no shelves', {type: '1'}], ['What’s new', 'Videos from the last 7 days', {type: '1', range: 'd7'}], ['Most popular', 'Videos, most viewed first', {type: '1', sort: '3'}]]],
+ ['Learn', [['Product review', 'Videos · 3–20 min · last 12 months · review words', {type: '1', dur: '5', range: 'y1', any: 'review, vs, long term'}], ['Learn it properly', 'Videos · over 20 min · captions · tutorial words', {type: '1', dur: '2', feat: ['5'], any: 'tutorial, course, explained'}], ['Quick how-to', 'Videos · under 4 min', {type: '1', dur: '1', any: 'how to'}], ['Talks & lectures', 'Videos · over 20 min', {type: '1', dur: '2', any: 'lecture, talk, keynote, podcast'}]]],
+ ['Quality', [['4K + HDR', 'Best picture quality', {type: '1', feat: ['14', '25']}], ['With captions', 'Subtitles/CC: often more carefully made', {type: '1', feat: ['5']}], ['Free to reuse', 'Creative Commons licence', {type: '1', feat: ['6']}]]],
+ ['Special', [['Live now', 'Streams happening right now', {feat: ['8']}], ['Shorts only', 'Short vertical videos', {type: '9'}], ['Playlists', 'Whole series and courses', {type: '3'}], ['Before 2015', 'Older originals', {range: 'custom', to: '2015-01-01'}]]]
+], ['type', 'dur', 'up', 'sort', 'feat', 'range', 'from', 'to', 'spx']);
+mountRecipes(TOOLS.amazon, [
+ ['Smart', [['Best value', '4★ & up · Prime · best sellers first', {flags: ['stars', 'prime'], sort: 'exact-aware-popularity-rank'}], ['Cheapest good', '4★ & up · price low to high', {flags: ['stars'], sort: 'price-asc-rank'}], ['Top rated', '4★ & up · by average review', {flags: ['stars'], sort: 'review-rank'}]]],
+ ['Deals', [['Big discounts', '50%+ off · 4★ & up', {disc: '50', flags: ['stars']}], ['Tomorrow', 'Get it by tomorrow · 4★ & up', {flags: ['tomorrow', 'stars']}], ['Newest', 'Newest arrivals first', {sort: 'date-desc-rank'}], ['Premium', '4★ & up · price high to low', {flags: ['stars'], sort: 'price-desc-rank'}]]]
+], ['flags', 'disc', 'stock', 'sort', 'page']);
+mountRecipes(TOOLS.google, [
+ ['Find', [['Real opinions', 'Reddit and Quora only', {site: 'reddit.com, quora.com'}], ['Forums', 'Discussion threads only', {view: 'forums'}], ['Manuals & PDFs', 'PDF manuals and datasheets', {filetype: 'pdf', intitle: 'manual'}], ['Gov India', '.gov.in sites only', {site: '.gov.in'}]]],
+ ['Clean', [['Plain links', 'No AI overview or widgets', {view: 'web'}], ['Exact words', 'Verbatim: no synonyms', {opts: ['verbatim']}], ['Past month', 'Recent pages only', {recent: 'm'}]]]
+], ['site', 'nosite', 'filetype', 'intitle', 'inurl', 'intext', 'recent', 'after', 'before', 'view', 'opts']);
+mountRecipes(TOOLS.shopping, [
+ ['Shop', [['Cheapest new', 'New · free delivery · price low to high', {cond: 'new:1', sort: 'p_ord:p', opts: ['free']}], ['Top rated', 'By review score', {sort: 'p_ord:rv'}], ['On sale', 'Discounted, cheapest first', {opts: ['sale'], sort: 'p_ord:p'}]]]
+], ['cond', 'sort', 'opts']);
+
+byId('am-prod').addEventListener('input', inspect);
 
 /* ---------- tabs ---------- */
-const tabs = [...document.querySelectorAll('[role=tab]')];
-function show(id, focus){
- if(!tabs.some(t => t.dataset.tool === id)) return false; // unknown hash: leave the current tab alone
- tabs.forEach(t => {
-  const on = t.dataset.tool === id;
-  t.setAttribute('aria-selected', String(on));
-  t.tabIndex = on ? 0 : -1;
-  $('tool-' + t.dataset.tool).hidden = !on;
-  if(on && focus) t.focus();
+const tabs = [...D.querySelectorAll('[role=tab]')];
+function show(key, focus) {
+ if (!TOOLS[key]) return false;
+ active = key;
+ tabs.forEach(tb => {
+  const on = tb.dataset.tool === key;
+  tb.setAttribute('aria-selected', String(on));
+  tb.tabIndex = on ? 0 : -1;
+  byId('tool-' + tb.dataset.tool).hidden = !on;
+  if (on && focus) tb.focus();
  });
+ D.body.dataset.tool = key;
+ dock(TOOLS[key]);
  return true;
 }
-function select(id, focus){
- if(!show(id, focus)) return;
- try { history.replaceState(null, '', '#' + id); } catch(_) {}
-}
-tabs.forEach((t, i) => {
- t.addEventListener('click', () => select(t.dataset.tool));
- t.addEventListener('keydown', e => {
+function select(key, focus) { if (show(key, focus)) { try { history.replaceState(null, '', '#' + key); } catch (_) {} } }
+tabs.forEach((tb, i) => {
+ tb.addEventListener('click', () => select(tb.dataset.tool));
+ tb.addEventListener('keydown', e => {
   let n = -1;
-  if(e.key === 'ArrowRight') n = (i + 1) % tabs.length;
-  else if(e.key === 'ArrowLeft') n = (i - 1 + tabs.length) % tabs.length;
-  else if(e.key === 'Home') n = 0;
-  else if(e.key === 'End') n = tabs.length - 1;
-  if(n >= 0){ e.preventDefault(); select(tabs[n].dataset.tool, true); }
+  if (e.key === 'ArrowRight') n = (i + 1) % tabs.length;
+  else if (e.key === 'ArrowLeft') n = (i - 1 + tabs.length) % tabs.length;
+  else if (e.key === 'Home') n = 0;
+  else if (e.key === 'End') n = tabs.length - 1;
+  if (n >= 0) { e.preventDefault(); select(tabs[n].dataset.tool, true); }
  });
 });
-window.addEventListener('hashchange', () => show(location.hash.slice(1)));
-if(!(location.hash && show(location.hash.slice(1)))) show('youtube');
-mountPresets(); recent();
-$('sm-go').addEventListener('click', applySmart);
-$('sm-in').addEventListener('keydown', e => { if(e.key === 'Enter') applySmart(); });
-document.addEventListener('keydown', e => {
- if((e.ctrlKey || e.metaKey) && e.key === 'Enter'){
-  const t = tabs.find(x => x.getAttribute('aria-selected') === 'true'), o = t && $(Object.keys(TOOL).find(k => TOOL[k] === t.dataset.tool) + '-open');
-  if(o && !o.classList.contains('disabled')) o.click();
- } else if(e.key === '/' && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)){ e.preventDefault(); $('sm-in').focus(); }
+
+function readHash() {
+ const h = location.hash.slice(1);
+ if (!h) return null;
+ const [tool, qs] = h.split('?');
+ const r = {tool: decodeURIComponent(tool)};
+ if (qs) { const s = new URLSearchParams(qs).get('s'); if (s) { try { r.st = JSON.parse(fromB64u(s)); } catch (_) {} } }
+ return r;
+}
+function fromHash() {
+ const h = readHash();
+ if (!h || !TOOLS[h.tool]) return false;
+ if (h.st && typeof h.st === 'object') load(TOOLS[h.tool], h.st);
+ show(h.tool);
+ return true;
+}
+window.addEventListener('hashchange', fromHash);
+
+byId('themeBtn').addEventListener('click', () => {
+ const cur = D.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+ const next = cur === 'light' ? 'dark' : 'light';
+ D.documentElement.dataset.theme = next;
+ store.set('sqb-theme', next);
 });
+byId('sm-go').addEventListener('click', applySmart);
+byId('sm-in').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); applySmart(); } });
+byId('sm-in').addEventListener('paste', () => setTimeout(() => { const v = byId('sm-in').value.trim(); if (/^https?:\/\//i.test(v)) importUrl(v); }, 0));
+byId('dock-open').addEventListener('click', e => { const t = TOOLS[active]; if (!t.current || t.current.error) e.preventDefault(); else remember(t); });
+byId('dock-sum').addEventListener('click', () => byId(TOOLS[active].p + '-out').scrollIntoView({behavior: 'smooth', block: 'start'}));
+byId('dock-copy').addEventListener('click', async () => { const t = TOOLS[active]; if (!t.current || t.current.error) return; remember(t); toast(await copyText(t.current.url) ? 'Link copied' : 'Could not copy'); });
+D.addEventListener('keydown', e => {
+ if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { const o = byId(TOOLS[active].p + '-open'); if (!o.classList.contains('disabled')) o.click(); }
+ else if (e.key === '/' && !/^(INPUT|TEXTAREA|SELECT)$/.test((D.activeElement || {}).tagName || '')) { e.preventDefault(); byId('sm-in').focus(); }
+});
+
+Object.values(TOOLS).forEach(t => t.render());
+paintLists();
+if (!fromHash()) show('youtube');
+
+/* small, read-only hook for automated checks */
+window.SQB = {ytEncode, ytDecode, ytBuild: s => ytBuild(Object.assign(ytModel.defaults(), s)), amBuild: s => amBuild(Object.assign(amModel.defaults(), s)), gwBuild: s => gwBuild(Object.assign(gwModel.defaults(), s)), gsBuild: s => gsBuild(Object.assign(gsModel.defaults(), s)), smartParse, ytClash, ytParseQuery, ytChannel, asinFrom};
 })();
 </script>
 </body>
