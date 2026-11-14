@@ -4,7 +4,7 @@ A framework-free bookmark manager prepared for GitHub Pages. No build tools, npm
 
 ## Deploy
 1. Extract this ZIP.
-2. Upload index.html, sw.js, manifest.webmanifest, icon.svg, icon-192.png, icon-512.png, library.json and .nojekyll to the root of your repository. Upload the files, not the ZIP itself.
+2. Upload index.html, contacts.html, orbit-dock.css, orbit-dock.js, sw.js, manifest.webmanifest, icon.svg, icon-192.png, icon-512.png, noto-sans.woff2, library.json, .nojekyll and the apps-script folder to the root of your repository. Upload the files, not the ZIP itself.
 3. In the repository, choose Settings > Pages > Build and deployment > Source > Deploy from a branch.
 4. Select your main branch and /(root), then Save.
 5. Open the HTTPS address shown by GitHub Pages after deployment.
@@ -17,6 +17,38 @@ The app uses relative paths, so it also supports a repository subdirectory URL. 
 - **Add link:** the round + button floating at the bottom centre, within thumb reach. While rows are selected it is replaced by a bar with Move, Export, Delete and clear.
 - **Rows:** one slim row per bookmark showing a serial number and the name you gave it. Tick boxes select; the icons on the right copy the link, pin it to the top, edit and delete. Pinned rows stay at the top and show small up and down arrows to put them in your own order. The Pinned filter shows only those. Clicking a row opens it.
 - **Names:** editing requires a name. When you paste exactly one link you can name it straight away; otherwise the name defaults to the website domain and can be edited later.
+
+## Orbit Contacts (contacts.html)
+A phone-first contact list that lives next to your bookmarks. It is built for phones: on a desktop screen it shows a "use your phone" page (with a "Preview anyway" button).
+
+**Switching between Bookmarks and Contacts**
+- The dock at the bottom has three parts: Bookmarks, the + button for the current page, and Contacts. The glowing pill glides to the page you are on.
+- Swipe sideways anywhere on the list to switch: swipe left on Bookmarks to open Contacts, and right on Contacts to go back. Swipes that start at the very edge of the screen are left to your phone's own Back gesture.
+- **Left- or right-handed:** hold the dock for half a second, then slide it to the left, centre or right. It snaps into place and both pages remember the position. The A–Z bar on Contacts moves to the same side. You can also choose the position in Contacts > Sync & settings.
+
+**Using Contacts**
+- Search updates with every letter. It matches names, initials ("rk" finds Rahul Kumar), any part of a phone number ("98765", with or without spaces or a leading 0), emails, companies, notes and accents ("zelie" finds Zélie). Type `#work` to search by tag. Press Enter when there is exactly one result to open it.
+- Tag chips under the search bar filter people instantly. Tap several to see anyone with any of those tags. Favourites appear as a row of round avatars at the top.
+- Each person has one-tap Call, Message, WhatsApp and Email. WhatsApp needs a country code. Numbers without a + use the code set in Sync & settings.
+- Delete asks for a second tap, and the message afterwards has an Undo button.
+- Import from this phone uses Android Chrome's contact picker. Import/Export .vcf works everywhere. Export a .vcf and open it on your phone to copy everyone into the phone's own address book: a web app cannot write to the phone's own Contacts app.
+
+**Sync across phones with your own Google Sheet**
+1. Create a Google Sheet. Choose **Extensions > Apps Script**, delete the sample code and paste the whole of `apps-script/contacts-sync.gs`.
+2. Change `PASSPHRASE` on the first code line to a long secret phrase of your own. Save.
+3. **Deploy > New deployment > Web app**. Execute as: **Me**. Who has access: **Anyone**. Deploy, then allow access when Google asks.
+4. Copy the **Web app URL** (it ends in `/exec`).
+5. On your phone, open Contacts > Sync & settings, paste the URL and the passphrase, and tap Connect.
+6. For each extra phone, tap **Copy setup link for another phone**, send the link to yourself and open it on that phone. Or type the same URL and passphrase there.
+
+How it works:
+- Every phone keeps a full copy of your contacts in its own storage (IndexedDB), so search is instant and the app works offline.
+- A phone syncs when the app opens, about a second after each change, when you come back to the app, and every 15 seconds while it is open. Changes made while offline are sent when the connection returns.
+- If two phones change the same contact, the newer change wins. Deletes are kept as rows marked `Deleted = TRUE` so other phones learn about them.
+- You can edit the Sheet by hand. Edited rows are stamped automatically and reach your phones on their next sync. New rows typed by hand get an ID by themselves. Rows deleted by hand disappear from phones at their next full resync (every 6 hours, or tap Full resync).
+- Phones and emails are stored one per line, as `Label: value`. Tags are separated by commas.
+
+Privacy: no contact data is ever stored in this repository or on GitHub Pages. It lives only in your Google Sheet and on your phones. The script refuses any request without the passphrase. The passphrase is stored on each phone, never in the code you publish here. After changing the script later, use **Deploy > Manage deployments > Edit > New version** so the same URL keeps working.
 
 ## What you can save
 Anything. Each non-empty line you paste is saved as typed, with no validation: web addresses, `localhost:3000` (saved as http), LAN addresses, `file:///` paths, `mailto:` and other app links, even plain text. Bare domains get https; bare `localhost`, IP addresses and host:port get http. Lines of ordinary text containing web links still have those links picked out. Query parameters are kept.
