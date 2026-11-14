@@ -4,9 +4,15 @@
  * Setup (once):
  *  1. Create a Google Sheet. Choose Extensions > Apps Script.
  *  2. Replace the sample code with this whole file.
- *  3. Change PASSPHRASE below to a long secret phrase of your own.
+ *  3. Change SOS_PASSPHRASE below to a secret phrase only you know. It is NOT needed for everyday use:
+ *     it is only for the emergency kill switch (lock every phone) and for unlocking afterwards.
  *  4. Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone.
- *  5. Copy the Web app URL (ends in /exec) into Orbit Contacts > Sync & settings, with the same passphrase.
+ *  5. Copy the Web app URL (ends in /exec) into Orbit Contacts > Sync & settings and tap Connect.
+ *
+ * How access works: each phone joins with the URL and receives its own device token.
+ * SOS: entering SOS_PASSPHRASE in any phone locks sync and cancels every token; each phone
+ * wipes its local copy the next time it is opened online. Your data stays in this Sheet.
+ * Unlock by entering SOS_PASSPHRASE on the lock screen of a trusted phone.
  *
  * After editing this code later, use Deploy > Manage deployments > Edit > Version: New version,
  * so the same URL keeps working.
@@ -15,10 +21,11 @@
  * reach your phones on their next sync. To delete a row, set Deleted to TRUE (or delete it in the app);
  * rows removed by hand disappear from phones at their next full resync (every few hours).
  */
-const PASSPHRASE = 'CHANGE-ME-to-a-long-secret-phrase';
+const SOS_PASSPHRASE = 'CHANGE-ME-to-a-secret-phrase';
 
 const SHEET = 'Contacts';
 const META = '_orbit_sync';
+const DEVICES = '_orbit_devices';
 const HEADERS = ['ID', 'Name', 'Company', 'Phones', 'Emails', 'Tags', 'Address', 'Birthday', 'Notes', 'Favourite', 'Created', 'Updated', 'Deleted', 'Rev'];
 const COL = {}; HEADERS.forEach((h, i) => COL[h] = i);
 
@@ -31,20 +38,31 @@ function doPost(e) {
   try { body = JSON.parse((e && e.postData && e.postData.contents) || '{}'); }
   catch (err) { return json_({ ok: false, error: 'Bad request.' }); }
 
-  if (PASSPHRASE === 'CHANGE-ME-to-a-long-secret-phrase' || PASSPHRASE.length < 6) {
-    return json_({ ok: false, error: 'Set PASSPHRASE at the top of the Apps Script, then deploy a new version.' });
-  }
-  if (!safeEqual_(String(body.key || ''), PASSPHRASE)) {
-    Utilities.sleep(800);
-    return json_({ ok: false, error: 'Wrong passphrase.' });
-  }
-
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(20000)) return json_({ ok: false, error: 'The sheet is busy. Will retry.' });
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sh = ensureSheets_(ss);
     const meta = ss.getSheetByName(META);
+    const action = String(body.action || 'sync');
+    const locked = String(meta.getRange('B2').getValue()).toUpperCase() === 'TRUE';
+
+    if (action === 'kill' || action === 'unlock') {
+      if (!sosReady_()) return json_({ ok: false, error: 'Set SOS_PASSPHRASE in the Apps Script and deploy a new version to use the kill switch.' });
+      if (!safeEqual_(String(body.passphrase || ''), SOS_PASSPHRASE)) { Utilities.sleep(1500); return json_({ ok: false, error: 'Wrong SOS passphrase.' }); }
+      const dev = devices_(ss);
+      if (action === 'kill') {
+        if (dev.getLastRow() > 1) dev.deleteRows(2, dev.getLastRow() - 1);
+        meta.getRange('B2').setValue('TRUE');
+        meta.getRange('B3').setValue(new Date().toISOString());
+        return json_({ ok: true, locked: true });
+      }
+      meta.getRange('B2').setValue('FALSE');
+      return json_({ ok: true, token: register_(ss, body.device) });
+    }
+    if (locked) return json_({ ok: false, code: 'locked', error: 'Sync is locked by the SOS kill switch.' });
+    if (action === 'register') return json_({ ok: true, token: register_(ss, body.device) });
+    if (!checkToken_(ss, String(body.token || ''))) return json_({ ok: false, code: 'revoked', error: 'This phone is no longer allowed to sync.' });
     const cursor = Number(body.cursor) || 0;
     const changes = Array.isArray(body.changes) ? body.changes : [];
     let rev = Number(meta.getRange('B1').getValue()) || 0;
@@ -149,6 +167,37 @@ function onEdit(e) {
 }
 
 /* ---------- helpers ---------- */
+function sosReady_() { return SOS_PASSPHRASE !== 'CHANGE-ME-to-a-secret-phrase' && SOS_PASSPHRASE.length >= 6; }
+
+function devices_(ss) {
+  let d = ss.getSheetByName(DEVICES);
+  if (!d) {
+    d = ss.insertSheet(DEVICES);
+    d.getRange(1, 1, 1, 4).setValues([['Token', 'Device', 'Joined', 'Last seen']]);
+    d.hideSheet();
+  }
+  return d;
+}
+
+function register_(ss, name) {
+  const token = Utilities.getUuid() + Utilities.getUuid().replace(/-/g, '');
+  const now = new Date().toISOString();
+  devices_(ss).appendRow([token, str_(name, 80) || 'Phone', now, now]);
+  return token;
+}
+
+function checkToken_(ss, token) {
+  if (token.length < 30) return false;
+  const d = devices_(ss);
+  const n = d.getLastRow() - 1;
+  if (n < 1) return false;
+  const vals = d.getRange(2, 1, n, 1).getValues();
+  for (let i = 0; i < n; i++) {
+    if (safeEqual_(String(vals[i][0]), token)) { d.getRange(i + 2, 4).setValue(new Date().toISOString()); return true; }
+  }
+  return false;
+}
+
 function ensureSheets_(ss) {
   let sh = ss.getSheetByName(SHEET);
   if (!sh) {
@@ -169,7 +218,7 @@ function ensureSheets_(ss) {
   let meta = ss.getSheetByName(META);
   if (!meta) {
     meta = ss.insertSheet(META);
-    meta.getRange('A1:B1').setValues([['lastRev', 0]]);
+    meta.getRange('A1:B3').setValues([['lastRev', 0], ['locked', 'FALSE'], ['lockedAt', '']]);
     meta.hideSheet();
   }
   return sh;

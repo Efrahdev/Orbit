@@ -297,6 +297,19 @@ details.guide b{color:var(--text)}
 .tagrow .mini{flex:none;width:38px;height:38px;border:0;border-radius:12px;background:var(--card2);display:grid;place-items:center;color:var(--muted)}
 .tagrow .mini .i{width:16px;height:16px}
 
+/* SOS */
+.sos{border-color:rgba(251,113,133,.28);background:linear-gradient(160deg,rgba(251,113,133,.08),transparent 60%),var(--card)}
+.sos .fhead{color:var(--danger)}
+.hold{position:relative;overflow:hidden;border:0;color:#fff;background:#7f1d2d;-webkit-user-select:none;user-select:none;touch-action:none}
+.hold:before{content:"";position:absolute;inset:0;width:calc(var(--p,0) * 100%);background:linear-gradient(90deg,#e11d48,#fb7185);transition:width .08s linear}
+.hold>*{position:relative}
+.lockscr{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:24px;text-align:center;background:radial-gradient(circle at 50% 30%,rgba(225,29,72,.22),transparent 55%),var(--bg)}
+.lockscr[hidden]{display:none}
+.lockscr .shield{width:96px;height:96px;margin:0 auto;border-radius:30px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#e11d48,#7c3aed);box-shadow:0 20px 50px -16px rgba(225,29,72,.8);animation:rise .6s var(--out)}
+.lockscr .shield .i{width:44px;height:44px}
+.lockscr h2{margin:22px 0 8px;font-size:25px;letter-spacing:-.02em}
+.lockscr p{max-width:330px;margin:0 auto 20px;font-size:14px;line-height:1.55;color:var(--muted)}
+.lockscr form{display:flex;flex-direction:column;gap:10px;width:min(330px,100%);margin:0 auto}
 /* toast */
 .toast{position:fixed;z-index:60;left:50%;bottom:96px;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 28px);padding:11px 12px 11px 16px;border-radius:16px;font-size:13.5px;line-height:1.35;color:#eef0ff;background:rgba(24,28,46,.96);border:1px solid rgba(167,139,250,.28);box-shadow:0 18px 40px -16px rgba(0,0,0,.85);opacity:0;transform:translate(-50%,16px) scale(.97);pointer-events:none;transition:opacity .3s,transform .4s var(--spring)}
 .toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
@@ -351,6 +364,9 @@ body.desk .app{width:430px}
 <section class="layer" id="editor" role="dialog" aria-modal="true" aria-label="Edit contact" hidden></section>
 <section class="layer" id="settings" role="dialog" aria-modal="true" aria-label="Sync and settings" hidden></section>
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button type="button" id="toastAct"></button></div>
+<div class="lockscr" id="lockscr" hidden><div><div class="shield"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></div>
+<h2>Orbit Contacts is locked</h2><p id="lockMsg">The SOS kill switch was used. Contacts were wiped from this phone. They are still safe in your Google Sheet.</p>
+<form id="unlockForm" autocomplete="off"><input class="fin" id="unlockPass" type="password" placeholder="SOS passphrase" autocomplete="off" aria-label="SOS passphrase"><button class="btn primary" type="submit">Unlock this phone</button></form></div></div>
 <input type="file" id="vcfFile" accept=".vcf,text/vcard,text/x-vcard" hidden>
 
 <div class="gate" id="gate" hidden>
@@ -442,7 +458,8 @@ function initials(c){const n=c.name||c.company;if(!n)return '';const w=n.split(/
 function av(c,cls=''){const p=pal(c),ini=initials(c);return `<span class="av ${cls}" style="--a1:${p[0]};--a2:${p[1]}">${ini?esc(ini):I.user}</span>`}
 function indexOf(c){if(c._v===c.updatedAt)return;c._v=c.updatedAt;c._n=norm(c.name||disp(c));c._w=c._n.split(/[^\p{L}\p{N}]+/u).filter(Boolean);c._i=c._w.map(w=>w[0]).join('');c._d=c.phones.map(p=>digits(p.value)).join(' ');c._o=norm([c.company,...c.emails.map(e=>e.value),c.address,c.notes].join(' '));c._t=c.tags.map(norm)}
 const telHref=v=>String(v).replace(/[^\d+*#,;]/g,'');
-let cfg={url:'',key:'',cursor:0,lastSync:0,lastFull:0,cc:''};
+let cfg={url:'',token:'',cursor:0,lastSync:0,lastFull:0,cc:'',locked:false};
+const deviceName=()=>{const u=navigator.userAgent;return(/iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Android/.test(u)?((u.match(/Android[^;]*;\s*([^;)]+)/)||[])[1]||'Android phone'):'Browser').trim().slice(0,60)+' · joined '+new Date().toLocaleDateString('en-GB')};
 function defaultCC(){const l=(navigator.language||'').toLowerCase();if(l.endsWith('-in')||l.startsWith('hi'))return '91';if(l.endsWith('-gb'))return '44';if(l.endsWith('-us')||l.endsWith('-ca'))return '1';if(l.endsWith('-au'))return '61';if(l.endsWith('-ae'))return '971';return ''}
 function waNumber(v){let d=digits(v);if(String(v).trim().startsWith('+'))return d;if(d.startsWith('00'))return d.slice(2);const cc=cfg.cc||defaultCC();d=d.replace(/^0+/,'');if(cc&&!d.startsWith(cc)||cc&&d.length<=10)return cc+d;return d}
 
@@ -772,13 +789,13 @@ async function post(payload,timeout=25000){
     const r=await fetch(cfg.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),redirect:'follow',signal:ctl.signal,cache:'no-store'});
     const text=await r.text();let j;
     try{j=JSON.parse(text)}catch{throw Error('Google returned a web page instead of data. In Apps Script, deploy as a Web app with “Who has access: Anyone”.')}
-    if(!j.ok)throw Error(j.error||'The sync script reported an error.');
+    if(!j.ok){const er=Error(j.error||'The sync script reported an error.');er.code=j.code;throw er}
     return j;
   }catch(e){if(e.name==='AbortError')throw Error('Google took too long to answer. Will retry.');throw e}
   finally{clearTimeout(t)}
 }
 async function sync({full=false}={}){
-  if(!cfg.url||!cfg.key)return setStatus('off');
+  if(cfg.locked)return;if(!cfg.url||!cfg.token)return setStatus('off');
   if(syncing){again=true;return}
   if(!navigator.onLine)return setStatus('offline');
   const prev=status;syncing=true;setStatus('syncing');
@@ -786,7 +803,7 @@ async function sync({full=false}={}){
   try{
     const dirty=[...all.values()].filter(c=>c.dirty);
     const sent=new Map(dirty.map(c=>[c.id,c.updatedAt]));
-    const j=await post({key:cfg.key,cursor:full?0:cfg.cursor,changes:dirty.map(wire)});
+    const j=await post({token:cfg.token,cursor:full?0:cfg.cursor,changes:dirty.map(wire)});
     const changed=[];
     for(const[id,u]of sent){const c=all.get(id);if(c&&c.updatedAt===u&&c.dirty){c.dirty=false;changed.push(c)}}
     const seen=new Set();
@@ -809,6 +826,7 @@ async function sync({full=false}={}){
     if(wasFirst){const o=$('#orb');o.classList.remove('pop');void o.offsetWidth;o.classList.add('pop')}
     if(changed.length||removed.length)scheduleRender();
   }catch(e){
+    if(e.code==='locked'||e.code==='revoked'){syncing=false;await lockdown(e.code==='locked'?'':'This phone was signed out of sync (an SOS lock happened). Contacts were wiped from this phone. Unlock to download them again.');return}
     failCount++;
     setStatus(navigator.onLine?'error':'offline',e.message||String(e));
     clearTimeout(syncTimer);syncTimer=setTimeout(()=>sync(),Math.min(120000,5000*2**failCount));
@@ -839,15 +857,16 @@ function openSettings(){
     <form id="cfgForm" class="stack" autocomplete="off">
       <label class="flabel" for="cfgUrl" style="margin:0">Apps Script web app URL</label>
       <input class="fin" id="cfgUrl" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec" value="${esc(cfg.url)}" spellcheck="false">
-      <label class="flabel" for="cfgKey" style="margin:4px 0 0">Passphrase</label>
-      <input class="fin" id="cfgKey" type="password" placeholder="Same passphrase as in the script" value="${esc(cfg.key)}" autocomplete="new-password">
       <button class="btn primary" type="submit">${I.link}${cfg.url?'Save &amp; sync':'Connect'}</button>
     </form>
     ${cfg.url?`<div class="row2" style="margin-top:9px"><button class="btn" data-s="sync">${I.sync}Sync now</button><button class="btn" data-s="full">Full resync</button></div>
     <div class="stack"><button class="btn" data-s="pair">${I.copy}Copy setup link for another phone</button></div>
-    <p class="note">Open that link on your other phone and it connects by itself. The link contains your passphrase, so only send it to yourself.</p>
+    <p class="note">Open that link on your other phone and it connects by itself. Anyone with the link can join, so only send it to yourself.</p>
     <div class="stack"><button class="btn danger" data-s="disconnect">Disconnect this phone</button></div>`:''}
   </div>
+  ${cfg.url?`<div class="fcard sos"><div class="fhead">${I.trash}SOS kill switch</div>
+    <p class="note">Phone lost or stolen? This locks sync and cancels every phone's access. Each phone wipes its contacts the next time it is opened online. Your contacts stay safe in the Google Sheet, and you unlock with the same passphrase.</p>
+    <form id="sosForm" class="stack" autocomplete="off"><input class="fin" id="sosPass" type="password" placeholder="SOS passphrase (from the script)" autocomplete="off"><button class="btn hold" type="button" id="sosHold"><span>Hold for 2 seconds to lock all phones</span></button></form></div>`:''}
   <div class="fcard"><div class="fhead">${I.user}Your contacts</div><div class="stack">
     ${picker?`<button class="btn" data-s="pick">${I.phoneBook}Import from this phone</button>`:''}
     <div class="row2"><button class="btn" data-s="vcfin">${I.down}Import .vcf</button><button class="btn" data-s="vcfout">${I.up}Export .vcf</button></div>
@@ -863,10 +882,10 @@ function openSettings(){
   <div class="fcard"><details class="guide"><summary>How to set up Google Sheet sync</summary><ol>
     <li>Create a new Google Sheet (for example “Orbit Contacts”).</li>
     <li>In the Sheet choose <b>Extensions → Apps Script</b>. Delete the sample code and paste the Orbit sync script.</li>
-    <li>On the first line, change <b>PASSPHRASE</b> to a long secret phrase of your own.</li>
+    <li>Change <b>SOS_PASSPHRASE</b> to a secret phrase only you know. You only need it in an emergency.</li>
     <li>Click <b>Deploy → New deployment</b>, type <b>Web app</b>. Execute as: <b>Me</b>. Who has access: <b>Anyone</b>. Deploy and allow access.</li>
-    <li>Copy the <b>Web app URL</b> (it ends in /exec). Paste it above with your passphrase and tap Connect.</li>
-    <li>On your other phones, use “Copy setup link” or type the same URL and passphrase.</li>
+    <li>Copy the <b>Web app URL</b> (it ends in /exec), paste it above and tap Connect.</li>
+    <li>On your other phones, use “Copy setup link” or paste the same URL.</li>
   </ol><div class="stack"><button class="btn" data-s="script">${I.copy}Copy the sync script</button></div></details></div>
   </div>`;
   const setup=()=>{$('#settings').innerHTML=html;paintStatusCard();drawTagMgr()};
@@ -883,10 +902,10 @@ const settingsEl=$('#settings');
 settingsEl.addEventListener('submit',async e=>{
   e.preventDefault();
   if(e.target.id==='cfgForm'){
-    const url=$('#cfgUrl').value.trim(),key=$('#cfgKey').value;
+    const url=$('#cfgUrl').value.trim();
     if(!/^https:\/\/script\.google(usercontent)?\.com\//.test(url)){toast('Paste the Web app URL from Apps Script (starts with https://script.google.com/)');return}
-    if(key.length<6){toast('Use a passphrase of at least 6 characters');return}
-    await connect(url,key);openSettings();
+    if(url===cfg.url&&cfg.token){await sync();openSettings();return}
+    await connect(url);openSettings();
   }else if(e.target.dataset.rename){
     const from=e.target.dataset.rename,to=str($('input',e.target).value,40);
     if(to&&to!==from){const hit=live().filter(c=>c.tags.some(t=>t.toLowerCase()===from.toLowerCase()));await saveMany(hit.map(c=>({...c,tags:tagList(c.tags.map(t=>t.toLowerCase()===from.toLowerCase()?to:t))})));toast(`Renamed to ${to} on ${hit.length} ${hit.length===1?'contact':'contacts'}`)}
@@ -902,23 +921,58 @@ settingsEl.addEventListener('click',async e=>{
   if(k==='close')closeTop();
   else if(k==='sync'){await sync();paintStatusCard()}
   else if(k==='full'){await sync({full:true});toast(status==='idle'?'Full resync complete':'Resync failed: '+statusMsg)}
-  else if(k==='pair'){const link=location.href.split('#')[0]+'#connect='+b64e(JSON.stringify({u:cfg.url,k:cfg.key}));const ok=await copyText(link);toast(ok?'Setup link copied. Send it to yourself and open it on the other phone.':'Could not copy the link')}
+  else if(k==='pair'){const link=location.href.split('#')[0]+'#connect='+b64e(JSON.stringify({u:cfg.url}));const ok=await copyText(link);toast(ok?'Setup link copied. Send it to yourself and open it on the other phone.':'Could not copy the link')}
   else if(k==='disconnect'){if(!b.classList.contains('armed')){b.classList.add('armed');b.textContent='Tap again to disconnect';setTimeout(()=>{b.classList.remove('armed');b.textContent='Disconnect this phone'},3000);return}
-    cfg={...cfg,url:'',key:'',cursor:0,lastSync:0,lastFull:0};await idb.set('sync',cfg);setStatus('off');openSettings();toast('Disconnected. Contacts stay on this phone.')}
+    cfg={...cfg,url:'',token:'',cursor:0,lastSync:0,lastFull:0};await idb.set('sync',cfg);setStatus('off');openSettings();toast('Disconnected. Contacts stay on this phone.')}
   else if(k==='pick')pickFromPhone();
   else if(k==='vcfin')$('#vcfFile').click();
   else if(k==='vcfout')exportVCF();
   else if(k==='script')copyScript();
 });
 settingsEl.addEventListener('change',async e=>{if(e.target.id==='cfgCC'){cfg.cc=digits(e.target.value).slice(0,4);await idb.set('sync',cfg);toast('Saved')}});
-async function connect(url,key){
+async function connect(url){
   const changedSheet=cfg.url&&cfg.url!==url;
-  if(changedSheet||!cfg.url){const mark=[...all.values()].filter(c=>!c.dirty);for(const c of mark)c.dirty=true;if(mark.length)await idb.put(mark)}
-  cfg={...cfg,url,key,cursor:0,lastFull:0};await idb.set('sync',cfg);
+  if(changedSheet||!cfg.token){const mark=[...all.values()].filter(c=>!c.dirty);for(const c of mark)c.dirty=true;if(mark.length)await idb.put(mark)}
+  cfg={...cfg,url,token:'',cursor:0,lastFull:0};
+  try{setStatus('syncing');const j=await post({action:'register',device:deviceName()});cfg.token=j.token;await idb.set('sync',cfg)}
+  catch(e){await idb.set('sync',cfg);if(e.code==='locked'){await lockdown('');return}setStatus('error',e.message);toast('Could not connect: '+e.message);return}
   await sync({full:true});
   if(status==='idle'){toast('Connected to your Google Sheet ✨');haptic([10,40,10,40,20])}
   else toast('Could not connect: '+statusMsg);
 }
+/* ---------- SOS kill switch ---------- */
+async function lockdown(msg){
+  clearTimeout(syncTimer);
+  const ids=[...all.keys()];all=new Map();
+  try{if(ids.length)await idb.del(ids)}catch{}
+  cfg={...cfg,token:'',cursor:0,lastSync:0,lastFull:0,locked:true};
+  try{await idb.set('sync',cfg)}catch{}
+  while(stack.length){const id=stack.pop();$('#'+id).hidden=true}
+  root.classList.remove('layer-open');
+  if(msg)$('#lockMsg').textContent=msg;
+  $('#lockscr').hidden=false;setStatus('off');render();
+}
+let holdT=0,holdStart=0;
+function holdTick(){const b=$('#sosHold');if(!b)return;const p=Math.min(1,(performance.now()-holdStart)/2000);b.style.setProperty('--p',p);if(p>=1){holdEnd(true);return}if(p>0&&Math.round(p*10)!==Math.round((p-0.016)*10))haptic(4);holdT=requestAnimationFrame(holdTick)}
+async function holdEnd(fire){
+  cancelAnimationFrame(holdT);const b=$('#sosHold');if(!b)return;const was=holdStart;holdStart=0;
+  if(!fire){b.style.setProperty('--p',0);return}
+  if(!was)return;
+  haptic([30,60,30,60,60]);
+  const pass=$('#sosPass').value;
+  try{await post({action:'kill',passphrase:pass});await lockdown('You used the SOS kill switch. Every phone is now locked and will wipe its contacts when opened online. Your contacts are safe in the Google Sheet.')}
+  catch(e){b.style.setProperty('--p',0);toast(e.message)}
+}
+settingsEl.addEventListener('pointerdown',e=>{const b=e.target.closest('#sosHold');if(!b)return;if(!$('#sosPass').value){toast('Type the SOS passphrase first');return}b.setPointerCapture(e.pointerId);holdStart=performance.now();holdT=requestAnimationFrame(holdTick)});
+settingsEl.addEventListener('pointerup',e=>{if(e.target.closest('#sosHold')&&holdStart)holdEnd(false)});
+settingsEl.addEventListener('pointercancel',()=>{if(holdStart)holdEnd(false)});
+settingsEl.addEventListener('contextmenu',e=>{if(e.target.closest('#sosHold'))e.preventDefault()});
+$('#unlockForm').addEventListener('submit',async e=>{
+  e.preventDefault();const pass=$('#unlockPass').value;if(!pass)return;
+  if(!cfg.url){toast('Connect this phone first');$('#lockscr').hidden=true;cfg.locked=false;await idb.set('sync',cfg);openSettings();return}
+  try{const j=await post({action:'unlock',passphrase:pass,device:deviceName()});cfg={...cfg,token:j.token,locked:false,cursor:0,lastFull:0};await idb.set('sync',cfg);$('#unlockPass').value='';$('#lockscr').hidden=true;await sync({full:true});toast(`Unlocked · ${live().length} contacts restored from your Sheet`);haptic([10,40,20])}
+  catch(e){toast(e.message);haptic([20,40,20])}
+});
 const b64e=s=>btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const b64d=s=>new TextDecoder().decode(Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0)));
 async function copyScript(){try{const r=await fetch('./apps-script/contacts-sync.gs',{cache:'no-store'});if(!r.ok)throw 0;const ok=await copyText(await r.text());toast(ok?'Sync script copied. Paste it into Apps Script.':'Could not copy the script')}catch{toast('Could not load the script. Find it in the repository under apps-script/.')}}
@@ -1019,8 +1073,9 @@ async function init(){
     const s=await idb.get('sync');if(s)cfg={...cfg,...s};
   }catch(e){list.innerHTML='<div class="empty"><h2>Storage is blocked</h2><p>Allow site storage (leave private browsing) and reload. Nothing has been deleted.</p></div>';return}
   const m=location.hash.match(/connect=([\w-]+)/);
-  if(m){history.replaceState(history.state,'',location.pathname+location.search);try{const o=JSON.parse(b64d(m[1]));if(o.u&&o.k){render();await connect(o.u,o.k);}}catch{toast('That setup link is not valid')}}
-  setStatus(cfg.url?(navigator.onLine?'idle':'offline'):'off');
+  if(m){history.replaceState(history.state,'',location.pathname+location.search);try{const o=JSON.parse(b64d(m[1]));if(o.u){render();await connect(o.u);}}catch{toast('That setup link is not valid')}}
+  if(cfg.locked){$('#lockscr').hidden=false}
+  setStatus(cfg.url&&cfg.token?(navigator.onLine?'idle':'offline'):'off');
   render();
   if(cfg.url)queueSync(250);
   if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('./sw.js').catch(()=>{});

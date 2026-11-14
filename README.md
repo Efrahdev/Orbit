@@ -35,11 +35,11 @@ A phone-first contact list that lives next to your bookmarks. It is built for ph
 
 **Sync across phones with your own Google Sheet**
 1. Create a Google Sheet. Choose **Extensions > Apps Script**, delete the sample code and paste the whole of `apps-script/contacts-sync.gs`.
-2. Change `PASSPHRASE` on the first code line to a long secret phrase of your own. Save.
+2. Change `SOS_PASSPHRASE` near the top to a secret phrase only you know. You never type it in everyday use; it is only for the emergency kill switch. Save.
 3. **Deploy > New deployment > Web app**. Execute as: **Me**. Who has access: **Anyone**. Deploy, then allow access when Google asks.
 4. Copy the **Web app URL** (it ends in `/exec`).
-5. On your phone, open Contacts > Sync & settings, paste the URL and the passphrase, and tap Connect.
-6. For each extra phone, tap **Copy setup link for another phone**, send the link to yourself and open it on that phone. Or type the same URL and passphrase there.
+5. On your phone, open Contacts > Sync & settings, paste the URL and tap Connect. No password needed.
+6. For each extra phone, tap **Copy setup link for another phone**, send the link to yourself and open it on that phone. Or paste the same URL there.
 
 How it works:
 - Every phone keeps a full copy of your contacts in its own storage (IndexedDB), so search is instant and the app works offline.
@@ -48,7 +48,14 @@ How it works:
 - You can edit the Sheet by hand. Edited rows are stamped automatically and reach your phones on their next sync. New rows typed by hand get an ID by themselves. Rows deleted by hand disappear from phones at their next full resync (every 6 hours, or tap Full resync).
 - Phones and emails are stored one per line, as `Label: value`. Tags are separated by commas.
 
-Privacy: no contact data is ever stored in this repository or on GitHub Pages. It lives only in your Google Sheet and on your phones. The script refuses any request without the passphrase. The passphrase is stored on each phone, never in the code you publish here. After changing the script later, use **Deploy > Manage deployments > Edit > New version** so the same URL keeps working.
+**SOS kill switch (lost or stolen phone)**
+- Each phone that joins gets its own device token. Joining needs only the URL.
+- On any of your phones, open Sync & settings > SOS kill switch, type the SOS passphrase and hold the red button for 2 seconds.
+- Sync locks at once and every phone's token is cancelled. Each phone, including the lost one, wipes its contacts the next time it is opened online and shows a lock screen. While locked, nobody can join, even with the URL.
+- Your contacts are untouched in the Google Sheet. On a phone you trust, enter the SOS passphrase on the lock screen: sync unlocks and everything downloads again. Each other phone you still have unlocks the same way. The lost phone's old token stays cancelled.
+- Limits: a phone that is never opened online again keeps its local copy until it is. If you think someone has the URL itself, make a new deployment in Apps Script (it gives a new URL) and connect your phones to that.
+
+Privacy: no contact data is ever stored in this repository or on GitHub Pages. It lives only in your Google Sheet and on your phones. After changing the script later, use **Deploy > Manage deployments > Edit > New version** so the same URL keeps working.
 
 ## What you can save
 Anything. Each non-empty line you paste is saved as typed, with no validation: web addresses, `localhost:3000` (saved as http), LAN addresses, `file:///` paths, `mailto:` and other app links, even plain text. Bare domains get https; bare `localhost`, IP addresses and host:port get http. Lines of ordinary text containing web links still have those links picked out. Query parameters are kept.
