@@ -28,13 +28,13 @@ A phone-first contact list that lives next to your bookmarks. It is built for ph
 
 **Using Contacts**
 - Each row shows the name, the number in one international format and up to three tags. On the right are Call, SMS and WhatsApp, plus small Edit and Copy icons. Tap the row itself to open the contact.
-- Search updates with every letter: names, initials ("rk" finds Rahul Kumar), any part of a number, emails, notes, accents ("zelie" finds Zélie) and tags (`#BT`).
+- Search treats what you type as one exact phrase: "DB" finds only names, tags, numbers, emails or notes containing D and B together. Matches at the start of a name or word come first; any part of a number works ("40726").
 - The A–Z button opens a letter grid; tap a letter to jump there. Starred contacts sit in their own group at the top.
-- Tags: BT, DB, E31 and South Point come ready. Add, rename and delete tags in Settings > Tags. Tag chips under the search bar filter the list.
+- Tags come from name prefixes automatically: a first word shared by several names ("BT …", "LX …", "South Point …", "Zinfi …") becomes a tag. Short codes need 3+ names, ordinary words 10+, so first names like "Sumit" do not. Delete a tag in Settings > Tags to hide it, or rename it. You can also add your own tags and apply them in bulk.
 - Bulk tagging: tap the select icon at the top (or hold a contact), pick people, then tap Tags. Tap a tag to add it to all of them, tap again to remove it. You can also create a new tag there and apply it straight away. The same bar can star or delete the selection.
 - Numbers: every saved or imported number is stored as +country code and grouped, for example +91 98765 43210. Numbers without a + use the default country code in Settings. Settings > Data checks can format any older numbers in one tap.
-- Duplicates: contacts that share a number, an email or the same full name are listed in Settings > Data checks > Review duplicates. Merge combines them (keeping every number, email and tag, and the fullest name), or delete the copy you do not want. Importing skips contacts whose numbers and emails are all already saved.
-- Settings > Recent changes shows what was added, edited, deleted, merged or tagged, and whether it happened on this phone or arrived from another phone.
+- Duplicates: Settings > Data checks > Merge all merges every group that shares a number or email. The contact with the most detail wins and keeps the fullest name; every number, email and tag is kept and the other names go into the notes ("Also saved as …"). Contacts that only share a name are listed for review and never merged automatically. Importing a contact that is already saved merges it into the existing one.
+- Settings > Recent changes is collapsed until you open it. Each entry shows +/− counts and expands into a git-style diff: green + lines for what was added, red − lines for what was removed.
 - Delete asks for a second tap and offers Undo. Import from this phone (Android Chrome) and Import/Export .vcf are in Settings.
 
 **Getting your existing contacts in (you never type into the Sheet)**
