@@ -131,19 +131,43 @@ dialog.drawer[open]{animation:drawer-in .24s cubic-bezier(.2,.8,.2,1)}
 @media(hover:none){#grid .iconbtn{opacity:.75}}
 @media(pointer:coarse){#grid .iconbtn{width:34px;height:34px;min-width:34px;min-height:34px}#grid .movebtn{width:26px;height:21px;min-height:21px}.movepair{width:26px}}
 @media(max-width:400px){#grid .iconbtn{width:30px;min-width:30px}#grid .card-actions{gap:0}}
+/* Google Drive sync */
+.syncbox{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}
+.syncbox strong{display:block;font-size:14px}
+.syncbox small{display:block;color:var(--muted);font-size:12.5px;line-height:1.5;margin-top:3px;overflow-wrap:anywhere}
+.syncactions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.syncactions .btn{padding:9px 12px;font-size:13px;min-height:0}
+.syncactions .btn[disabled]{opacity:.55;cursor:default;transform:none}
+.syncbox details{margin-top:12px;font-size:13px}
+.syncbox summary{cursor:pointer;color:var(--muted)}
+.syncbox .field{margin:12px 0 4px}
+.syncsteps{margin:10px 0 0;padding-left:20px;font-size:12.5px;line-height:1.55;color:var(--muted)}
+.syncsteps li{margin:6px 0}
+.syncsteps b{color:var(--text)}
+.syncsteps a{color:var(--accent2)}
+.syncsteps .btn{padding:6px 10px;font-size:12.5px;margin-right:4px}
+.syncbox .field input{width:100%;box-sizing:border-box}
+#syncBtn{position:relative}
+#syncBtn[hidden],.syncactions [hidden],.syncbox [hidden]{display:none}
+#syncBtn.ok{color:var(--h3)}
+#syncBtn.busy svg{animation:syncpulse .8s ease-in-out infinite alternate}
+@keyframes syncpulse{to{opacity:.3}}
+#syncBtn.warn::after,#syncBtn.err::after{content:"";position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#f59e0b}
+#syncBtn.err::after{background:var(--danger)}
+@media(prefers-reduced-motion:reduce){#syncBtn.busy svg{animation:none;opacity:.5}}
 </style></head><body data-theme="dark">
 <div class="ambient" aria-hidden="true"></div><main class="shell" data-swipe-surface>
 
 
 
-<section class="toolbar"><button class="tbtn" id="selectAll" type="button" aria-pressed="false" aria-label="Select all" title="Select all"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="search"><span aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></span><label class="sr-only" for="search">Search library</label><input id="search" type="search" placeholder="Search" autocomplete="off"></div><select class="select" id="sort" aria-label="Sort library"><option value="new">Newest</option><option value="az">A–Z</option><option value="recent">Opened</option><option value="domain">Site</option></select><button class="tbtn" id="dataBtn" type="button" aria-haspopup="dialog" aria-label="Open library menu" title="Library menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></section>
+<section class="toolbar"><button class="tbtn" id="selectAll" type="button" aria-pressed="false" aria-label="Select all" title="Select all"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="search"><span aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></span><label class="sr-only" for="search">Search library</label><input id="search" type="search" placeholder="Search" autocomplete="off"></div><select class="select" id="sort" aria-label="Sort library"><option value="new">Newest</option><option value="az">A–Z</option><option value="recent">Opened</option><option value="domain">Site</option></select><button class="tbtn" id="syncBtn" type="button" hidden aria-label="Google Drive sync" title="Google Drive sync"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18.5a4.5 4.5 0 0 1-.4-9A6 6 0 0 1 18 10a4.25 4.25 0 0 1-.5 8.5z"/></svg></button><button class="tbtn" id="dataBtn" type="button" aria-haspopup="dialog" aria-label="Open library menu" title="Library menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></section>
 <div class="layout"><aside class="sidebar" id="sidebar" aria-label="Collections"></aside><section class="content"><div class="section-head"><div><div class="section-title" id="resultTitle">All bookmarks</div><div class="subtitle" id="resultCount"></div></div></div><div class="selectionbar" id="selectionbar" hidden><span id="selectedCount"></span><button class="btn" id="bulkMove">Move</button><button class="btn" id="bulkExport">Export</button><button class="btn" id="bulkDelete">Delete</button><button class="btn" id="deselect" aria-label="Clear selection">✕</button></div><div class="grid" id="grid"></div></section></div>
 </main>
 
 <nav class="odock" id="odock" data-active="bookmarks" aria-label="Orbit sections"><span class="odock-glow" aria-hidden="true"></span><a class="odock-tab" data-tab="bookmarks" href="./" aria-label="Bookmarks" aria-current="page"><svg viewBox="0 0 24 24"><path d="M7 3.5h10a1 1 0 0 1 1 1V20l-6-3.6L6 20V4.5a1 1 0 0 1 1-1z"/></svg></a><button class="fab" id="captureBtn" type="button" aria-label="Add link" title="Add link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><a class="odock-tab" data-tab="contacts" href="./contacts.html" aria-label="Contacts"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.8 20c.8-3.6 3.7-5.8 7.2-5.8s6.4 2.2 7.2 5.8"/></svg></a></nav>
 <dialog id="captureDialog"><form id="captureForm"><h2>Catch something good.</h2><p>Paste anything, one per line: web addresses, localhost, local files, app links. Nothing is rejected.</p><div class="field"><label for="captureText">Links to save</label><textarea id="captureText" rows="7" required placeholder="https://example.com&#10;https://another-site.com/article"></textarea></div><div class="field"><label for="captureName">Name (only when saving one link)</label><input id="captureName" maxlength="300" placeholder="e.g. Rust async guide" autocomplete="off"></div><div class="field"><label for="captureCollection">Collection</label><input id="captureCollection" list="collectionList" placeholder="Inbox" maxlength="200"></div><div class="progress" id="captureCount" aria-live="polite">Paste links to begin.</div><div class="dialog-actions"><button class="btn" type="button" data-close>Cancel</button><button class="btn" type="button" id="singleAdd">Add with notes</button><button class="btn primary" type="submit" id="saveCapture">Save all bookmarks</button></div></form></dialog>
 <dialog id="editDialog"><form id="editForm"><h2 id="editHeading">A link worth keeping.</h2><input id="editId" type="hidden"><div class="field"><label for="editTitle">Name</label><input id="editTitle" required maxlength="300" placeholder="e.g. Rust async guide"></div><div class="field"><label for="editUrl">Address or link</label><input id="editUrl" required placeholder="https://… · localhost:3000 · file:///… · anything"></div><div class="field"><label for="editCollection">Collection / folder path</label><input id="editCollection" list="collectionList" maxlength="200" placeholder="Learning / Programming"></div><div class="field"><label for="editTags">Tags, separated by commas</label><input id="editTags" maxlength="500" placeholder="research, inspiration"></div><div class="field"><label for="editNotes">Why did you save this?</label><textarea id="editNotes" rows="3" maxlength="5000" placeholder="A little context for your future self…"></textarea></div><div class="dialog-actions"><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="submit">Save bookmark</button></div></form></dialog>
-<dialog id="dataDialog" class="drawer" aria-label="Library menu"><div class="drawer-in"><div class="drawer-head"><h2>Library</h2><button class="tbtn" type="button" data-close aria-label="Close menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><p>Back up everything, bring in Chrome folders, or publish a portable snapshot.</p><div class="menu-grid"><button class="btn" id="importChrome">Import Chrome HTML<small>Preserve nested folder paths. Skip duplicate URLs.</small></button><button class="btn" id="backup">Full JSON backup<small>All links, pins, notes, tags, dates and preferences.</small></button><button class="btn" id="restore">Restore JSON backup<small>Validate first, then merge or replace safely.</small></button><button class="btn" id="chromeExport">Export to Chrome<small>Standard bookmark HTML with nested folders.</small></button><button class="btn" id="publish">Publish library snapshot<small>Download library.json for your GitHub Pages repository.</small></button><button class="btn" id="refreshPublished">Load published library<small>Merge the latest library.json without deleting local changes.</small></button></div><div class="notice"><strong>Hosting is not synchronisation.</strong> Bookmarks are stored on this device. To access the same saved links elsewhere, publish a snapshot or transfer a JSON backup. A published snapshot is visible to anyone who can access the site. Never publish private or work-confidential links.</div></div></dialog>
+<dialog id="dataDialog" class="drawer" aria-label="Library menu"><div class="drawer-in"><div class="drawer-head"><h2>Library</h2><button class="tbtn" type="button" data-close aria-label="Close menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><p>Sync across devices, back up everything, or bring in Chrome folders.</p><section class="syncbox" aria-labelledby="syncTitle"><strong id="syncTitle">Google Drive sync</strong><small id="syncStatus" aria-live="polite">Off. Bookmarks are saved only on this device.</small><div id="syncOn" hidden><div class="syncactions"><button class="btn" type="button" id="syncNow">Sync now</button><button class="btn" type="button" id="syncCode">Copy code for another device</button><button class="btn" type="button" id="syncDisconnect">Disconnect</button></div></div><div id="syncOff"><details id="syncSetup"><summary>First device: set up in 2 minutes (no Google Cloud needed)</summary><ol class="syncsteps"><li><button class="btn" type="button" id="syncCopyScript">Copy script</button> It contains your own secret key.</li><li>Open <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">script.google.com</a> (a new project opens). Select all the sample code, then paste.</li><li>Click <b>Deploy → New deployment</b>. Click the gear icon next to “Select type” → <b>Web app</b>. Set Execute as: <b>Me</b> and Who has access: <b>Anyone</b>. Then click <b>Deploy</b>.</li><li>Click <b>Authorise access</b> and choose your account. Google warns that the app is unverified because it is your own script: click <b>Advanced → Go to … (unsafe)</b> → <b>Allow</b>.</li><li>Copy the <b>Web app URL</b> (it ends in /exec) and paste it below.</li></ol></details><div class="field"><label for="syncLink">Web app URL, or connection code from your other device</label><input id="syncLink" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off" spellcheck="false"></div><div class="syncactions"><button class="btn primary" type="button" id="syncConnect">Connect</button></div></div></section><div class="menu-grid"><button class="btn" id="importChrome">Import Chrome HTML<small>Preserve nested folder paths. Skip duplicate URLs.</small></button><button class="btn" id="backup">Full JSON backup<small>All links, pins, notes, tags, dates and preferences.</small></button><button class="btn" id="restore">Restore JSON backup<small>Validate first, then merge or replace safely.</small></button><button class="btn" id="chromeExport">Export to Chrome<small>Standard bookmark HTML with nested folders.</small></button><button class="btn" id="publish">Publish library snapshot<small>Download library.json for your GitHub Pages repository.</small></button><button class="btn" id="refreshPublished">Load published library<small>Merge the latest library.json without deleting local changes.</small></button></div><div class="notice"><strong>Google Drive sync is private.</strong> Your library is kept as a file in your own Google Drive. Only your own script can reach it, and only with your secret key. Without sync, bookmarks stay on this device: transfer a JSON backup instead. A published snapshot is visible to anyone who can access the site. Never publish private or work-confidential links.</div></div></dialog>
 <dialog id="restoreDialog"><h2>Restore your library</h2><p id="restoreSummary"></p><div class="restoremode"><label><input type="radio" name="restoreMode" value="merge" checked> Merge safely</label><label><input type="radio" name="restoreMode" value="replace"> Replace this library</label></div><div class="notice">Merge keeps existing versions of duplicate URLs. Replace removes current bookmarks and restores the backup's preferences. A recovery backup downloads before replacement.</div><div class="dialog-actions"><button class="btn" data-close>Cancel</button><button class="btn primary" id="confirmRestore">Restore</button></div></dialog>
 <dialog id="moveDialog"><form id="moveForm"><h2>Give these links a home.</h2><div class="field"><label for="moveCollection">Destination collection</label><input id="moveCollection" list="collectionList" maxlength="200" placeholder="Inbox"></div><div class="dialog-actions"><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="submit">Move selected</button></div></form></dialog>
 <dialog id="confirmDialog"><h2 id="confirmHeading">Are you sure?</h2><p id="confirmText"></p><div class="dialog-actions"><button class="btn" id="confirmNo">Cancel</button><button class="btn primary" id="confirmYes">Delete</button></div></dialog>
@@ -153,7 +177,7 @@ dialog.drawer[open]{animation:drawer-in .24s cubic-bezier(.2,.8,.2,1)}
 'use strict';
 (()=>{
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],MAX=50000;
-let db,items=[],settings={theme:'dark',compact:false,icons:false},filter='all',selected=new Set(),visible=[],pendingRestore=null,installEvent=null,toastTimer;
+let db,deleted={},items=[],settings={theme:'dark',compact:false,icons:false},filter='all',selected=new Set(),visible=[],pendingRestore=null,installEvent=null,toastTimer;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
 const host=u=>{try{return new URL(u).hostname.replace(/^www\./,'')}catch{return ''}};const key=x=>x.url+'\n'+x.title;
@@ -163,6 +187,22 @@ function kind(u){if(/^https?:\/\/\S/i.test(u))return 'web';if(COPYONLY.test(u))r
 async function copyText(t){try{await navigator.clipboard.writeText(t);return true}catch{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.append(a);a.select();let ok=false;try{ok=document.execCommand('copy')}catch{}a.remove();return ok}}
 function titleFrom(u){return host(u)||u.slice(0,80)}
 function clean(x){if(!x||typeof x!=='object')throw Error('Invalid bookmark record.');const u=url(x.url);return{id:uid(),url:u,title:String(x.title||titleFrom(u)).slice(0,300),category:String(x.category||'Inbox').slice(0,200),tags:Array.isArray(x.tags)?x.tags.filter(t=>typeof t==='string').slice(0,30).map(t=>t.slice(0,80)):[],notes:String(x.notes||'').slice(0,5000),fav:x.fav===true,ord:Number.isFinite(x.ord)?x.ord:0,created:Number.isFinite(x.created)&&x.created>0?x.created:Date.now(),updated:Number.isFinite(x.updated)?x.updated:Date.now(),lastOpened:Number.isFinite(x.lastOpened)?x.lastOpened:0,visits:Number.isFinite(x.visits)?Math.max(0,Math.floor(x.visits)):0}}
+const IDRE=/^[a-zA-Z0-9-]{1,64}$/;
+// Like clean(), but keeps the bookmark's id and sync timestamp so devices can match records.
+function keep(x){const c=clean(x);if(typeof x.id==='string'&&IDRE.test(x.id))c.id=x.id;c.mod=Number.isFinite(x.mod)?x.mod:Math.max(c.updated,c.created);return c}
+function cleanDeleted(d){const out={};if(d&&typeof d==='object')for(const[k,v]of Object.entries(d))if(IDRE.test(k)&&Number.isFinite(v))out[k]=v;return out}
+const TOMB=180*864e5;
+function prune(del,now=Date.now()){for(const k of Object.keys(del))if(now-del[k]>TOMB)delete del[k];return del}
+const canon=x=>JSON.stringify(x,Object.keys(x).sort());
+function sig(l){return [...l.items].sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0).map(canon).join('\n')+'\n#'+Object.keys(l.deleted).sort().map(k=>k+':'+l.deleted[k]).join(',')}
+// Merge two libraries {items,deleted}. Newest edit (mod) wins per bookmark; a deletion wins over older edits;
+// identical name+address pairs created separately on two devices collapse into one.
+function mergeLibs(a,b){const del={...a.deleted};for(const[k,v]of Object.entries(b.deleted))if(!(del[k]>=v))del[k]=v;
+const newer=(x,o)=>x.mod>o.mod||(x.mod===o.mod&&canon(x)>canon(o));
+const by=new Map();for(const x of [...a.items,...b.items]){const o=by.get(x.id);if(!o||newer(x,o))by.set(x.id,x)}
+const live=[...by.values()].filter(x=>!(del[x.id]>=x.mod)),seen=new Map();
+for(const x of live){const k=key(x),o=seen.get(k);if(!o){seen.set(k,x);continue}const[win,lose]=newer(x,o)||(x.mod===o.mod&&x.id>o.id)?[x,o]:[o,x];seen.set(k,win);if(!(del[lose.id]>=lose.mod))del[lose.id]=lose.mod}
+return{items:live.filter(x=>seen.get(key(x))===x),deleted:prune(del)}}
 function toast(m){clearTimeout(toastTimer);$('#toast').textContent=m;$('#toast').classList.add('show');toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),4500)}
 function fail(e){console.error(e);toast(e.message||'Something went wrong. Your saved data has not been changed.')}
 function bind(id,fn){$(id).addEventListener('click',e=>Promise.resolve().then(()=>fn(e)).catch(fail))}
@@ -171,7 +211,7 @@ $$('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog')
 function request(req){return new Promise((res,rej)=>{req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error)})}
 async function openDB(){db=await new Promise((res,rej)=>{const r=indexedDB.open('orbit-v2',1);r.onupgradeneeded=()=>{r.result.createObjectStore('state')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);r.onblocked=()=>toast('Close other Orbit tabs to finish the database upgrade.')});db.onversionchange=()=>{db.close();toast('Orbit was updated in another tab. Reload this page.')};return request(db.transaction('state').objectStore('state').get('library'))}
 let queue=Promise.resolve();
-function commit(next=items,prefs=settings,recovery=null){const data={items:structuredClone(next),settings:structuredClone(prefs)};const job=queue.then(()=>new Promise((res,rej)=>{const t=db.transaction('state','readwrite');if(recovery)t.objectStore('state').put(recovery,'recovery-before-replace');t.objectStore('state').put(data,'library');t.oncomplete=()=>{items=data.items;settings=data.settings;selected=new Set([...selected].filter(id=>items.some(x=>x.id===id)));applyPrefs();render();res()};t.onerror=()=>rej(Error('Could not save. Storage may be full or unavailable. Export a backup before closing.'));t.onabort=()=>rej(Error('Save interrupted. Please retry.'))}));queue=job.catch(()=>{});return job}
+function commit(next=items,prefs=settings,recovery=null,opt={}){const job=queue.then(()=>new Promise((res,rej)=>{const now=Date.now();let list,del;if(opt.sync){const m=next(items,deleted);if(sig(m)===sig({items,deleted}))return res(false);list=m.items;del=m.deleted}else{const prev=new Map(items.map(x=>[x.id,x]));list=next.map(x=>prev.get(x.id)===x?x:{...x,mod:now});const ids=new Set(list.map(x=>x.id));del={...deleted};for(const id of prev.keys())if(!ids.has(id))del[id]=now}prune(del,now);const data={items:structuredClone(list),settings:structuredClone(prefs),deleted:del};const t=db.transaction('state','readwrite');if(recovery)t.objectStore('state').put(recovery,'recovery-before-replace');t.objectStore('state').put(data,'library');t.oncomplete=()=>{items=data.items;settings=data.settings;deleted=del;selected=new Set([...selected].filter(id=>items.some(x=>x.id===id)));applyPrefs();render();if(!opt.sync)Sync.changed();res(true)};t.onerror=()=>rej(Error('Could not save. Storage may be full or unavailable. Export a backup before closing.'));t.onabort=()=>rej(Error('Save interrupted. Please retry.'))}));queue=job.catch(()=>{});return job}
 function applyPrefs(){document.body.dataset.theme=settings.theme;try{localStorage.setItem('orbit-theme',settings.theme)}catch{}}
 function categories(){return [...new Set(items.map(x=>x.category))].sort((a,b)=>a.localeCompare(b))}
 function nav(key,label,count){return `<button class="navbtn ${filter===key?'active':''}" data-filter="${esc(key)}" type="button"><span>${esc(label)}</span><small>${count}</small></button>`}
@@ -217,7 +257,86 @@ bind('#refreshPublished',()=>published());
 window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#search').focus()}});
 
 
-async function init(){try{const state=await openDB();if(state){if(!Array.isArray(state.items))throw Error('Saved library could not be read. Do not clear site data. Restore a known-good backup.');const checked=validateBackup({app:'Orbit',version:2,bookmarks:state.items,settings:state.settings});items=checked.items.map((x,i)=>({...x,id:typeof state.items[i]?.id==='string'&&/^[a-zA-Z0-9-]+$/.test(state.items[i].id)?state.items[i].id:x.id}));settings={...settings,...checked.settings}}else{let old;try{old=JSON.parse(localStorage.getItem('orbit-bookmarks-v1')||'null')}catch{toast('Old local data is unreadable. It has been left untouched.')}if(Array.isArray(old)){const migrated=[];for(const x of old){try{migrated.push(clean(x))}catch{}}await commit(migrated);toast(`${migrated.length} bookmarks migrated. Original local storage retained.`)}}applyPrefs();render();await published(true);if('serviceWorker'in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('./sw.js').catch(()=>toast('Offline cache unavailable. Online browsing still works.'));}catch(e){$('#grid').innerHTML='<div class="empty"><strong>We could not open your library.</strong><p>Allow site storage, leave private browsing, then reload. Existing data has not been overwritten.</p></div>';fail(e)}}
+// ---------- Google Drive sync (through the user's own Google Apps Script) ----------
+// No Google Cloud project is needed. The user deploys GAS_CODE (below) as a web app on their own account; it keeps
+// the library as one JSON file in their Drive. A random key embedded in their copy guards it. Merging happens here.
+const GAS_CODE=k=>`// Orbit sync: keeps your Orbit bookmarks in your own Google Drive.
+// Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone.
+const KEY = '${k}'; // your secret key: never share this script publicly
+const NAME = 'Orbit library (sync).json';
+const P = PropertiesService.getScriptProperties();
+function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
+function file() { const id = P.getProperty('fileId'); if (!id) return null; try { const f = DriveApp.getFileById(id); return f.isTrashed() ? null : f; } catch (e) { return null; } }
+function version() { return Number(P.getProperty('version') || 0); }
+function doGet(e) {
+  if (e.parameter.k !== KEY) return out({ error: 'bad key' });
+  const f = file(), s = f ? f.getBlob().getDataAsString() : '';
+  return out({ ok: true, version: version(), data: s ? JSON.parse(s) : null });
+}
+function doPost(e) {
+  let b; try { b = JSON.parse(e.postData.contents); } catch (x) { return out({ error: 'bad request' }); }
+  if (b.k !== KEY) return out({ error: 'bad key' });
+  const lock = LockService.getScriptLock(); lock.waitLock(20000);
+  try {
+    const v = version();
+    if (b.base !== v) return out({ ok: false, conflict: true, version: v });
+    const text = JSON.stringify(b.data), f = file();
+    if (f) f.setContent(text); else P.setProperty('fileId', DriveApp.createFile(NAME, text, 'application/json').getId());
+    P.setProperty('version', String(v + 1));
+    return out({ ok: true, version: v + 1 });
+  } finally { lock.releaseLock(); }
+}
+`;
+const Sync=(()=>{
+const LS='orbit-gdrive',URLRE=/^https:\/\/script\.google\.com\/(?:a\/macros\/[^/\s]+|macros)\/s\/[\w-]+\/exec$/,KEYRE=/^[a-f0-9]{32,128}$/;
+let cfg={},busy=false,again=false,timer=0,state='off',lastErr='';
+try{cfg=JSON.parse(localStorage.getItem(LS)||'{}')||{}}catch{cfg={}}
+if(cfg.token||cfg.clientId)cfg={};// settings from the earlier OAuth build are no longer used
+const save=()=>{try{localStorage.setItem(LS,JSON.stringify(cfg))}catch{}};
+const on=()=>!!(cfg.url&&cfg.key);
+const newKey=()=>[...crypto.getRandomValues(new Uint8Array(24))].map(b=>b.toString(16).padStart(2,'0')).join('');
+async function call(url,key,body){let r;
+try{r=body?await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({k:key,...body}),cache:'no-store'}):await fetch(url+'?k='+encodeURIComponent(key)+'&t='+Date.now(),{cache:'no-store'})}
+catch{throw Error(navigator.onLine===false?'Offline. Changes will sync when you reconnect.':'Could not reach your Google script. If you just deployed it, check Who has access is “Anyone”.')}
+let j;try{j=await r.json()}catch{throw Error('Your Google script did not reply as expected. Check that the deployment is a Web app with access “Anyone” and the URL ends in /exec.')}
+if(j.error)throw Error(j.error==='bad key'?'The script’s key does not match. Copy the script again or use the connection code from your other device.':'Google script error: '+j.error);return j}
+function parse(d){if(!d)return{items:[],deleted:{}};if(d.app!=='Orbit'||!Array.isArray(d.bookmarks))throw Error('The Drive file is not an Orbit library.');const list=[];for(const x of d.bookmarks){try{list.push(keep(x))}catch{}}return{items:list,deleted:cleanDeleted(d.deleted)}}
+const payload=m=>({app:'Orbit',version:2,sync:2,exportedAt:new Date().toISOString(),settings,bookmarks:m.items,deleted:m.deleted});
+async function run(manual=false){if(!on())return show();if(busy){again=true;return}busy=true;again=false;show('busy');
+try{for(let i=0;;i++){const r=await call(cfg.url,cfg.key),remote=parse(r.data);let merged;
+await commit((cur,del)=>(merged=mergeLibs({items:cur,deleted:del},remote)),settings,null,{sync:true});
+if(r.data&&sig(merged)===sig(remote))break;
+const w=await call(cfg.url,cfg.key,{base:r.version,data:payload(merged)});if(w.ok)break;
+if(!w.conflict||i>=4)throw Error('Another device kept saving at the same time. Try Sync now.')}// conflict: reload and merge again
+cfg.lastSync=Date.now();if(!again)cfg.dirty=false;save();lastErr='';show('ok')}
+catch(e){console.error(e);lastErr=e.message;show('err');if(manual)toast(e.message)}
+finally{busy=false;if(again)run(false)}}
+function rel(t){const s=(Date.now()-t)/1000;return s<60?'just now':s<3600?Math.floor(s/60)+' min ago':s<86400?Math.floor(s/3600)+' h ago':new Date(t).toLocaleDateString()}
+function show(s=state){state=s;const c=on(),b=$('#syncBtn');
+b.hidden=!c;b.classList.toggle('busy',s==='busy');b.classList.toggle('ok',s==='ok'&&!cfg.dirty);b.classList.toggle('warn',c&&!!cfg.dirty&&s!=='busy'&&s!=='err');b.classList.toggle('err',s==='err');
+$('#syncOn').hidden=!c;$('#syncOff').hidden=c;$('#syncNow').disabled=s==='busy';
+const msg=!c?'Off. Bookmarks are saved only on this device.':s==='busy'?'Syncing…':s==='err'?'Last sync failed: '+lastErr:cfg.dirty?'Changes waiting to sync.':cfg.lastSync?'Synced '+rel(cfg.lastSync)+' with your Google Drive.':'Connected.';
+$('#syncStatus').textContent=msg;b.title='Google Drive sync: '+msg;b.setAttribute('aria-label',b.title)}
+async function connect(){const v=$('#syncLink').value.trim(),[u,k]=v.split('#');
+const key=k||cfg.newKey;if(!URLRE.test(u))throw Error('Paste the Web app URL (it starts with https://script.google.com/ and ends in /exec) or a connection code.');
+if(!key||!KEYRE.test(key))throw Error(k?'That connection code is incomplete. Copy it again.':'Tap “Copy script” first (it holds your secret key), deploy it, then paste its URL. On a second device, paste the connection code instead.');
+show('busy');const btn=$('#syncConnect');btn.disabled=true;
+try{await call(u,key)}catch(e){show('off');throw e}finally{btn.disabled=false}
+cfg={url:u,key,dirty:true};save();$('#syncLink').value='';await run(false);
+if(state==='ok')toast('Google Drive sync is on. On your other device, paste the code from “Copy code for another device”.')}
+async function disconnect(){if(!await ask('Turn off Google Drive sync on this device? Your bookmarks stay here and in Drive; they just stop syncing.'))return;cfg={};save();show('off');toast('Sync turned off on this device.')}
+function changed(){if(!on())return;cfg.dirty=true;save();show();clearTimeout(timer);timer=setTimeout(()=>run(false),1500)}
+function init(){bind('#syncBtn',()=>run(true));bind('#syncNow',()=>run(true));bind('#syncConnect',connect);bind('#syncDisconnect',disconnect);
+bind('#syncCopyScript',async()=>{if(!cfg.newKey){cfg.newKey=newKey();save()}const ok=await copyText(GAS_CODE(cfg.newKey));toast(ok?'Script copied. Paste it into script.google.com.':'Could not copy automatically.')});
+bind('#syncCode',async()=>{const ok=await copyText(cfg.url+'#'+cfg.key);toast(ok?'Connection code copied. Send it to yourself privately and paste it on the other device. Anyone who has it can read your bookmarks.':'Could not copy automatically.')});
+$('#dataBtn').addEventListener('click',()=>show());
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')run(false)});
+addEventListener('online',()=>run(false));setInterval(()=>{if(document.visibilityState==='visible'&&!busy)run(false)},60000);
+show(on()?'ok':'off');if(on())run(false)}
+return{init,changed,run,_code:GAS_CODE};
+})();
+
+async function init(){try{const state=await openDB();if(state){if(!Array.isArray(state.items))throw Error('Saved library could not be read. Do not clear site data. Restore a known-good backup.');const checked=validateBackup({app:'Orbit',version:2,bookmarks:[],settings:state.settings}),seen=new Set();items=[];for(const raw of state.items){const x=keep(raw),k=key(x);if(!seen.has(k)){seen.add(k);items.push(x)}}deleted=cleanDeleted(state.deleted);settings={...settings,...checked.settings}}else{let old;try{old=JSON.parse(localStorage.getItem('orbit-bookmarks-v1')||'null')}catch{toast('Old local data is unreadable. It has been left untouched.')}if(Array.isArray(old)){const migrated=[];for(const x of old){try{migrated.push(clean(x))}catch{}}await commit(migrated);toast(`${migrated.length} bookmarks migrated. Original local storage retained.`)}}applyPrefs();render();Sync.init();await published(true);if('serviceWorker'in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('./sw.js').catch(()=>toast('Offline cache unavailable. Online browsing still works.'));}catch(e){$('#grid').innerHTML='<div class="empty"><strong>We could not open your library.</strong><p>Allow site storage, leave private browsing, then reload. Existing data has not been overwritten.</p></div>';fail(e)}}
 init();
 })();
 </script></body></html>
