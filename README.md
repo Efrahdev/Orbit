@@ -33,6 +33,12 @@ A phone-first contact list that lives next to your bookmarks. It is built for ph
 - Delete asks for a second tap, and the message afterwards has an Undo button.
 - Import from this phone uses Android Chrome's contact picker. Import/Export .vcf works everywhere. Export a .vcf and open it on your phone to copy everyone into the phone's own address book: a web app cannot write to the phone's own Contacts app.
 
+**Getting your existing contacts in (you never type into the Sheet)**
+1. Open Contacts on the phone that has your contacts. Connect the Sheet first (see below), or do this step first and connect afterwards: either order works.
+2. Tap the sliders icon (Sync & settings) > **Import from this phone** (Android Chrome) and select everyone. Or use **Import .vcf**: on Android, Contacts app > Settings > Export to .vcf; on iPhone, use icloud.com > Contacts > select all > Export vCard.
+3. The app saves them on the phone and, once connected, sends them to the Sheet within a second. Your other phones download them on their next sync.
+4. Imports keep name, phone numbers, emails and tags. Address, birthday and company are not kept.
+
 **Sync across phones with your own Google Sheet**
 1. Create a Google Sheet. Choose **Extensions > Apps Script**, delete the sample code and paste the whole of `apps-script/contacts-sync.gs`.
 2. Change `SOS_PASSPHRASE` near the top to a secret phrase only you know. You never type it in everyday use; it is only for the emergency kill switch. Save.

@@ -26,7 +26,7 @@ const SOS_PASSPHRASE = 'CHANGE-ME-to-a-secret-phrase';
 const SHEET = 'Contacts';
 const META = '_orbit_sync';
 const DEVICES = '_orbit_devices';
-const HEADERS = ['ID', 'Name', 'Company', 'Phones', 'Emails', 'Tags', 'Address', 'Birthday', 'Notes', 'Favourite', 'Created', 'Updated', 'Deleted', 'Rev'];
+const HEADERS = ['ID', 'Name', 'Phones', 'Emails', 'Tags', 'Notes', 'Favourite', 'Created', 'Updated', 'Deleted', 'Rev'];
 const COL = {}; HEADERS.forEach((h, i) => COL[h] = i);
 
 function doGet() {
@@ -210,7 +210,7 @@ function ensureSheets_(ss) {
     sh.setFrozenRows(1);
     sh.getRange(1, 1, sh.getMaxRows(), HEADERS.length).setNumberFormat('@').setVerticalAlignment('top');
     sh.getRange(2, COL.Phones + 1, sh.getMaxRows() - 1, 2).setWrap(true);
-    const widths = [90, 180, 160, 220, 220, 140, 200, 100, 240, 80, 170, 170, 70, 60];
+    const widths = [90, 180, 220, 220, 140, 260, 80, 170, 170, 70, 60];
     widths.forEach((w, i) => sh.setColumnWidth(i + 1, w));
     sh.hideColumns(COL.ID + 1);
     sh.hideColumns(COL.Rev + 1);
@@ -231,12 +231,9 @@ function toRow_(c, rev) {
   const row = [
     String(c.id).slice(0, 80),
     str_(c.name, 200),
-    str_(c.company, 200),
     lines(c.phones, 'Mobile'),
     lines(c.emails, 'Personal'),
     (Array.isArray(c.tags) ? c.tags : []).map(t => str_(t, 40)).filter(String).join(', '),
-    str_(c.address, 1000),
-    /^\d{4}-\d{2}-\d{2}$/.test(String(c.birthday || '')) ? String(c.birthday) : '',
     str_(c.notes, 5000),
     c.fav ? 'TRUE' : 'FALSE',
     new Date(Number(c.createdAt) || Date.now()).toISOString(),
@@ -253,17 +250,12 @@ function fromRow_(row) {
     return m && !/^(https?|mailto|tel)$/i.test(m[1]) ? { label: m[1].trim(), value: m[2].trim() } : { label: def, value: s };
   });
   const bool = v => v === true || String(v).toUpperCase() === 'TRUE' || v === 1 || String(v).toLowerCase() === 'yes';
-  let b = row[COL.Birthday];
-  if (b instanceof Date) b = Utilities.formatDate(b, Session.getScriptTimeZone(), 'yyyy-MM-dd');
   return {
     id: String(row[COL.ID]),
     name: String(row[COL.Name] || ''),
-    company: String(row[COL.Company] || ''),
     phones: parse(row[COL.Phones], 'Mobile'),
     emails: parse(row[COL.Emails], 'Personal'),
     tags: String(row[COL.Tags] || '').split(',').map(s => s.trim()).filter(String),
-    address: String(row[COL.Address] || ''),
-    birthday: String(b || ''),
     notes: String(row[COL.Notes] || ''),
     fav: bool(row[COL.Favourite]),
     createdAt: stamp_(row[COL.Created]) || 0,

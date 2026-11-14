@@ -449,14 +449,13 @@ const idb={
 const str=(v,n)=>String(v??'').trim().slice(0,n);
 function vals(a,def){if(!Array.isArray(a))return[];const out=[];for(const x of a){const v=str(x&&typeof x==='object'?x.value:x,200);if(v)out.push({label:str(x&&x.label,40)||def,value:v})}return out.slice(0,20)}
 function tagList(a){const out=[],seen=new Set();for(const t of Array.isArray(a)?a:String(a||'').split(',')){const v=str(t,40);if(v&&!seen.has(v.toLowerCase())){seen.add(v.toLowerCase());out.push(v)}}return out.slice(0,30)}
-function bday(v){v=str(v,20);const m=v.match(/^(\d{4})-?(\d{2})-?(\d{2})/);return m?`${m[1]}-${m[2]}-${m[3]}`:''}
-function clean(c){const now=Date.now();return{id:str(c.id,80)||uid(),name:str(c.name,200),company:str(c.company,200),phones:vals(c.phones,'Mobile'),emails:vals(c.emails,'Personal'),tags:tagList(c.tags),address:str(c.address,1000),birthday:bday(c.birthday),notes:str(c.notes,5000),fav:c.fav===true||c.fav==='true'||c.fav===1,createdAt:Number(c.createdAt)||now,updatedAt:Number(c.updatedAt)||now,deleted:c.deleted===true||c.deleted==='true'||c.deleted===1,dirty:c.dirty===true}}
+function clean(c){const now=Date.now();return{id:str(c.id,80)||uid(),name:str(c.name,200),phones:vals(c.phones,'Mobile'),emails:vals(c.emails,'Personal'),tags:tagList(c.tags),notes:str(c.notes,5000),fav:c.fav===true||c.fav==='true'||c.fav===1,createdAt:Number(c.createdAt)||now,updatedAt:Number(c.updatedAt)||now,deleted:c.deleted===true||c.deleted==='true'||c.deleted===1,dirty:c.dirty===true}}
 let all=new Map();
 const live=()=>{const o=[];for(const c of all.values())if(!c.deleted)o.push(c);return o};
-const disp=c=>c.name||c.company||c.phones[0]?.value||c.emails[0]?.value||'Unnamed';
-function initials(c){const n=c.name||c.company;if(!n)return '';const w=n.split(/[^\p{L}\p{N}]+/u).filter(Boolean);if(!w.length)return '';const a=[...w[0]][0],b=w.length>1?[...w[w.length-1]][0]:'';return(a+(b||'')).toUpperCase()}
+const disp=c=>c.name||c.phones[0]?.value||c.emails[0]?.value||'Unnamed';
+function initials(c){const n=c.name;if(!n)return '';const w=n.split(/[^\p{L}\p{N}]+/u).filter(Boolean);if(!w.length)return '';const a=[...w[0]][0],b=w.length>1?[...w[w.length-1]][0]:'';return(a+(b||'')).toUpperCase()}
 function av(c,cls=''){const p=pal(c),ini=initials(c);return `<span class="av ${cls}" style="--a1:${p[0]};--a2:${p[1]}">${ini?esc(ini):I.user}</span>`}
-function indexOf(c){if(c._v===c.updatedAt)return;c._v=c.updatedAt;c._n=norm(c.name||disp(c));c._w=c._n.split(/[^\p{L}\p{N}]+/u).filter(Boolean);c._i=c._w.map(w=>w[0]).join('');c._d=c.phones.map(p=>digits(p.value)).join(' ');c._o=norm([c.company,...c.emails.map(e=>e.value),c.address,c.notes].join(' '));c._t=c.tags.map(norm)}
+function indexOf(c){if(c._v===c.updatedAt)return;c._v=c.updatedAt;c._n=norm(c.name||disp(c));c._w=c._n.split(/[^\p{L}\p{N}]+/u).filter(Boolean);c._i=c._w.map(w=>w[0]).join('');c._d=c.phones.map(p=>digits(p.value)).join(' ');c._o=norm([...c.emails.map(e=>e.value),c.notes].join(' '));c._t=c.tags.map(norm)}
 const telHref=v=>String(v).replace(/[^\d+*#,;]/g,'');
 let cfg={url:'',token:'',cursor:0,lastSync:0,lastFull:0,cc:'',locked:false};
 const deviceName=()=>{const u=navigator.userAgent;return(/iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Android/.test(u)?((u.match(/Android[^;]*;\s*([^;)]+)/)||[])[1]||'Android phone'):'Browser').trim().slice(0,60)+' · joined '+new Date().toLocaleDateString('en-GB')};
@@ -497,8 +496,8 @@ function hl(name,toks){
 }
 function context(c,toks){
   for(const t of toks){const d=digits(t).replace(/^0+/,'');if(d.length>=3){const p=c.phones.find(p=>digits(p.value).includes(d));if(p)return p.value}}
-  for(const t of toks){if(t[0]==='#')continue;const e=c.emails.find(e=>norm(e.value).includes(t));if(e)return e.value;if(norm(c.company).includes(t))return c.company;if(norm(c.notes).includes(t)){const n=norm(c.notes),i=n.indexOf(t);return(i>20?'…':'')+c.notes.slice(Math.max(0,i-20),i+50)}}
-  return c.company||c.phones[0]?.value||c.emails[0]?.value||'';
+  for(const t of toks){if(t[0]==='#')continue;const e=c.emails.find(e=>norm(e.value).includes(t));if(e)return e.value;if(norm(c.notes).includes(t)){const n=norm(c.notes),i=n.indexOf(t);return(i>20?'…':'')+c.notes.slice(Math.max(0,i-20),i+50)}}
+  return c.phones[0]?.value||c.emails[0]?.value||'';
 }
 
 /* ---------- list rendering ---------- */
@@ -517,7 +516,7 @@ function renderChips(cs){
   $('#chips').hidden=!cs.length;
 }
 function rowHTML(c,toks,d){
-  const name=disp(c),sub=toks.length?context(c,toks):(c.company||c.phones[0]?.value||c.emails[0]?.value||'');
+  const name=disp(c),sub=toks.length?context(c,toks):(c.phones[0]?.value||c.emails[0]?.value||'');
   const dots=c.tags.slice(0,4).map(t=>`<i style="--c:${tagColor(t)}"></i>`).join('');
   const tel=c.phones[0]?.value;
   return `<div class="row${d!==undefined?' rise':''}" ${d!==undefined?`style="--d:${d}"`:''} data-id="${esc(c.id)}" role="button" tabindex="0">${av(c)}<div class="rt"><div class="rn">${hl(name,toks)}${c.fav?I.star:''}</div>${sub||dots?`<div class="rs">${dots?`<span class="dots">${dots}</span>`:''}<span>${esc(sub)}</span></div>`:''}</div>${tel?`<a class="qcall" href="tel:${esc(telHref(tel))}" aria-label="Call ${esc(name)}">${I.phone}</a>`:''}</div>`;
@@ -651,10 +650,9 @@ addEventListener('keydown',e=>{if(e.key==='Escape'&&stack.length)closeTop()});
 
 /* ---------- detail ---------- */
 let detailId=null;
-const fmtB=b=>{if(!b)return '';const[y,m,d]=b.split('-').map(Number);const dt=new Date(y,m-1,d);const now=new Date();let next=new Date(now.getFullYear(),m-1,d);const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());if(next<today)next=new Date(now.getFullYear()+1,m-1,d);const days=Math.round((next-today)/864e5);return dt.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+(days===0?' · today 🎉':days===1?' · tomorrow':days<=45?` · in ${days} days`:'')};
 function detailHTML(c){
   const p=pal(c),name=disp(c),tel=c.phones[0]?.value,mail=c.emails[0]?.value;
-  const sub=c.name?c.company:'';
+  const sub='';
   return `<div class="glow" aria-hidden="true"></div><div class="lin">
   <div class="lbar"><button class="ibtn" data-d="close" aria-label="Close">${I.back}</button><span class="sp"></span><button class="ibtn ${c.fav?'on':''}" data-d="fav" aria-label="${c.fav?'Remove from favourites':'Add to favourites'}">${I.starO}</button><button class="ibtn" data-d="edit" aria-label="Edit">${I.edit}</button></div>
   <div class="hero"><div class="halo">${av(c,'big hero-av')}</div><div class="st"><h2>${esc(name)}</h2>${sub?`<p>${esc(sub)}</p>`:''}${c.tags.length?`<div class="dtags">${c.tags.map(t=>`<span class="chip on" style="--c:${tagColor(t)}"><i></i>${esc(t)}</span>`).join('')}</div>`:''}</div></div>
@@ -667,9 +665,6 @@ function detailHTML(c){
   </div>
   ${c.phones.length?`<div class="icard">${c.phones.map(x=>`<div class="irow"><div class="k"><small>${esc(x.label)}</small><a class="v" href="tel:${esc(telHref(x.value))}">${esc(x.value)}</a></div><a class="mini" href="sms:${esc(telHref(x.value))}" aria-label="Message">${I.msg}</a><button class="mini" data-copy="${esc(x.value)}" aria-label="Copy number">${I.copy}</button></div>`).join('')}</div>`:''}
   ${c.emails.length?`<div class="icard">${c.emails.map(x=>`<div class="irow"><div class="k"><small>${esc(x.label)}</small><a class="v" href="mailto:${esc(x.value)}">${esc(x.value)}</a></div><button class="mini" data-copy="${esc(x.value)}" aria-label="Copy email">${I.copy}</button></div>`).join('')}</div>`:''}
-  ${c.company&&c.name?`<div class="icard"><div class="irow"><div class="k"><small>Company</small><span class="v">${esc(c.company)}</span></div><span class="mini">${I.building}</span></div></div>`:''}
-  ${c.address?`<div class="icard"><div class="irow"><div class="k"><small>Address</small><a class="v" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}" target="_blank" rel="noopener noreferrer">${esc(c.address)}</a></div><span class="mini">${I.pin}</span></div></div>`:''}
-  ${c.birthday?`<div class="icard"><div class="irow"><div class="k"><small>Birthday</small><span class="v">${esc(fmtB(c.birthday))}</span></div><span class="mini">${I.cake}</span></div></div>`:''}
   ${c.notes?`<div class="icard"><div class="irow"><div class="k"><small>Notes</small><span class="v">${esc(c.notes)}</span></div></div></div>`:''}
   <div class="dfoot"><button class="btn" data-d="share">${I.share}Share</button><button class="btn danger" data-d="delete">${I.trash}Delete</button></div>
   </div></div>`;
@@ -700,18 +695,17 @@ function frow(kind,x={}){const labels=kind==='p'?LABELS_P:LABELS_E;const lab=x.l
 function openEditor(c,prefill){
   const isNew=!c;
   edit={base:c?{...c}:null,id:c?c.id:uid(),tags:new Set(((c&&c.tags)||prefill?.tags||[]).map(String))};
-  const d=c||{name:'',company:'',phones:[],emails:[],address:'',birthday:'',notes:'',fav:false,...prefill};
+  const d=c||{name:'',phones:[],emails:[],notes:'',fav:false,...prefill};
   const known=new Map();for(const t of [...tagCounts(live()).map(x=>x.name),...SUGGESTED])if(!known.has(t.toLowerCase()))known.set(t.toLowerCase(),t);
   edit.known=known;
   const el=$('#editor');
   const html=`<form class="lin" id="eForm" novalidate>
   <div class="lbar"><button type="button" class="textbtn" data-e="cancel">Cancel</button><h2>${isNew?'New contact':'Edit contact'}</h2><button type="submit" class="textbtn go">Save</button></div>
   <div class="ehero"><span id="eAvWrap">${av({...d,id:edit.id},'')}</span><input class="ename" id="eName" placeholder="Full name" value="${esc(d.name)}" maxlength="200" autocomplete="off" autocapitalize="words" enterkeyhint="next"></div>
-  <div class="fcard"><div class="fhead">${I.building}Company</div><input class="fin" id="eCompany" placeholder="Company or role" value="${esc(d.company)}" maxlength="200" autocapitalize="words"></div>
   <div class="fcard"><div class="fhead">${I.phone}Phone</div><div id="ePhones">${(d.phones.length?d.phones:[{}]).map(x=>frow('p',x)).join('')}</div><p class="warn" id="dupWarn"></p><button type="button" class="addrow" data-e="addp">${I.plus}Add phone</button></div>
   <div class="fcard"><div class="fhead">${I.mail}Email</div><div id="eEmails">${d.emails.map(x=>frow('e',x)).join('')}</div><button type="button" class="addrow" data-e="adde">${I.plus}Add email</button></div>
   <div class="fcard"><div class="fhead">${I.tag}Tags</div><div class="tagpick" id="eTags"></div><div class="tagnew"><input class="fin" id="eTagNew" placeholder="Create a tag" maxlength="40" enterkeyhint="done" autocapitalize="words"><button type="button" class="btn" data-e="addtag">Add</button></div></div>
-  <div class="fcard"><div class="fhead">${I.note}More</div><label class="flabel" for="eBday">Birthday</label><input class="fin" id="eBday" type="date" value="${esc(d.birthday)}"><label class="flabel" for="eAddr">Address</label><textarea id="eAddr" rows="2" maxlength="1000" placeholder="Street, city, postcode">${esc(d.address)}</textarea><label class="flabel" for="eNotes">Notes</label><textarea id="eNotes" rows="3" maxlength="5000" placeholder="How you met, what matters to them…">${esc(d.notes)}</textarea></div>
+  <div class="fcard"><div class="fhead">${I.note}Notes</div><textarea id="eNotes" rows="3" maxlength="5000" placeholder="How you met, what matters to them…">${esc(d.notes)}</textarea></div>
   <label class="fcard switch"><span>${'Favourite'}</span><input type="checkbox" id="eFav" ${d.fav?'checked':''}><span class="sw"></span></label>
   <button type="submit" class="btn primary bigsave">${I.check}${isNew?'Save contact':'Save changes'}</button>
   </form>`;
@@ -735,7 +729,7 @@ editorEl.addEventListener('click',e=>{
   else if(k==='addtag')addTag();
 });
 editorEl.addEventListener('input',e=>{
-  if(e.target.id==='eName'||e.target.id==='eCompany'){const w=$('#eAvWrap');const n=$('#eName').value,co=$('#eCompany').value;const old=w.textContent;w.innerHTML=av({id:edit.id,name:n,company:co,phones:[],emails:[]});if(w.textContent!==old)w.firstChild.classList.add('pulse')}
+  if(e.target.id==='eName'){const w=$('#eAvWrap');const n=$('#eName').value;const old=w.textContent;w.innerHTML=av({id:edit.id,name:n,phones:[],emails:[]});if(w.textContent!==old)w.firstChild.classList.add('pulse')}
   if(e.target.closest('#ePhones'))checkDup();
 });
 editorEl.addEventListener('keydown',e=>{if(e.target.id==='eTagNew'&&(e.key==='Enter'||e.key===',')){e.preventDefault();addTag()}else if(e.target.id==='eName'&&e.key==='Enter'){e.preventDefault();$('#ePhones input')?.focus()}});
@@ -743,8 +737,8 @@ editorEl.addEventListener('submit',async e=>{
   e.preventDefault();
   if($('#eTagNew').value.trim())addTag();
   const rows=k=>$$(`#${k} .frow`).map(r=>({label:$('select',r).value,value:$('input',r).value.trim()})).filter(x=>x.value);
-  const data={...(edit.base||{}),id:edit.id,name:$('#eName').value,company:$('#eCompany').value,phones:rows('ePhones'),emails:rows('eEmails'),tags:[...edit.tags],birthday:$('#eBday').value,address:$('#eAddr').value,notes:$('#eNotes').value,fav:$('#eFav').checked,deleted:false};
-  if(!str(data.name,1)&&!data.phones.length&&!data.emails.length&&!str(data.company,1)){toast('Add a name, number or email first');$('#eName').focus();haptic([20,40,20]);return}
+  const data={...(edit.base||{}),id:edit.id,name:$('#eName').value,phones:rows('ePhones'),emails:rows('eEmails'),tags:[...edit.tags],notes:$('#eNotes').value,fav:$('#eFav').checked,deleted:false};
+  if(!str(data.name,1)&&!data.phones.length&&!data.emails.length){toast('Add a name, number or email first');$('#eName').focus();haptic([20,40,20]);return}
   const isNew=!edit.base;
   await save(data);
   haptic([8,30,14]);
@@ -768,7 +762,7 @@ async function saveMany(list){const now=Date.now();const cs=list.map((d,i)=>clea
 
 /* ---------- sync engine (Google Apps Script + Sheet) ---------- */
 let syncing=false,again=false,syncTimer=0,status='off',statusMsg='',failCount=0;
-const wire=c=>({id:c.id,name:c.name,company:c.company,phones:c.phones,emails:c.emails,tags:c.tags,address:c.address,birthday:c.birthday,notes:c.notes,fav:c.fav,createdAt:c.createdAt,updatedAt:c.updatedAt,deleted:c.deleted});
+const wire=c=>({id:c.id,name:c.name,phones:c.phones,emails:c.emails,tags:c.tags,notes:c.notes,fav:c.fav,createdAt:c.createdAt,updatedAt:c.updatedAt,deleted:c.deleted});
 function setStatus(s,msg=''){status=s;statusMsg=msg;body.dataset.sync=s;updateMeta();if($('#settings')&&!$('#settings').hidden)paintStatusCard()}
 function ago(t){if(!t)return 'never';const s=(Date.now()-t)/1000;if(s<45)return 'just now';if(s<3600)return Math.round(s/60)+' min ago';if(s<86400)return Math.round(s/3600)+' h ago';return new Date(t).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}
 const pending=()=>{let n=0;for(const c of all.values())if(c.dirty)n++;return n};
@@ -1003,9 +997,9 @@ function parseVCF(text){
   for(const line of lines){
     const ix=line.indexOf(':');if(ix<0)continue;
     const left=line.slice(0,ix),value=line.slice(ix+1),parts=left.split(';'),prop=parts[0].split('.').pop().toUpperCase(),params=parts.slice(1).join(';').toUpperCase();
-    if(prop==='BEGIN'&&/VCARD/i.test(value)){cur={name:'',n:'',company:'',title:'',phones:[],emails:[],tags:[],address:'',birthday:'',notes:''};continue}
+    if(prop==='BEGIN'&&/VCARD/i.test(value)){cur={name:'',n:'',phones:[],emails:[],tags:[],notes:''};continue}
     if(!cur)continue;
-    if(prop==='END'){if(!cur.name&&cur.n)cur.name=cur.n;if(!cur.company&&cur.title)cur.company=cur.title;out.push(cur);cur=null;continue}
+    if(prop==='END'){if(!cur.name&&cur.n)cur.name=cur.n;out.push(cur);cur=null;continue}
     let v=value;if(/QUOTED-PRINTABLE/.test(params))v=qp(v,(params.match(/CHARSET=([\w-]+)/)||[])[1]);
     const types=(params.match(/(?:TYPE=)?([A-Z-]+)/g)||[]).join(',');
     const lab=/CELL|MOBILE/.test(types)?'Mobile':/HOME/.test(types)?'Home':/WORK/.test(types)?'Work':'Other';
@@ -1013,11 +1007,7 @@ function parseVCF(text){
     else if(prop==='N'){const p=splitV(v,';').map(x=>unesc(x).trim());cur.n=[p[3],p[1],p[2],p[0],p[4]].filter(Boolean).join(' ')}
     else if(prop==='TEL')cur.phones.push({label:lab,value:unesc(v).replace(/^tel:/i,'').trim()});
     else if(prop==='EMAIL')cur.emails.push({label:/WORK/.test(types)?'Work':'Personal',value:unesc(v).trim()});
-    else if(prop==='ORG')cur.company=splitV(v,';').map(x=>unesc(x).trim()).filter(Boolean).join(', ');
-    else if(prop==='TITLE')cur.title=unesc(v).trim();
     else if(prop==='NOTE')cur.notes=unesc(v).trim();
-    else if(prop==='BDAY'){const d=v.replace(/[^\d]/g,'');if(d.length===8)cur.birthday=`${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)}`}
-    else if(prop==='ADR')cur.address=splitV(v,';').map(x=>unesc(x).trim()).filter(Boolean).join(', ');
     else if(prop==='CATEGORIES')cur.tags.push(...splitV(v,',').map(x=>unesc(x).trim()).filter(Boolean));
   }
   return out;
@@ -1026,11 +1016,8 @@ const vesc=s=>String(s).replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/([,;
 function toVCF(c){
   const w=(c.name||'').trim().split(/\s+/),family=w.length>1?w.pop():'',given=w.join(' ');
   const L=['BEGIN:VCARD','VERSION:3.0',`FN:${vesc(disp(c))}`,`N:${vesc(family)};${vesc(given)};;;`];
-  if(c.company)L.push(`ORG:${vesc(c.company)}`);
   for(const p of c.phones)L.push(`TEL;TYPE=${p.label==='Mobile'?'CELL':p.label==='Home'?'HOME':p.label==='Work'?'WORK':'VOICE'}:${vesc(p.value)}`);
   for(const e of c.emails)L.push(`EMAIL;TYPE=INTERNET${e.label==='Work'?',WORK':',HOME'}:${vesc(e.value)}`);
-  if(c.address)L.push(`ADR;TYPE=HOME:;;${vesc(c.address)};;;;`);
-  if(c.birthday)L.push(`BDAY:${c.birthday}`);
   if(c.notes)L.push(`NOTE:${vesc(c.notes)}`);
   if(c.tags.length)L.push(`CATEGORIES:${c.tags.map(vesc).join(',')}`);
   L.push('END:VCARD');return L.join('\r\n');
@@ -1039,7 +1026,7 @@ function download(name,text,type){const a=document.createElement('a');a.href=URL
 function exportVCF(){const cs=live().sort((a,b)=>collator.compare(disp(a),disp(b)));if(!cs.length){toast('No contacts to export yet');return}download(`orbit-contacts-${new Date().toISOString().slice(0,10)}.vcf`,cs.map(toVCF).join('\r\n')+'\r\n','text/vcard');toast(`${cs.length} contacts exported`)}
 async function shareContact(c){
   const vcf=toVCF(c),name=disp(c),file=new File([vcf],name.replace(/[^\w\- ]+/g,'').trim()+'.vcf',{type:'text/vcard'});
-  const text=[name,c.company,...c.phones.map(p=>`${p.label}: ${p.value}`),...c.emails.map(e=>e.value)].filter(Boolean).join('\n');
+  const text=[name,...c.phones.map(p=>`${p.label}: ${p.value}`),...c.emails.map(e=>e.value)].filter(Boolean).join('\n');
   try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});return}if(navigator.share){await navigator.share({title:name,text});return}}catch(e){if(e.name==='AbortError')return}
   const ok=await copyText(text);toast(ok?'Contact details copied':'Sharing is not available');
 }
