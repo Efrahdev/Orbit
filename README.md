@@ -22,22 +22,26 @@ The app uses relative paths, so it also supports a repository subdirectory URL. 
 A phone-first contact list that lives next to your bookmarks. It is built for phones: on a desktop screen it shows a "use your phone" page (with a "Preview anyway" button).
 
 **Switching between Bookmarks and Contacts**
-- The dock at the bottom has three parts: Bookmarks, the + button for the current page, and Contacts. The glowing pill glides to the page you are on.
-- Swipe sideways anywhere on the list to switch: swipe left on Bookmarks to open Contacts, and right on Contacts to go back. Swipes that start at the very edge of the screen are left to your phone's own Back gesture.
-- **Left- or right-handed:** hold the dock for half a second, then slide it to the left, centre or right. It snaps into place and both pages remember the position. The A–Z bar on Contacts moves to the same side. You can also choose the position in Contacts > Sync & settings.
+- The bottom bar has three icon buttons: Bookmarks, + and Contacts. The + adds a bookmark on Bookmarks and a new contact on Contacts.
+- Swipe sideways on the list to switch. Swipes that start at the very edge of the screen are left to your phone's Back gesture.
+- To put Contacts on the left instead, open Contacts > Settings > Bottom bar.
 
 **Using Contacts**
-- Search updates with every letter. It matches names, initials ("rk" finds Rahul Kumar), any part of a phone number ("98765", with or without spaces or a leading 0), emails, companies, notes and accents ("zelie" finds Zélie). Type `#work` to search by tag. Press Enter when there is exactly one result to open it.
-- Tag chips under the search bar filter people instantly. Tap several to see anyone with any of those tags. Favourites appear as a row of round avatars at the top.
-- Each person has one-tap Call, Message, WhatsApp and Email. WhatsApp needs a country code. Numbers without a + use the code set in Sync & settings.
-- Delete asks for a second tap, and the message afterwards has an Undo button.
-- Import from this phone uses Android Chrome's contact picker. Import/Export .vcf works everywhere. Export a .vcf and open it on your phone to copy everyone into the phone's own address book: a web app cannot write to the phone's own Contacts app.
+- Each row shows the name, the number in one international format and up to three tags. On the right are Call, SMS and WhatsApp, plus small Edit and Copy icons. Tap the row itself to open the contact.
+- Search updates with every letter: names, initials ("rk" finds Rahul Kumar), any part of a number, emails, notes, accents ("zelie" finds Zélie) and tags (`#BT`).
+- The A–Z button opens a letter grid; tap a letter to jump there. Starred contacts sit in their own group at the top.
+- Tags: BT, DB, E31 and South Point come ready. Add, rename and delete tags in Settings > Tags. Tag chips under the search bar filter the list.
+- Bulk tagging: tap the select icon at the top (or hold a contact), pick people, then tap Tags. Tap a tag to add it to all of them, tap again to remove it. You can also create a new tag there and apply it straight away. The same bar can star or delete the selection.
+- Numbers: every saved or imported number is stored as +country code and grouped, for example +91 98765 43210. Numbers without a + use the default country code in Settings. Settings > Data checks can format any older numbers in one tap.
+- Duplicates: contacts that share a number, an email or the same full name are listed in Settings > Data checks > Review duplicates. Merge combines them (keeping every number, email and tag, and the fullest name), or delete the copy you do not want. Importing skips contacts whose numbers and emails are all already saved.
+- Settings > Recent changes shows what was added, edited, deleted, merged or tagged, and whether it happened on this phone or arrived from another phone.
+- Delete asks for a second tap and offers Undo. Import from this phone (Android Chrome) and Import/Export .vcf are in Settings.
 
 **Getting your existing contacts in (you never type into the Sheet)**
 1. Open Contacts on the phone that has your contacts. Connect the Sheet first (see below), or do this step first and connect afterwards: either order works.
-2. Tap the sliders icon (Sync & settings) > **Import from this phone** (Android Chrome) and select everyone. Or use **Import .vcf**: on Android, Contacts app > Settings > Export to .vcf; on iPhone, use icloud.com > Contacts > select all > Export vCard.
+2. Tap the settings icon (top right) > **Import from this phone** (Android Chrome) and select everyone. Or use **Import .vcf**: on Android, Contacts app > Settings > Export to .vcf; on iPhone, use icloud.com > Contacts > select all > Export vCard.
 3. The app saves them on the phone and, once connected, sends them to the Sheet within a second. Your other phones download them on their next sync.
-4. Imports keep name, phone numbers, emails and tags. Address, birthday and company are not kept.
+4. Imports keep name, phone numbers, emails, notes and tags. Address, birthday and company are not kept.
 
 **Sync across phones with your own Google Sheet**
 1. Create a Google Sheet. Choose **Extensions > Apps Script**, delete the sample code and paste the whole of `apps-script/contacts-sync.gs`.
@@ -60,6 +64,8 @@ How it works:
 - Sync locks at once and every phone's token is cancelled. Each phone, including the lost one, wipes its contacts the next time it is opened online and shows a lock screen. While locked, nobody can join, even with the URL.
 - Your contacts are untouched in the Google Sheet. On a phone you trust, enter the SOS passphrase on the lock screen: sync unlocks and everything downloads again. Each other phone you still have unlocks the same way. The lost phone's old token stays cancelled.
 - Limits: a phone that is never opened online again keeps its local copy until it is. If you think someone has the URL itself, make a new deployment in Apps Script (it gives a new URL) and connect your phones to that.
+
+After updating `apps-script/contacts-sync.gs`, paste the new version into Apps Script and use **Deploy > Manage deployments > Edit > Version: New version > Deploy**. The URL stays the same.
 
 Privacy: no contact data is ever stored in this repository or on GitHub Pages. It lives only in your Google Sheet and on your phones. After changing the script later, use **Deploy > Manage deployments > Edit > New version** so the same URL keeps working.
 

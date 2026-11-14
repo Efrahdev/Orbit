@@ -67,9 +67,18 @@ function doPost(e) {
     const changes = Array.isArray(body.changes) ? body.changes : [];
     let rev = Number(meta.getRange('B1').getValue()) || 0;
 
+    // Tag library (tags you created, even ones not yet on any contact). Newest copy wins.
+    let tagLib = { list: [], updatedAt: 0 };
+    try { tagLib = JSON.parse(String(meta.getRange('B4').getValue() || '')) || tagLib; } catch (err) {}
+    const inLib = body.tagLib;
+    if (inLib && Array.isArray(inLib.list) && (Number(inLib.updatedAt) || 0) > (Number(tagLib.updatedAt) || 0)) {
+      tagLib = { list: inLib.list.map(t => str_(t, 40)).filter(String).slice(0, 200), updatedAt: Number(inLib.updatedAt) };
+      meta.getRange('B4').setValue(JSON.stringify(tagLib));
+    }
+
     // Fast path: nothing to push and nothing new since this phone's cursor.
     if (!changes.length && cursor > 0 && cursor >= rev) {
-      return json_({ ok: true, cursor: rev, changes: [] });
+      return json_({ ok: true, cursor: rev, changes: [], tagLib: tagLib });
     }
 
     const last = sh.getLastRow();
@@ -118,7 +127,7 @@ function doPost(e) {
         if (!seen[row[COL.ID]]) { out.push(fromRow_(row)); seen[row[COL.ID]] = true; }
       }
     });
-    return json_({ ok: true, cursor: rev, changes: out });
+    return json_({ ok: true, cursor: rev, changes: out, tagLib: tagLib });
   } catch (err) {
     return json_({ ok: false, error: 'Script error: ' + (err && err.message ? err.message : err) });
   } finally {
@@ -218,7 +227,7 @@ function ensureSheets_(ss) {
   let meta = ss.getSheetByName(META);
   if (!meta) {
     meta = ss.insertSheet(META);
-    meta.getRange('A1:B3').setValues([['lastRev', 0], ['locked', 'FALSE'], ['lockedAt', '']]);
+    meta.getRange('A1:B4').setValues([['lastRev', 0], ['locked', 'FALSE'], ['lockedAt', ''], ['tagLibrary', '']]);
     meta.hideSheet();
   }
   return sh;

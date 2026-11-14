@@ -1,106 +1,61 @@
-/* Orbit dock: shared bottom switcher for Bookmarks and Contacts.
-   Linked from index.html and contacts.html. Also drives the cross-page transition. */
+/* Orbit dock: the shared bottom bar for Bookmarks and Contacts (index.html, contacts.html).
+   Quiet by design: no glows, no looping motion. Only the page transition slides. */
 @view-transition{navigation:auto}
-:root{--dock-w:214px;--dock-h:62px;--dock-gap:14px;--dock-ease:cubic-bezier(.2,.9,.25,1.12)}
+:root{--dock-w:204px;--dock-h:60px;--dock-gap:14px;--dock-bg:rgba(18,21,28,.92);--dock-line:rgba(255,255,255,.10);--dock-ink:#8b93a3;--dock-on:#eceef4;--dock-pill:rgba(255,255,255,.07);--dock-fab1:#6a5ae0;--dock-fab2:#4f7fe0;--dock-shadow:0 10px 28px -14px rgba(0,0,0,.75)}
+body[data-theme="light"]{--dock-bg:rgba(255,255,255,.94);--dock-line:rgba(15,23,42,.10);--dock-ink:#6b7383;--dock-on:#161a22;--dock-pill:rgba(15,23,42,.06);--dock-fab1:#5b4bd6;--dock-fab2:#3f6fd8;--dock-shadow:0 10px 26px -16px rgba(30,30,60,.35)}
 
 .odock{position:fixed;z-index:22;bottom:calc(var(--dock-gap) + env(safe-area-inset-bottom));left:calc(50% - var(--dock-w)/2);width:var(--dock-w);height:var(--dock-h);
-  display:grid;grid-template-columns:1fr 64px 1fr;align-items:center;padding:0 6px;border-radius:999px;
-  border:1px solid transparent;
-  background:linear-gradient(rgba(12,16,28,.74),rgba(12,16,28,.74)) padding-box,linear-gradient(100deg,rgba(167,139,250,.6),rgba(255,255,255,.07) 46%,rgba(94,234,212,.5)) border-box;
-  -webkit-backdrop-filter:blur(22px) saturate(1.7);backdrop-filter:blur(22px) saturate(1.7);
-  box-shadow:0 20px 44px -18px rgba(0,0,0,.85),0 0 0 6px rgba(8,11,18,.0);
-  view-transition-name:orbit-dock;
-  transition:left .55s var(--dock-ease),transform .35s var(--dock-ease),opacity .25s,box-shadow .3s;
-  touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-.odock[data-pos="left"]{left:var(--dock-gap)}
-.odock[data-pos="right"]{left:calc(100% - var(--dock-w) - var(--dock-gap))}
-body[data-theme="light"] .odock{background:linear-gradient(rgba(255,255,255,.82),rgba(255,255,255,.82)) padding-box,linear-gradient(100deg,rgba(124,58,237,.45),rgba(15,23,42,.06) 46%,rgba(13,148,136,.4)) border-box;box-shadow:0 18px 40px -20px rgba(60,50,110,.45)}
+  display:grid;grid-template-columns:1fr 64px 1fr;align-items:center;padding:0 6px;border-radius:20px;
+  background:var(--dock-bg);border:1px solid var(--dock-line);box-shadow:var(--dock-shadow);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  view-transition-name:orbit-dock;transition:transform .25s ease,opacity .2s ease;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 body.selecting .odock{transform:translateY(calc(100% + 40px));opacity:0;pointer-events:none}
 
-.odock-tab{position:relative;z-index:1;display:grid;place-items:center;height:48px;margin:0 2px;border-radius:999px;color:var(--muted,#9ba3ba);text-decoration:none;transition:color .25s,transform .2s}
-.odock-tab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;display:block;transition:transform .35s var(--dock-ease)}
-.odock-tab:active svg{transform:scale(.86)}
-.odock-tab[aria-current="page"]{color:#f3f0ff}
-body[data-theme="light"] .odock-tab[aria-current="page"]{color:#5b21b6}
-.odock-tab[aria-current="page"] svg{filter:drop-shadow(0 0 8px rgba(167,139,250,.65))}
+.odock-tab{position:relative;z-index:1;display:grid;place-items:center;height:46px;margin:0 2px;border-radius:14px;color:var(--dock-ink);text-decoration:none;order:1;transition:color .15s ease}
+.odock-tab[data-tab="contacts"]{order:3}
+.odock .fab{order:2}
+html[data-dock-swap="1"] .odock-tab[data-tab="bookmarks"]{order:3}
+html[data-dock-swap="1"] .odock-tab[data-tab="contacts"]{order:1}
+.odock-tab svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;display:block}
+.odock-tab[aria-current="page"]{color:var(--dock-on)}
+.odock-tab:active svg{transform:scale(.92)}
 
-/* the glowing pill behind the active tab glides between pages */
-.odock-glow{position:absolute;z-index:0;top:7px;height:46px;width:calc((var(--dock-w) - 64px - 12px)/2 - 4px);border-radius:999px;pointer-events:none;
-  background:radial-gradient(120% 140% at 50% 120%,rgba(94,234,212,.28),transparent 60%),linear-gradient(135deg,rgba(139,92,246,.30),rgba(99,102,241,.16));
-  box-shadow:inset 0 0 0 1px rgba(196,181,253,.22),0 6px 22px -8px rgba(139,92,246,.7);view-transition-name:odock-glow}
-.odock-glow:after{content:"";position:absolute;left:50%;bottom:-3px;width:16px;height:3px;margin-left:-8px;border-radius:3px;background:linear-gradient(90deg,#a78bfa,#5eead4);box-shadow:0 0 10px rgba(94,234,212,.9)}
-.odock[data-active="bookmarks"] .odock-glow{left:8px}
-.odock[data-active="contacts"] .odock-glow{right:8px}
+/* soft pill behind the active tab; it slides to the other side on a page switch */
+.odock-glow{position:absolute;z-index:0;top:6px;height:46px;width:calc((var(--dock-w) - 64px - 12px)/2 - 4px);border-radius:14px;pointer-events:none;background:var(--dock-pill);view-transition-name:odock-glow}
+.odock[data-active="bookmarks"] .odock-glow,html[data-dock-swap="1"] .odock[data-active="contacts"] .odock-glow{left:8px;right:auto}
+.odock[data-active="contacts"] .odock-glow,html[data-dock-swap="1"] .odock[data-active="bookmarks"] .odock-glow{right:8px;left:auto}
 
-/* centre action: the orbit */
-.odock .fab{position:relative;left:auto;right:auto;bottom:auto;transform:none;margin:-16px auto 0;width:56px;height:56px;min-height:56px;z-index:2;
-  border-radius:50%;border:0;display:grid;place-items:center;color:#fff;cursor:pointer;
-  background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.35),transparent 42%),linear-gradient(135deg,#7c3aed,#6366f1 55%,#22d3ee);
-  box-shadow:0 14px 30px -10px rgba(124,58,237,.9),0 0 0 5px rgba(8,11,18,.55);
-  transition:transform .3s var(--dock-ease),box-shadow .3s}
-body[data-theme="light"] .odock .fab{box-shadow:0 14px 30px -12px rgba(124,58,237,.8),0 0 0 5px rgba(255,255,255,.85)}
-.odock .fab:hover{transform:translateY(-2px)}
-.odock .fab:active{transform:scale(.9)}
-.odock .fab svg{position:relative;z-index:1;width:24px;height:24px;transition:transform .45s var(--dock-ease)}
-.odock .fab:active svg{transform:rotate(90deg)}
-.odock .fab:before{content:"";position:absolute;inset:-9px;border-radius:50%;pointer-events:none;
-  background:conic-gradient(from 0deg,transparent 0 55%,rgba(94,234,212,.0) 56%,rgba(94,234,212,.85) 78%,rgba(196,181,253,.95) 92%,transparent 100%);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 1.6px),#000 calc(100% - 1.2px));mask:radial-gradient(farthest-side,transparent calc(100% - 1.6px),#000 calc(100% - 1.2px));
-  animation:odock-spin 5.5s linear infinite}
-.odock .fab:after{content:"";position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;pointer-events:none;
-  background:#d9fff8;box-shadow:0 0 6px 1px #5eead4,0 0 14px 2px rgba(94,234,212,.6);animation:odock-sat 5.5s linear infinite}
-@keyframes odock-spin{to{transform:rotate(360deg)}}
-@keyframes odock-sat{from{transform:rotate(0deg) translateX(37px)}to{transform:rotate(360deg) translateX(37px)}}
-.odock .fab.burst:before{animation-duration:.9s}
+/* centre + : adds a bookmark on Bookmarks, a contact on Contacts */
+.odock .fab{position:relative;left:auto;right:auto;bottom:auto;transform:none;margin:0 auto;width:48px;height:48px;min-height:48px;z-index:2;
+  border-radius:16px;border:0;display:grid;place-items:center;color:#fff;cursor:pointer;
+  background:linear-gradient(135deg,var(--dock-fab1),var(--dock-fab2));box-shadow:none;transition:transform .12s ease}
+.odock .fab:hover{transform:none}
+.odock .fab:active{transform:scale(.94)}
+.odock .fab:before,.odock .fab:after{content:none}
+.odock .fab:focus{outline:none}
+.odock .fab:focus-visible,.odock-tab:focus-visible{outline:2px solid var(--dock-on);outline-offset:2px}
+.odock .fab svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
 
-/* hold-to-move */
-.odock.moving{transition:transform .25s var(--dock-ease),box-shadow .25s;transform:scale(1.07) translateY(-6px);box-shadow:0 30px 60px -18px rgba(124,58,237,.75),0 0 0 1px rgba(196,181,253,.35)}
-.odock-guides{position:fixed;z-index:21;left:0;right:0;bottom:calc(var(--dock-gap) + env(safe-area-inset-bottom));height:var(--dock-h);pointer-events:none;opacity:0;transition:opacity .25s}
-.odock-guides.show{opacity:1}
-.odock-guides i{position:absolute;top:0;width:var(--dock-w);height:var(--dock-h);border-radius:999px;border:1.5px dashed rgba(167,139,250,.35);transition:border-color .2s,background .2s}
-.odock-guides i.near{border-color:rgba(94,234,212,.85);background:rgba(94,234,212,.07)}
-.odock-guides i:nth-child(1){left:var(--dock-gap)}
-.odock-guides i:nth-child(2){left:calc(50% - var(--dock-w)/2)}
-.odock-guides i:nth-child(3){left:calc(100% - var(--dock-w) - var(--dock-gap))}
-.odock-hint{position:fixed;z-index:23;left:50%;bottom:calc(var(--dock-h) + var(--dock-gap) + 76px + env(safe-area-inset-bottom));transform:translate(-50%,8px);max-width:calc(100vw - 32px);
-  padding:9px 14px;border-radius:14px;font-size:12.5px;line-height:1.35;text-align:center;color:#ece9ff;pointer-events:none;opacity:0;
-  background:rgba(22,26,44,.92);border:1px solid rgba(167,139,250,.35);box-shadow:0 14px 30px -14px rgba(0,0,0,.8);transition:opacity .35s,transform .35s var(--dock-ease)}
-.odock-hint.show{opacity:1;transform:translate(-50%,0)}
-body[data-theme="light"] .odock-hint{background:#fff;color:#22163f}
-
-/* swipe-to-switch portal */
-.oswipe{position:fixed;z-index:24;top:50%;width:62px;height:62px;margin-top:-31px;border-radius:50%;display:grid;place-items:center;pointer-events:none;opacity:0;color:#fff;
-  background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.3),transparent 45%),linear-gradient(135deg,#7c3aed,#22d3ee);box-shadow:0 0 0 0 rgba(94,234,212,.5),0 18px 40px -14px rgba(124,58,237,.9)}
-.oswipe svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.oswipe.right{right:14px}.oswipe.left{left:14px}
-.oswipe.armed{box-shadow:0 0 0 10px rgba(94,234,212,.16),0 0 0 22px rgba(139,92,246,.08),0 18px 40px -14px rgba(124,58,237,.9)}
-[data-swipe-surface]{will-change:auto}
-
-/* ---------- cross-page transitions ---------- */
-::view-transition-group(orbit-dock){animation-duration:.5s}
-::view-transition-group(odock-glow){animation-duration:.6s;animation-timing-function:cubic-bezier(.22,1.2,.36,1)}
-::view-transition-old(root){animation:ot-fade-out .3s cubic-bezier(.4,0,.2,1) both}
-::view-transition-new(root){animation:ot-fade-in .42s cubic-bezier(.2,.8,.2,1) both}
-html:active-view-transition-type(forward)::view-transition-old(root){animation:ot-out-left .42s cubic-bezier(.4,0,.2,1) both}
-html:active-view-transition-type(forward)::view-transition-new(root){animation:ot-in-right .5s cubic-bezier(.16,1,.3,1) both}
-html:active-view-transition-type(back)::view-transition-old(root){animation:ot-out-right .42s cubic-bezier(.4,0,.2,1) both}
-html:active-view-transition-type(back)::view-transition-new(root){animation:ot-in-left .5s cubic-bezier(.16,1,.3,1) both}
-@keyframes ot-fade-out{to{opacity:0;transform:scale(.97)}}
-@keyframes ot-fade-in{from{opacity:0;transform:scale(1.02)}}
-@keyframes ot-out-left{to{opacity:0;transform:translateX(-22%) scale(.94);filter:blur(3px)}}
-@keyframes ot-in-right{from{opacity:0;transform:translateX(30%) scale(.98)}}
-@keyframes ot-out-right{to{opacity:0;transform:translateX(22%) scale(.94);filter:blur(3px)}}
-@keyframes ot-in-left{from{opacity:0;transform:translateX(-30%) scale(.98)}}
-
-/* fallback for browsers without cross-document view transitions */
-html.ot-leave-forward [data-swipe-surface]{animation:ot-out-left .2s cubic-bezier(.4,0,1,1) both}
-html.ot-leave-back [data-swipe-surface]{animation:ot-out-right .2s cubic-bezier(.4,0,1,1) both}
-html.ot-arrive-forward [data-swipe-surface]{animation:ot-in-right .48s cubic-bezier(.16,1,.3,1) both}
-html.ot-arrive-back [data-swipe-surface]{animation:ot-in-left .48s cubic-bezier(.16,1,.3,1) both}
+/* ---------- page switch: a short, gentle slide ---------- */
+::view-transition-group(orbit-dock){animation-duration:.25s}
+::view-transition-group(odock-glow){animation-duration:.3s;animation-timing-function:cubic-bezier(.3,.7,.3,1)}
+::view-transition-old(root){animation:ot-fade-out .18s ease both}
+::view-transition-new(root){animation:ot-fade-in .24s ease both}
+html:active-view-transition-type(forward)::view-transition-old(root){animation:ot-out-left .2s ease both}
+html:active-view-transition-type(forward)::view-transition-new(root){animation:ot-in-right .26s cubic-bezier(.2,.7,.3,1) both}
+html:active-view-transition-type(back)::view-transition-old(root){animation:ot-out-right .2s ease both}
+html:active-view-transition-type(back)::view-transition-new(root){animation:ot-in-left .26s cubic-bezier(.2,.7,.3,1) both}
+@keyframes ot-fade-out{to{opacity:0}}
+@keyframes ot-fade-in{from{opacity:0}}
+@keyframes ot-out-left{to{opacity:0;transform:translateX(-6%)}}
+@keyframes ot-in-right{from{opacity:0;transform:translateX(6%)}}
+@keyframes ot-out-right{to{opacity:0;transform:translateX(6%)}}
+@keyframes ot-in-left{from{opacity:0;transform:translateX(-6%)}}
+html.ot-leave-forward [data-swipe-surface]{animation:ot-out-left .15s ease both}
+html.ot-leave-back [data-swipe-surface]{animation:ot-out-right .15s ease both}
+html.ot-arrive-forward [data-swipe-surface]{animation:ot-in-right .24s ease both}
+html.ot-arrive-back [data-swipe-surface]{animation:ot-in-left .24s ease both}
 
 .toast{bottom:calc(var(--dock-h) + var(--dock-gap) + 14px + env(safe-area-inset-bottom))!important}
-
-@media(prefers-reduced-motion:reduce){
-  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
-  .odock .fab:before,.odock .fab:after{animation:none}
-}
+@media(prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}

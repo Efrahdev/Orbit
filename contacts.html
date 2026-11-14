@@ -1,6 +1,6 @@
 <!doctype html><html lang="en-GB" data-page="contacts"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#080b12"><meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0b0d12"><meta name="referrer" content="no-referrer">
 <meta name="description" content="Orbit Contacts: your people, searchable in a blink and synced through your own Google Sheet.">
 <title>Orbit Contacts</title>
 <link rel="preload" href="./noto-sans.woff2" as="font" type="font/woff2" crossorigin>
@@ -8,372 +8,377 @@
 <link rel="stylesheet" href="./orbit-dock.css">
 <script>
 (function(){var h=document.documentElement;
-addEventListener('pagereveal',function(e){if(e.viewTransition){var v=e.viewTransition;v.ready&&v.ready.catch(function(){});v.finished&&v.finished.catch(function(){});if(v.types){try{v.types.add(h.dataset.page==='contacts'?'forward':'back')}catch(x){}}}});
-var d=null;try{d=sessionStorage.getItem('orbit-nav');sessionStorage.removeItem('orbit-nav')}catch(x){}
-if(d&&!('CSSViewTransitionRule' in window))h.classList.add('ot-arrive-'+d);
-try{var p=localStorage.getItem('orbit-dock-pos');if(p)h.dataset.dockPos=p}catch(x){}})();
+try{if(localStorage.getItem('orbit-dock-swap')==='1')h.dataset.dockSwap='1'}catch(x){}
+addEventListener('pagereveal',function(e){if(e.viewTransition){var v=e.viewTransition;v.ready&&v.ready.catch(function(){});v.finished&&v.finished.catch(function(){});var d=null;try{d=sessionStorage.getItem('orbit-nav')}catch(x){}if(d&&v.types){try{v.types.add(d)}catch(x){}}}try{sessionStorage.removeItem('orbit-nav')}catch(x){}});
+var d=null;try{d=sessionStorage.getItem('orbit-nav')}catch(x){}
+if(d&&!('CSSViewTransitionRule' in window)){h.classList.add('ot-arrive-'+d);try{sessionStorage.removeItem('orbit-nav')}catch(x){}}})();
 </script>
 <script type="speculationrules">{"prefetch":[{"urls":["./"],"eagerness":"eager"}],"prerender":[{"urls":["./"],"eagerness":"moderate"}]}</script>
 <style>
 @font-face{font-family:"Noto Sans";src:url(./noto-sans.woff2) format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
-:root{--read:"Noto Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--bar-h:120px;--spring:cubic-bezier(.2,.9,.25,1.12);--out:cubic-bezier(.16,1,.3,1)}
-body[data-theme="dark"]{--bg:#070910;--text:#f3f4fb;--muted:#96a0b7;--faint:#5f6882;--line:rgba(255,255,255,.075);--card:rgba(17,21,34,.74);--card2:rgba(255,255,255,.05);--press:rgba(255,255,255,.06);--sheet:#0a0e18;--field:#0d1220;--accent:#a78bfa;--accent2:#5eead4;--danger:#fb7185;--glass:rgba(8,11,19,.74);--shadow:0 18px 40px -22px rgba(0,0,0,.9)}
-body[data-theme="light"]{--bg:#f2f4f9;--text:#141a2c;--muted:#5b6479;--faint:#8c95a9;--line:rgba(15,23,42,.08);--card:rgba(255,255,255,.9);--card2:rgba(15,23,42,.04);--press:rgba(15,23,42,.05);--sheet:#f4f6fb;--field:#fff;--accent:#7c3aed;--accent2:#0d9488;--danger:#e11d48;--glass:rgba(242,244,249,.8);--shadow:0 18px 40px -24px rgba(60,50,110,.35)}
+/* Quiet, readable list: neutral surfaces, one muted violet accent, thin borders, soft gradients only on avatars and the main button. */
+:root{--read:"Noto Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--bar-h:116px;--ease:cubic-bezier(.2,.7,.3,1)}
+body[data-theme="dark"]{--bg:#0b0d12;--surface:#12151c;--surface2:#181c25;--field:#10131a;--line:rgba(255,255,255,.075);--line2:rgba(255,255,255,.13);--text:#e8ebf1;--muted:#8e96a6;--faint:#5f6777;--accent:#9b8cf2;--accent-bg:rgba(155,140,242,.14);--danger:#f07a8f;--danger-bg:rgba(240,122,143,.12);--ok:#3ec4a8;--warn:#e5b45a;
+  --call:#3ec4a8;--call-bg:rgba(62,196,168,.12);--sms:#7aa2f7;--sms-bg:rgba(122,162,247,.12);--wa:#5cc77a;--wa-bg:rgba(92,199,122,.12);--glass:rgba(11,13,18,.88);--press:rgba(255,255,255,.04);--sel:rgba(155,140,242,.10)}
+body[data-theme="light"]{--bg:#f4f5f8;--surface:#ffffff;--surface2:#f0f2f6;--field:#ffffff;--line:rgba(16,24,40,.08);--line2:rgba(16,24,40,.14);--text:#151922;--muted:#5c6474;--faint:#949bab;--accent:#5b4bd6;--accent-bg:rgba(91,75,214,.09);--danger:#c8314f;--danger-bg:rgba(200,49,79,.08);--ok:#11866f;--warn:#a26a00;
+  --call:#11866f;--call-bg:rgba(17,134,111,.09);--sms:#2f5fd0;--sms-bg:rgba(47,95,208,.08);--wa:#1f8a43;--wa-bg:rgba(31,138,67,.09);--glass:rgba(244,245,248,.9);--press:rgba(16,24,40,.035);--sel:rgba(91,75,214,.07)}
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;background:var(--bg,#070910)}
-body{margin:0;min-height:100dvh;background:var(--bg);color:var(--text);font-family:var(--read);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html{-webkit-text-size-adjust:100%;background:var(--bg,#0b0d12)}
+body{margin:0;min-height:100dvh;background:var(--bg);color:var(--text);font-family:var(--read);-webkit-font-smoothing:antialiased;overflow-x:hidden;font-size:15px;line-height:1.45}
 button,input,select,textarea{font:inherit;color:inherit}
 button,a,input,textarea,select,[role=button]{-webkit-tap-highlight-color:transparent}
 button{cursor:pointer}
-:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 svg{display:block}
-.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
-/* ambient aurora */
-.aurora{position:fixed;left:0;right:0;top:0;height:78vh;pointer-events:none;z-index:0;overflow:hidden}
-.aurora i{position:absolute;border-radius:50%;opacity:.55;animation:drift 22s ease-in-out infinite alternate;will-change:transform}
-.aurora i:nth-child(1){width:110vw;height:110vw;left:-40vw;top:-55vw;background:radial-gradient(circle,rgba(124,58,237,.55),transparent 62%)}
-.aurora i:nth-child(2){width:95vw;height:95vw;right:-45vw;top:-25vw;background:radial-gradient(circle,rgba(34,211,238,.32),transparent 62%);animation-delay:-8s;animation-duration:26s}
-.aurora i:nth-child(3){width:70vw;height:70vw;left:20vw;top:10vh;background:radial-gradient(circle,rgba(236,72,153,.16),transparent 62%);animation-delay:-14s}
-body[data-theme="light"] .aurora i{opacity:.28}
-@keyframes drift{to{transform:translate3d(9vw,7vh,0) scale(1.14)}}
-.grain{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(255,255,255,.016) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.016) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:linear-gradient(to bottom,#000,transparent 55%);mask-image:linear-gradient(to bottom,#000,transparent 55%)}
-
-/* app shell */
-.app{position:relative;z-index:1;width:min(560px,100%);margin:0 auto;padding:max(14px,env(safe-area-inset-top)) 14px calc(120px + env(safe-area-inset-bottom))}
-.titlebar{display:flex;align-items:center;gap:10px;padding:6px 2px 4px}
+.app{position:relative;width:min(600px,100%);margin:0 auto;padding:max(10px,env(safe-area-inset-top)) 14px calc(110px + env(safe-area-inset-bottom))}
+.titlebar{display:flex;align-items:center;gap:6px;padding:8px 2px 2px}
 .titlebar .tt{flex:1;min-width:0}
-h1{margin:0;font-size:32px;line-height:1.1;font-weight:760;letter-spacing:-.035em;background:linear-gradient(100deg,var(--text) 35%,#c4b5fd 70%,#5eead4);-webkit-background-clip:text;background-clip:text;color:transparent}
-body[data-theme="light"] h1{background:linear-gradient(100deg,#141a2c 35%,#6d28d9 72%,#0f766e);-webkit-background-clip:text;background-clip:text}
-.meta{margin:5px 0 0;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ibtn{flex:none;width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:var(--card2);display:grid;place-items:center;color:var(--muted);transition:transform .2s var(--spring),color .2s,border-color .2s}
-.ibtn:active{transform:scale(.9)}
-.ibtn:hover{color:var(--text)}
+h1{margin:0;font-size:26px;line-height:1.15;font-weight:700;letter-spacing:-.02em}
+.meta{margin:3px 0 0;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.ibtn{position:relative;flex:none;width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--muted);transition:color .15s,border-color .15s,background .15s}
+.ibtn:active{background:var(--surface2)}
+.ibtn.on{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent);background:var(--accent-bg)}
+.ibtn .az{font-size:11.5px;font-weight:750;letter-spacing:.02em}
+.ibtn[hidden]{display:none}
+.sdot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--faint);box-shadow:0 0 0 2px var(--surface)}
+[data-sync="idle"] .sdot{background:var(--ok)}
+[data-sync="syncing"] .sdot{background:var(--accent)}
+[data-sync="offline"] .sdot{background:var(--faint)}
+[data-sync="error"] .sdot{background:var(--danger)}
+[data-sync="off"] .sdot{background:transparent;box-shadow:inset 0 0 0 1.5px var(--faint),0 0 0 2px var(--surface)}
 
-/* sync orb */
-.orb{position:relative;width:12px;height:12px;border-radius:50%;background:var(--faint)}
-.orb:before{content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid transparent}
-[data-sync="idle"] .orb{background:#5eead4;box-shadow:0 0 0 0 rgba(94,234,212,.55),0 0 12px rgba(94,234,212,.75);animation:breathe 3.2s ease-in-out infinite}
-[data-sync="syncing"] .orb{background:#c4b5fd;box-shadow:0 0 12px rgba(167,139,250,.8)}
-[data-sync="syncing"] .orb:before{border-color:rgba(167,139,250,.9) transparent rgba(94,234,212,.9) transparent;animation:spin .8s linear infinite}
-[data-sync="offline"] .orb{background:#7b8499}
-[data-sync="error"] .orb{background:#fb7185;box-shadow:0 0 12px rgba(251,113,133,.8)}
-[data-sync="off"] .orb{background:transparent;box-shadow:inset 0 0 0 1.5px var(--faint)}
-.orb.pop:after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid #5eead4;animation:ring 1s var(--out) forwards}
-@keyframes breathe{50%{box-shadow:0 0 0 5px rgba(94,234,212,0),0 0 18px rgba(94,234,212,.9)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes ring{to{transform:scale(4);opacity:0}}
-.mini-orb{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}
-[data-sync="idle"] .mini-orb{background:#5eead4;box-shadow:0 0 8px #5eead4}
-[data-sync="syncing"] .mini-orb{background:#c4b5fd;animation:blink .8s ease-in-out infinite alternate}
-[data-sync="offline"] .mini-orb{background:#7b8499}
-[data-sync="error"] .mini-orb{background:#fb7185}
-[data-sync="off"] .mini-orb{box-shadow:inset 0 0 0 1.5px var(--faint)}
-@keyframes blink{to{opacity:.3}}
-
-/* sticky search + chips */
+/* sticky search + tag chips */
 .sentinel{height:1px}
-.bar{position:sticky;top:0;z-index:6;margin:0 -14px;padding:10px 14px 6px;transition:background .3s,box-shadow .3s}
-.bar.stuck{background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(1.6);backdrop-filter:blur(22px) saturate(1.6);box-shadow:0 1px 0 var(--line),0 14px 30px -24px rgba(0,0,0,.8)}
-.search{position:relative;display:flex;align-items:center;height:50px;border-radius:17px;border:1px solid transparent;
-  background:linear-gradient(var(--field),var(--field)) padding-box,linear-gradient(100deg,rgba(167,139,250,.35),var(--line) 45%,rgba(94,234,212,.3)) border-box;transition:box-shadow .3s,background .3s}
-.search:focus-within{background:linear-gradient(var(--field),var(--field)) padding-box,linear-gradient(100deg,#a78bfa,rgba(99,102,241,.5) 45%,#5eead4) border-box;box-shadow:0 0 0 4px rgba(139,92,246,.14),0 14px 34px -18px rgba(124,58,237,.7)}
-.search .i{position:absolute;left:15px;color:var(--muted);transition:color .2s,transform .3s var(--spring)}
-.search:focus-within .i{color:var(--accent);transform:scale(1.08)}
-.search input{flex:1;min-width:0;height:100%;border:0;background:transparent;outline:none;padding:0 44px 0 46px;font-size:16px;color:var(--text)}
+.bar{position:sticky;top:0;z-index:6;margin:0 -14px;padding:8px 14px 6px;background:var(--bg);transition:box-shadow .2s}
+.bar.stuck{background:var(--glass);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line)}
+.search{position:relative;display:flex;align-items:center;height:46px;border-radius:13px;border:1px solid var(--line2);background:var(--field);transition:border-color .15s}
+.search:focus-within{border-color:color-mix(in srgb,var(--accent) 70%,transparent)}
+.search>.i{position:absolute;left:14px;color:var(--faint)}
+.search input{flex:1;min-width:0;height:100%;border:0;background:transparent;outline:none;padding:0 42px 0 42px;font-size:16px;color:var(--text)}
 .search input::placeholder{color:var(--faint)}
 .search input::-webkit-search-cancel-button{display:none}
-.clearq{position:absolute;right:7px;width:36px;height:36px;border:0;border-radius:12px;background:var(--card2);display:grid;place-items:center;color:var(--muted);opacity:0;transform:scale(.6);pointer-events:none;transition:.25s var(--spring)}
-.clearq.show{opacity:1;transform:none;pointer-events:auto}
-.clearq .i{position:static;width:16px;height:16px}
-.chips{display:flex;gap:8px;overflow-x:auto;padding:11px 2px 4px;margin:0 -14px;padding-left:14px;padding-right:14px;scrollbar-width:none;scroll-snap-type:x proximity}
+.clearq{position:absolute;right:6px;width:34px;height:34px;border:0;border-radius:10px;background:transparent;display:none;place-items:center;color:var(--muted)}
+.clearq.show{display:grid}
+.chips{display:flex;gap:7px;overflow-x:auto;margin:0 -14px;padding:9px 14px 2px;scrollbar-width:none}
+.chips[hidden]{display:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{--c:#a78bfa;flex:none;display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;border-radius:999px;border:1px solid var(--line);background:var(--card2);font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;scroll-snap-align:start;transition:transform .25s var(--spring),background .25s,border-color .25s,color .25s}
-.chip:active{transform:scale(.93)}
-.chip i{width:7px;height:7px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
-.chip small{font-size:11px;font-weight:600;opacity:.6}
-.chip.on{color:var(--text);border-color:color-mix(in srgb,var(--c) 65%,transparent);background:color-mix(in srgb,var(--c) 20%,transparent);box-shadow:0 6px 18px -10px var(--c)}
-.chip.on small{opacity:.85}
-.chip svg{width:14px;height:14px}
-
-/* favourites strip */
-.favs{display:flex;gap:6px;overflow-x:auto;margin:6px -14px 0;padding:8px 14px 4px;scrollbar-width:none}
-.favs::-webkit-scrollbar{display:none}
-.fav{flex:none;width:72px;display:flex;flex-direction:column;align-items:center;gap:7px;border:0;background:none;padding:4px 0;color:var(--text);transition:transform .25s var(--spring)}
-.fav:active{transform:scale(.92)}
-.fav .ring{padding:2.5px;border-radius:50%;background:conic-gradient(from 200deg,#a78bfa,#5eead4,#f9a8d4,#a78bfa)}
-.fav .ring .av{width:56px;height:56px;font-size:19px;box-shadow:0 0 0 2.5px var(--bg)}
-.fav span{max-width:70px;font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.section-label{margin:16px 6px 7px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.chip{flex:none;display:inline-flex;align-items:center;gap:6px;height:31px;padding:0 12px;border-radius:999px;border:1px solid var(--line2);background:var(--surface);font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
+.chip small{font-size:11.5px;font-weight:600;color:var(--faint);font-variant-numeric:tabular-nums}
+.chip.on{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 50%,transparent);background:var(--accent-bg)}
+.chip.on small{color:inherit;opacity:.75}
+.chip svg{width:13px;height:13px}
 
 /* list */
-.group{margin-top:12px;content-visibility:auto;contain-intrinsic-size:auto 240px}
-.gl{position:sticky;top:var(--bar-h);z-index:2;display:inline-block;margin:0 0 6px 6px;padding:2px 9px;border-radius:9px;font-size:13px;font-weight:800;letter-spacing:.04em;color:var(--accent);background:var(--glass);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-.gcard{border-radius:22px;background:var(--card);border:1px solid var(--line);overflow:hidden;box-shadow:var(--shadow)}
-.row{position:relative;display:flex;align-items:center;gap:13px;min-height:66px;padding:10px 10px 10px 12px;cursor:pointer;outline:0;transition:background .2s}
-.row+.row:before{content:"";position:absolute;top:0;left:68px;right:14px;height:1px;background:var(--line)}
+.group{margin-top:14px}
+.gl{position:sticky;top:var(--bar-h);z-index:2;margin:0 0 6px;padding:3px 6px;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted);background:var(--bg)}
+.gcard{border-radius:14px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.section-label{margin:14px 6px 6px;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted)}
+.row{position:relative;display:grid;grid-template-columns:40px minmax(0,1fr) auto;grid-template-areas:"av name quick" "av sub acts";column-gap:12px;row-gap:1px;align-items:center;padding:9px 8px 9px 12px;min-height:64px;cursor:pointer;outline:0;transition:background .15s}
+.row+.row:before{content:"";position:absolute;top:0;left:64px;right:0;height:1px;background:var(--line)}
 .row:active,.row:focus-visible{background:var(--press)}
-.row.flash{animation:flash 1.8s ease-out}
-@keyframes flash{0%,30%{background:rgba(139,92,246,.22)}100%{background:transparent}}
-.rise{animation:rise .5s var(--out) both;animation-delay:calc(var(--d,0) * 22ms)}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}}
-.av{--a1:#8b5cf6;--a2:#22d3ee;flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:15.5px;font-weight:720;letter-spacing:.01em;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.25);
-  background:radial-gradient(circle at 30% 22%,rgba(255,255,255,.32),transparent 46%),linear-gradient(140deg,var(--a1),var(--a2));box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 8px 16px -8px var(--a1)}
+.row.flash{animation:flash 1.6s ease-out}
+@keyframes flash{0%,35%{background:var(--sel)}100%{background:transparent}}
+.rise{animation:rise .35s var(--ease) both;animation-delay:calc(var(--d,0) * 18ms)}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}}
+.av{--a1:#7c6cf0;--a2:#4f8fe0;grid-area:av;flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:14.5px;font-weight:650;color:#fff;letter-spacing:.01em;background:linear-gradient(140deg,var(--a1),var(--a2))}
 .av svg{width:48%;height:48%}
-.rt{flex:1;min-width:0}
-.rn{display:flex;align-items:center;gap:6px;font-size:15.5px;font-weight:620;letter-spacing:-.005em;white-space:nowrap;overflow:hidden}
-.rn span{overflow:hidden;text-overflow:ellipsis}
-.rn svg{flex:none;width:13px;height:13px;fill:#fbbf24;stroke:none}
-.rs{display:flex;align-items:center;gap:7px;margin-top:3px;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden}
-.rs span{overflow:hidden;text-overflow:ellipsis}
-.dots{display:flex;gap:3px;flex:none}
-.dots i{width:6px;height:6px;border-radius:50%;background:var(--c)}
-mark{color:inherit;background:linear-gradient(transparent 58%,rgba(139,92,246,.45) 58%);border-radius:2px;padding:0 .5px}
-body[data-theme="light"] mark{background:linear-gradient(transparent 58%,rgba(124,58,237,.25) 58%)}
-.qcall{flex:none;width:42px;height:42px;border-radius:14px;display:grid;place-items:center;color:var(--accent2);background:color-mix(in srgb,var(--accent2) 11%,transparent);border:1px solid color-mix(in srgb,var(--accent2) 22%,transparent);transition:transform .25s var(--spring)}
-.qcall:active{transform:scale(.86)}
-.qcall .i{width:18px;height:18px}
+.rn{grid-area:name;display:flex;align-items:center;gap:5px;min-width:0;font-size:15.5px;font-weight:600;line-height:1.3;color:var(--text)}
+.rn>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rn .star{flex:none;width:13px;height:13px;fill:var(--warn);stroke:none}
+.rs{grid-area:sub;display:flex;align-items:center;gap:6px;min-width:0;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;font-variant-numeric:tabular-nums}
+.rs .num{overflow:hidden;text-overflow:ellipsis;flex:0 1 auto;min-width:0}
+.tg{flex:none;font-size:10.5px;font-weight:650;letter-spacing:.02em;padding:1px 6px;border-radius:6px;color:var(--accent);background:var(--accent-bg)}
+mark{color:inherit;background:var(--accent-bg);border-radius:3px;box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent)}
+.rq{grid-area:quick;display:flex;gap:2px;justify-self:end}
+.ra{grid-area:acts;display:flex;gap:5px;justify-self:end}
+.mi{width:28px;height:26px;border:0;border-radius:8px;background:transparent;display:grid;place-items:center;color:var(--faint);transition:color .15s,background .15s}
+.mi .i{width:15px;height:15px}
+.mi:active{color:var(--text);background:var(--press)}
+.ic{width:34px;height:30px;border-radius:9px;display:grid;place-items:center;text-decoration:none;transition:filter .15s}
+.ic .i{width:17px;height:17px}
+.ic.call{color:var(--call);background:var(--call-bg)}
+.ic.sms{color:var(--sms);background:var(--sms-bg)}
+.ic.wa{color:var(--wa);background:var(--wa-bg)}
+.ic:active{filter:brightness(1.25)}
+.ic.off{opacity:.28;pointer-events:none}
+.row .chk{grid-area:av;width:40px;height:40px;border-radius:50%;display:none;place-items:center;border:1.5px solid var(--line2);color:#fff}
+body.selecting .row .chk{display:grid}
+body.selecting .row .av{display:none}
+body.selecting .row .rq,body.selecting .row .ra{visibility:hidden}
+.row.selected{background:var(--sel)}
+.row.selected .chk{background:var(--accent);border-color:var(--accent)}
+.row .chk svg{width:18px;height:18px;opacity:0}
+.row.selected .chk svg{opacity:1}
+
+/* A–Z menu */
+.azpop{position:absolute;z-index:30;right:14px;top:calc(max(10px,env(safe-area-inset-top)) + 54px);width:min(300px,calc(100vw - 28px));padding:10px;border-radius:14px;background:var(--surface);border:1px solid var(--line2);box-shadow:0 18px 40px -20px rgba(0,0,0,.6);display:grid;grid-template-columns:repeat(7,1fr);gap:4px;animation:pop .14s ease}
+.azpop[hidden]{display:none}
+@keyframes pop{from{opacity:0;transform:translateY(-4px)}}
+.azpop button{height:36px;border:0;border-radius:9px;background:transparent;font-size:14px;font-weight:650;color:var(--text)}
+.azpop button:active{background:var(--accent-bg);color:var(--accent)}
+.azpop button[disabled]{color:var(--faint);opacity:.45;cursor:default}
+.azpop button.star{color:var(--warn)}
 
 /* empty states */
-.empty{margin:34px 8px;text-align:center}
-.empty h2{margin:18px 0 6px;font-size:21px;letter-spacing:-.02em}
-.empty p{margin:0 auto;max-width:300px;font-size:14px;line-height:1.5;color:var(--muted)}
+.empty{margin:40px 8px;text-align:center}
+.empty .eic{width:64px;height:64px;margin:0 auto;border-radius:20px;display:grid;place-items:center;color:var(--accent);background:var(--accent-bg)}
+.empty .eic .i{width:30px;height:30px}
+.empty h2{margin:16px 0 6px;font-size:19px;letter-spacing:-.01em}
+.empty p{margin:0 auto;max-width:300px;font-size:14px;line-height:1.55;color:var(--muted)}
 .empty .actions{display:flex;flex-direction:column;gap:9px;max-width:290px;margin:20px auto 0}
-.orbit-art{position:relative;width:180px;height:180px;margin:0 auto}
-.orbit-art .core{position:absolute;inset:62px;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.4),transparent 45%),linear-gradient(135deg,#7c3aed,#22d3ee);box-shadow:0 0 40px rgba(124,58,237,.6)}
-.orbit-art .path{position:absolute;inset:14px;border-radius:50%;border:1px dashed rgba(167,139,250,.3);animation:spin 26s linear infinite}
-.orbit-art .path.p2{inset:0;border-color:rgba(94,234,212,.2);animation-duration:38s;animation-direction:reverse}
-.orbit-art .path b{position:absolute;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:800;color:#fff}
-.orbit-art .path b:nth-child(1){top:-14px;left:calc(50% - 14px);background:linear-gradient(135deg,#f472b6,#8b5cf6)}
-.orbit-art .path b:nth-child(2){bottom:10px;left:2px;background:linear-gradient(135deg,#34d399,#06b6d4)}
-.orbit-art .path b:nth-child(3){bottom:16px;right:0;background:linear-gradient(135deg,#fbbf24,#f472b6)}
-.orbit-art .path.p2 b:nth-child(1){top:calc(50% - 14px);left:-14px;background:linear-gradient(135deg,#60a5fa,#a78bfa)}
 
 /* buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 18px;border-radius:15px;border:1px solid var(--line);background:var(--card2);font-size:14.5px;font-weight:620;color:var(--text);text-decoration:none;transition:transform .2s var(--spring),background .2s,border-color .2s}
-.btn:active{transform:scale(.96)}
-.btn.primary{border:0;color:#fff;background:radial-gradient(circle at 25% 0%,rgba(255,255,255,.25),transparent 50%),linear-gradient(120deg,#7c3aed,#6366f1 55%,#0891b2);box-shadow:0 12px 26px -12px rgba(124,58,237,.9)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--line2);background:var(--surface);font-size:14.5px;font-weight:600;color:var(--text);text-decoration:none;transition:background .15s}
+.btn:active{background:var(--surface2)}
+.btn.primary{border:0;color:#fff;background:linear-gradient(120deg,#6a5ae0,#4f7fe0)}
+body[data-theme="light"] .btn.primary{background:linear-gradient(120deg,#5b4bd6,#3f6fd8)}
 .btn.danger{color:var(--danger)}
 .btn.danger.armed{color:#fff;background:var(--danger);border-color:transparent}
-.btn .i{width:18px;height:18px}
+.btn .i{width:17px;height:17px}
 .btn[disabled]{opacity:.5;pointer-events:none}
+.btn.sm{min-height:36px;padding:0 12px;font-size:13.5px;border-radius:10px}
 
-/* alphabet scrubber */
-.scrub{position:fixed;z-index:8;right:2px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;padding:8px 5px;border-radius:14px;touch-action:none;-webkit-user-select:none;user-select:none;transition:opacity .3s,background .2s}
-html[data-dock-pos="left"] .scrub{right:auto;left:2px}
-.scrub[hidden]{display:none}
-.scrub b{display:block;width:18px;font-size:10.5px;line-height:15px;font-weight:750;text-align:center;color:var(--faint);transition:color .15s,transform .2s var(--spring)}
-.scrub b.has{color:var(--accent)}
-.scrub.active{background:var(--card)}
-.scrub b.cur{color:var(--text);transform:scale(1.5)}
-.bubble{position:fixed;z-index:9;right:44px;width:66px;height:66px;margin-top:-33px;border-radius:50% 50% 12px 50%;display:grid;place-items:center;font-size:30px;font-weight:800;color:#fff;pointer-events:none;opacity:0;transform:scale(.4) rotate(45deg);transition:opacity .15s,transform .25s var(--spring);background:linear-gradient(135deg,#7c3aed,#22d3ee);box-shadow:0 16px 34px -12px rgba(124,58,237,.9)}
-.bubble span{transform:rotate(-45deg)}
-html[data-dock-pos="left"] .bubble{right:auto;left:44px;border-radius:50% 50% 50% 12px;transform:scale(.4) rotate(-45deg)}
-html[data-dock-pos="left"] .bubble span{transform:rotate(45deg)}
-.bubble.show{opacity:1;transform:scale(1) rotate(45deg)}
-html[data-dock-pos="left"] .bubble.show{transform:scale(1) rotate(-45deg)}
+/* selection bar */
+.selbar{position:fixed;z-index:25;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:4px;max-width:calc(100vw - 20px);padding:6px;border-radius:16px;background:var(--surface);border:1px solid var(--line2);box-shadow:0 12px 30px -16px rgba(0,0,0,.7)}
+.selbar[hidden]{display:none}
+.selbar b{padding:0 6px;font-size:13px;font-weight:650;white-space:nowrap;font-variant-numeric:tabular-nums}
+.selbar button{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:50px;height:48px;padding:4px 5px;border:0;border-radius:11px;background:transparent;font-size:11px;font-weight:600;color:var(--muted)}
+.selbar button:active{background:var(--press)}
+.selbar button .i{width:18px;height:18px;color:var(--text)}
+.selbar button.del{color:var(--danger)}
+.selbar button.del .i{color:var(--danger)}
+.selbar button.del.armed{background:var(--danger-bg)}
 
 /* layers */
 html.layer-open,html.layer-open body{overflow:hidden}
-.layer{position:fixed;inset:0;z-index:40;overflow-y:auto;overscroll-behavior:contain;background:var(--sheet);-webkit-overflow-scrolling:touch}
+.layer{position:fixed;inset:0;z-index:40;overflow-y:auto;overscroll-behavior:contain;background:var(--bg);-webkit-overflow-scrolling:touch}
 .layer[hidden]{display:none}
-.layer.anim-in{animation:layer-in .5s var(--out)}
-.layer.anim-out{animation:layer-out .26s cubic-bezier(.4,0,1,1) forwards}
-@keyframes layer-in{from{opacity:0;transform:translateY(48px) scale(.985)}}
-@keyframes layer-out{to{opacity:0;transform:translateY(48px) scale(.985)}}
+.layer.anim-in{animation:layer-in .3s var(--ease)}
+.layer.anim-out{animation:layer-out .2s ease forwards}
+@keyframes layer-in{from{opacity:0;transform:translateY(24px)}}
+@keyframes layer-out{to{opacity:0;transform:translateY(24px)}}
 html.vt-layer::view-transition-old(root),html.vt-layer::view-transition-new(root){animation:none}
-::view-transition-new(layer){animation:layer-in .52s var(--out)}
-::view-transition-old(layer){animation:layer-out .28s cubic-bezier(.4,0,1,1) forwards}
-::view-transition-group(hero-av){animation-duration:.52s;animation-timing-function:cubic-bezier(.2,.9,.22,1.06)}
-::view-transition-old(hero-av),::view-transition-new(hero-av){height:100%;width:100%;object-fit:cover;animation:none;mix-blend-mode:normal}
-.lin{width:min(560px,100%);margin:0 auto;min-height:100%;padding:max(10px,env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
-.lbar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:8px;margin:0 -16px;padding:10px 16px;background:linear-gradient(var(--sheet) 60%,transparent)}
-.lbar h2{flex:1;margin:0;font-size:17px;font-weight:700;text-align:center;letter-spacing:-.01em}
+::view-transition-new(layer){animation:layer-in .3s var(--ease)}
+::view-transition-old(layer){animation:layer-out .2s ease forwards}
+::view-transition-group(hero-av){animation-duration:.32s;animation-timing-function:var(--ease)}
+::view-transition-old(hero-av),::view-transition-new(hero-av){height:100%;width:100%;animation:none}
+.lin{width:min(600px,100%);margin:0 auto;min-height:100%;padding:max(8px,env(safe-area-inset-top)) 14px calc(40px + env(safe-area-inset-bottom))}
+.lbar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:8px;margin:0 -14px;padding:8px 14px;background:var(--bg)}
+.lbar h2{flex:1;margin:0;font-size:16.5px;font-weight:650;text-align:center}
 .lbar .sp{flex:1}
-.lbar .ibtn{background:var(--card)}
-.ibtn.on{color:#fbbf24}
-.ibtn.on svg{fill:#fbbf24}
-.textbtn{min-height:42px;padding:0 14px;border:0;border-radius:13px;background:none;font-size:15px;font-weight:620;color:var(--muted)}
-.textbtn.go{color:#fff;background:linear-gradient(120deg,#7c3aed,#6366f1);box-shadow:0 10px 22px -12px rgba(124,58,237,.9)}
+.ibtn.starred{color:var(--warn)}
+.ibtn.starred svg{fill:var(--warn)}
+.textbtn{min-height:38px;padding:0 12px;border:0;border-radius:10px;background:none;font-size:15px;font-weight:600;color:var(--muted)}
+.textbtn.go{color:#fff;background:linear-gradient(120deg,#6a5ae0,#4f7fe0)}
 
 /* detail */
-.detail{--a1:#8b5cf6;--a2:#22d3ee}
-.detail .glow{position:absolute;left:0;right:0;top:0;height:420px;pointer-events:none;overflow:hidden}
-.detail .glow:before,.detail .glow:after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;top:-180px;opacity:.38;animation:drift 16s ease-in-out infinite alternate}
-.detail .glow:before{left:-160px;background:radial-gradient(circle,var(--a1),transparent 64%)}
-.detail .glow:after{right:-180px;top:-120px;background:radial-gradient(circle,var(--a2),transparent 64%);animation-delay:-7s}
-.detail .lin{position:relative}
-.hero{text-align:center;padding:4px 0 6px}
-.halo{position:relative;width:140px;height:140px;margin:4px auto 16px;display:grid;place-items:center}
-.halo:before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 40%,var(--a2) 70%,var(--a1) 90%,transparent);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 1.5px));mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 1.5px));animation:spin 7s linear infinite}
-.halo:after{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px;border-radius:50%;background:#fff;box-shadow:0 0 10px 2px var(--a2);animation:sat 7s linear infinite}
-@keyframes sat{from{transform:rotate(0) translateX(70px)}to{transform:rotate(360deg) translateX(70px)}}
-.av.big{width:112px;height:112px;font-size:40px;box-shadow:inset 0 2px 0 rgba(255,255,255,.25),0 24px 50px -18px var(--a1)}
-.hero h2{margin:0;font-size:27px;line-height:1.15;font-weight:740;letter-spacing:-.025em;word-break:break-word}
-.hero p{margin:6px 0 0;font-size:14px;color:var(--muted)}
-.dtags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:12px}
-.dtags .chip{height:28px;font-size:12px;padding:0 11px}
-.st>*{animation:rise .55s var(--out) both}
-.st>*:nth-child(2){animation-delay:.05s}.st>*:nth-child(3){animation-delay:.1s}.st>*:nth-child(4){animation-delay:.15s}.st>*:nth-child(5){animation-delay:.2s}.st>*:nth-child(6){animation-delay:.25s}.st>*:nth-child(n+7){animation-delay:.3s}
-.acts{display:flex;justify-content:space-between;gap:8px;margin:22px 0 6px}
-.act{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:var(--text);font-size:12px;font-weight:620;border:0;background:none;padding:0}
-.act span{width:60px;height:60px;border-radius:21px;display:grid;place-items:center;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);transition:transform .25s var(--spring)}
-.act:active span{transform:scale(.88)}
-.act .i{width:23px;height:23px}
-.act.call span{border:0;color:#fff;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.3),transparent 50%),linear-gradient(135deg,#7c3aed,#22d3ee);box-shadow:0 14px 28px -12px rgba(124,58,237,.9)}
-.act.off{opacity:.32;pointer-events:none}
-.icard{margin-top:12px;border-radius:20px;background:var(--card);border:1px solid var(--line);overflow:hidden}
-.irow{position:relative;display:flex;align-items:center;gap:12px;padding:12px 10px 12px 15px;min-height:62px}
-.irow+.irow:before{content:"";position:absolute;top:0;left:15px;right:15px;height:1px;background:var(--line)}
+.hero{text-align:center;padding:10px 0 4px}
+.av.big{width:96px;height:96px;font-size:34px;margin:6px auto 14px}
+.hero h2{margin:0;font-size:24px;line-height:1.2;font-weight:700;letter-spacing:-.015em;word-break:break-word}
+.dtags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:10px}
+.st>*{animation:rise .35s var(--ease) both}
+.st>*:nth-child(2){animation-delay:.03s}.st>*:nth-child(3){animation-delay:.06s}.st>*:nth-child(n+4){animation-delay:.09s}
+.acts{display:flex;justify-content:space-between;gap:8px;margin:20px 0 4px}
+.act{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--muted);font-size:12px;font-weight:600}
+.act span{width:100%;max-width:76px;height:52px;border-radius:14px;display:grid;place-items:center;border:1px solid var(--line)}
+.act .i{width:21px;height:21px}
+.act.call span{color:var(--call);background:var(--call-bg)}
+.act.sms span{color:var(--sms);background:var(--sms-bg)}
+.act.wa span{color:var(--wa);background:var(--wa-bg)}
+.act.mail span{color:var(--accent);background:var(--accent-bg)}
+.act.off{opacity:.3;pointer-events:none}
+.icard{margin-top:12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.irow{position:relative;display:flex;align-items:center;gap:8px;padding:11px 8px 11px 14px;min-height:58px}
+.irow+.irow:before{content:"";position:absolute;top:0;left:14px;right:0;height:1px;background:var(--line)}
 .irow .k{flex:1;min-width:0}
-.irow small{display:block;font-size:11.5px;font-weight:650;letter-spacing:.03em;color:var(--muted)}
-.irow .v{display:block;margin-top:2px;font-size:15.5px;color:var(--text);text-decoration:none;word-break:break-word;white-space:pre-wrap}
-.irow a.v{color:var(--text)}
-.irow .mini{flex:none;width:38px;height:38px;border-radius:12px;border:0;background:var(--card2);display:grid;place-items:center;color:var(--muted);text-decoration:none;transition:transform .2s var(--spring),color .2s}
-.irow .mini:active{transform:scale(.88)}
-.irow .mini .i{width:17px;height:17px}
-.dfoot{display:flex;gap:9px;margin-top:18px}
+.irow small{display:block;font-size:11.5px;font-weight:600;color:var(--muted)}
+.irow .v{display:block;margin-top:1px;font-size:15.5px;color:var(--text);text-decoration:none;word-break:break-word;white-space:pre-wrap;font-variant-numeric:tabular-nums}
+.dfoot{display:flex;gap:9px;margin-top:16px}
 .dfoot .btn{flex:1}
 
-/* editor + settings */
-.ehero{display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 0 4px}
-.ehero .av{width:92px;height:92px;font-size:33px;transition:background .4s}
-.ehero .av.pulse{animation:pulse .35s var(--spring)}
-@keyframes pulse{50%{transform:scale(1.08)}}
-.ename{width:100%;border:0;background:none;outline:none;text-align:center;font-size:24px;font-weight:700;letter-spacing:-.02em;padding:4px 0}
-.ename::placeholder{color:var(--faint)}
-.fcard{margin-top:12px;padding:6px 14px 10px;border-radius:20px;background:var(--card);border:1px solid var(--line)}
-.fhead{display:flex;align-items:center;gap:8px;padding:8px 0 4px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+/* forms */
+.ehero{display:flex;flex-direction:column;align-items:center;gap:10px;padding:6px 0 2px}
+.ehero .av{width:76px;height:76px;font-size:27px}
+.ename{width:100%;border:0;border-bottom:1px solid var(--line2);background:none;outline:none;text-align:center;font-size:21px;font-weight:650;padding:6px 0 8px}
+.ename:focus{border-color:var(--accent)}
+.ename::placeholder{color:var(--faint);font-weight:500}
+.fcard{margin-top:12px;padding:4px 14px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.fhead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0 6px;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted)}
+.fhead span{display:flex;align-items:center;gap:7px}
 .fhead .i{width:15px;height:15px}
-.frow{display:flex;align-items:center;gap:8px;padding:5px 0;animation:rise .35s var(--out)}
-.fin,.frow select,.frow input,.fcard textarea{min-width:0;height:46px;border-radius:13px;border:1px solid var(--line);background:var(--field);padding:0 12px;font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s}
-.fin:focus,.frow select:focus,.frow input:focus,.fcard textarea:focus{border-color:rgba(167,139,250,.7);box-shadow:0 0 0 3px rgba(139,92,246,.15)}
-.frow select{flex:none;width:98px;padding:0 6px 0 10px;font-size:14px;color:var(--muted);-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 13px) 21px,calc(100% - 8px) 21px;background-size:5px 5px;background-repeat:no-repeat}
-.frow input{flex:1}
+.frow{display:flex;align-items:center;gap:8px;padding:4px 0}
+.fin,.frow select,.frow input,.fcard textarea{min-width:0;height:44px;border-radius:11px;border:1px solid var(--line2);background:var(--field);padding:0 12px;font-size:16px;outline:none;color:var(--text);transition:border-color .15s}
+.fin:focus,.frow select:focus,.frow input:focus,.fcard textarea:focus{border-color:color-mix(in srgb,var(--accent) 70%,transparent)}
+.frow select{flex:none;width:96px;padding:0 6px 0 10px;font-size:14px;color:var(--muted)}
+.frow input{flex:1;font-variant-numeric:tabular-nums}
 .fin{width:100%}
-.fcard textarea{width:100%;height:auto;min-height:84px;padding:12px;resize:vertical;line-height:1.45}
-.rm{flex:none;width:38px;height:38px;border:0;border-radius:12px;background:none;color:var(--faint);display:grid;place-items:center}
-.rm .i{width:17px;height:17px}
-.addrow{display:inline-flex;align-items:center;gap:6px;min-height:40px;margin-top:2px;padding:0 4px;border:0;background:none;font-size:14px;font-weight:650;color:var(--accent)}
-.addrow .i{width:17px;height:17px}
-.warn{margin:4px 2px 2px;font-size:12.5px;color:#fbbf24;display:none}
-.warn.show{display:block;animation:rise .3s var(--out)}
+.fcard textarea{width:100%;height:auto;min-height:84px;padding:11px 12px;resize:vertical;line-height:1.5}
+.rm{flex:none;width:36px;height:36px;border:0;border-radius:10px;background:none;color:var(--faint);display:grid;place-items:center}
+.addrow{display:inline-flex;align-items:center;gap:6px;min-height:38px;margin-top:2px;padding:0 2px;border:0;background:none;font-size:14px;font-weight:600;color:var(--accent)}
+.addrow .i{width:16px;height:16px}
+.warn{margin:4px 2px 2px;font-size:12.5px;color:var(--warn);display:none}
+.warn.show{display:block}
 .flabel{display:block;margin:10px 2px 6px;font-size:12.5px;font-weight:600;color:var(--muted)}
-.tagpick{display:flex;flex-wrap:wrap;gap:7px;padding:6px 0}
-.tagpick .chip{height:32px}
-.tagnew{display:flex;gap:8px;padding:4px 0 2px}
-.tagnew input{flex:1}
-.tagnew .btn{min-height:46px}
-.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px;padding:6px 14px;font-size:15px;font-weight:600;cursor:pointer}
+.tagpick{display:flex;flex-wrap:wrap;gap:7px;padding:4px 0 6px}
+.inline{display:flex;gap:8px;padding:4px 0 2px}
+.inline input{flex:1}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:54px;padding:6px 14px;font-size:15px;font-weight:600;cursor:pointer}
 .switch input{position:absolute;opacity:0;pointer-events:none}
-.sw{position:relative;flex:none;width:50px;height:30px;border-radius:999px;background:var(--card2);border:1px solid var(--line);transition:background .25s}
-.sw:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:transform .3s var(--spring)}
-.switch input:checked+.sw{background:linear-gradient(120deg,#f59e0b,#fbbf24);border-color:transparent}
-.switch input:checked+.sw:after{transform:translateX(20px)}
-.switch input:focus-visible+.sw{outline:2px solid var(--accent2);outline-offset:2px}
-.bigsave{width:100%;margin-top:18px}
-.seg{display:flex;padding:4px;border-radius:15px;background:var(--card2);border:1px solid var(--line)}
-.seg button{flex:1;min-height:40px;border:0;border-radius:11px;background:none;font-size:13.5px;font-weight:650;color:var(--muted);transition:background .25s,color .25s}
-.seg button.on{color:#fff;background:linear-gradient(120deg,#7c3aed,#6366f1)}
-.statuscard{display:flex;align-items:center;gap:14px;padding:16px 4px 10px}
-.statuscard .orb{width:16px;height:16px}
-.statuscard b{display:block;font-size:16px}
-.statuscard span{display:block;margin-top:2px;font-size:13px;color:var(--muted)}
-.stack{display:flex;flex-direction:column;gap:9px;padding:6px 0 4px}
-.row2{display:flex;gap:9px}
+.sw{position:relative;flex:none;width:46px;height:28px;border-radius:999px;background:var(--surface2);border:1px solid var(--line2);transition:background .2s}
+.sw:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s var(--ease)}
+.switch input:checked+.sw{background:var(--accent);border-color:transparent}
+.switch input:checked+.sw:after{transform:translateX(18px)}
+.switch input:focus-visible+.sw{outline:2px solid var(--accent);outline-offset:2px}
+.bigsave{width:100%;margin-top:16px}
+.seg{display:flex;padding:3px;border-radius:12px;background:var(--surface2);border:1px solid var(--line)}
+.seg button{flex:1;min-height:38px;border:0;border-radius:9px;background:none;font-size:13.5px;font-weight:600;color:var(--muted)}
+.seg button.on{color:var(--text);background:var(--surface);box-shadow:0 0 0 1px var(--line2)}
+.statusline{display:flex;align-items:center;gap:12px;padding:6px 2px 8px}
+.statusline .dot{width:10px;height:10px;border-radius:50%;flex:none;background:var(--faint)}
+[data-sync="idle"] .statusline .dot{background:var(--ok)}
+[data-sync="syncing"] .statusline .dot{background:var(--accent)}
+[data-sync="error"] .statusline .dot{background:var(--danger)}
+[data-sync="off"] .statusline .dot{background:transparent;box-shadow:inset 0 0 0 1.5px var(--faint)}
+.statusline b{display:block;font-size:15.5px}
+.statusline span{display:block;margin-top:1px;font-size:13px;color:var(--muted)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;padding:2px 2px 10px;font-size:13.5px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+.stack{display:flex;flex-direction:column;gap:8px;padding:4px 0}
+.row2{display:flex;gap:8px}
 .row2 .btn{flex:1}
-.note{margin:8px 2px 4px;font-size:12.5px;line-height:1.5;color:var(--muted)}
-.note code{font-size:12px;padding:1px 5px;border-radius:6px;background:var(--card2)}
-details.guide summary{list-style:none;display:flex;align-items:center;justify-content:space-between;min-height:48px;font-size:15px;font-weight:650;cursor:pointer}
-details.guide summary::-webkit-details-marker{display:none}
-details.guide summary:after{content:"+";font-size:22px;color:var(--muted);transition:transform .3s var(--spring)}
-details.guide[open] summary:after{transform:rotate(45deg)}
-details.guide ol{margin:0 0 8px;padding-left:20px;font-size:13.5px;line-height:1.6;color:var(--muted)}
-details.guide li{margin:5px 0}
-details.guide b{color:var(--text)}
-.tagrow{display:flex;align-items:center;gap:8px;padding:6px 0}
-.tagrow .chip{flex:1;min-width:0;justify-content:flex-start}
+.note{margin:6px 2px 4px;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.log{list-style:none;margin:0;padding:0}
+.log li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.log li:first-child{border-top:0}
+.log .lk{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;margin-top:1px}
+.log .lk .i{width:14px;height:14px}
+.log .lk.added{color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+.log .lk.edited,.log .lk.tagged,.log .lk.formatted{color:var(--sms);background:var(--sms-bg)}
+.log .lk.deleted{color:var(--danger);background:var(--danger-bg)}
+.log .lk.merged,.log .lk.synced{color:var(--accent);background:var(--accent-bg)}
+.log .lt{flex:1;min-width:0;font-size:14px}
+.log .lt small{display:block;font-size:12px;color:var(--muted)}
+.tagrow{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--line)}
+.tagrow:first-child{border-top:0}
+.tagrow .tn{flex:1;min-width:0;font-size:14.5px;font-weight:600}
+.tagrow .tn small{margin-left:6px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
 .tagrow input{flex:1;min-width:0}
-.tagrow .mini{flex:none;width:38px;height:38px;border:0;border-radius:12px;background:var(--card2);display:grid;place-items:center;color:var(--muted)}
-.tagrow .mini .i{width:16px;height:16px}
-
-/* SOS */
-.sos{border-color:rgba(251,113,133,.28);background:linear-gradient(160deg,rgba(251,113,133,.08),transparent 60%),var(--card)}
+.tagrow .mi{width:34px;height:34px}
+.tagrow .mi.armed{color:var(--danger);background:var(--danger-bg)}
+.tcheck{display:flex;align-items:center;gap:12px;width:100%;min-height:50px;padding:6px 2px;border:0;border-top:1px solid var(--line);background:none;text-align:left;font-size:15px;font-weight:600}
+.tcheck:first-child{border-top:0}
+.tcheck .bx{position:relative;flex:none;width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line2);display:grid;place-items:center;color:#fff}
+.tcheck .bx svg{position:absolute;width:14px;height:14px;opacity:0}
+.tcheck[data-state="all"] .bx{background:var(--accent);border-color:var(--accent)}
+.tcheck[data-state="all"] .bx svg.ck{opacity:1}
+.tcheck[data-state="some"] .bx{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.tcheck[data-state="some"] .bx svg.dash{opacity:1}
+.tcheck .tc{flex:1}
+.tcheck small{font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.dgroup{margin-top:12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.dgroup .dh{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 6px 6px 12px;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+.dgroup .dr{display:flex;align-items:center;gap:12px;padding:10px 8px 10px 12px;border-top:1px solid var(--line)}
+.dgroup .dh+.dr{border-top:0}
+.dgroup .dr .k{flex:1;min-width:0}
+.dgroup .dr b{display:block;font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dgroup .dr .k span{display:block;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dgroup .dr .mi{width:34px;height:34px}
+.dgroup .dr .mi.armed{color:var(--danger);background:var(--danger-bg)}
+.dgroup .df{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
+.dgroup .df .btn{flex:1}
+details.guide summary{list-style:none;display:flex;align-items:center;justify-content:space-between;min-height:46px;font-size:15px;font-weight:600;cursor:pointer}
+details.guide summary::-webkit-details-marker{display:none}
+details.guide summary:after{content:"+";font-size:20px;color:var(--muted)}
+details.guide[open] summary:after{content:"–"}
+details.guide ol{margin:0 0 8px;padding-left:20px;font-size:13.5px;line-height:1.6;color:var(--muted)}
+details.guide b{color:var(--text)}
+.sos{border-color:color-mix(in srgb,var(--danger) 30%,var(--line))}
 .sos .fhead{color:var(--danger)}
-.hold{position:relative;overflow:hidden;border:0;color:#fff;background:#7f1d2d;-webkit-user-select:none;user-select:none;touch-action:none}
-.hold:before{content:"";position:absolute;inset:0;width:calc(var(--p,0) * 100%);background:linear-gradient(90deg,#e11d48,#fb7185);transition:width .08s linear}
+.hold{position:relative;overflow:hidden;border:0;color:#fff;background:color-mix(in srgb,var(--danger) 45%,#000);-webkit-user-select:none;user-select:none;touch-action:none}
+.hold:before{content:"";position:absolute;inset:0;width:calc(var(--p,0) * 100%);background:var(--danger)}
 .hold>*{position:relative}
-.lockscr{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:24px;text-align:center;background:radial-gradient(circle at 50% 30%,rgba(225,29,72,.22),transparent 55%),var(--bg)}
+.lockscr{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:24px;text-align:center;background:var(--bg)}
 .lockscr[hidden]{display:none}
-.lockscr .shield{width:96px;height:96px;margin:0 auto;border-radius:30px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#e11d48,#7c3aed);box-shadow:0 20px 50px -16px rgba(225,29,72,.8);animation:rise .6s var(--out)}
-.lockscr .shield .i{width:44px;height:44px}
-.lockscr h2{margin:22px 0 8px;font-size:25px;letter-spacing:-.02em}
-.lockscr p{max-width:330px;margin:0 auto 20px;font-size:14px;line-height:1.55;color:var(--muted)}
+.lockscr .eic{width:72px;height:72px;margin:0 auto;border-radius:22px;display:grid;place-items:center;color:var(--danger);background:var(--danger-bg)}
+.lockscr .eic .i{width:32px;height:32px}
+.lockscr h2{margin:18px 0 8px;font-size:22px}
+.lockscr p{max-width:330px;margin:0 auto 18px;font-size:14px;line-height:1.55;color:var(--muted)}
 .lockscr form{display:flex;flex-direction:column;gap:10px;width:min(330px,100%);margin:0 auto}
-/* toast */
-.toast{position:fixed;z-index:60;left:50%;bottom:96px;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 28px);padding:11px 12px 11px 16px;border-radius:16px;font-size:13.5px;line-height:1.35;color:#eef0ff;background:rgba(24,28,46,.96);border:1px solid rgba(167,139,250,.28);box-shadow:0 18px 40px -16px rgba(0,0,0,.85);opacity:0;transform:translate(-50%,16px) scale(.97);pointer-events:none;transition:opacity .3s,transform .4s var(--spring)}
-.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
-html.layer-open .toast{bottom:calc(22px + env(safe-area-inset-bottom))!important}
-.toast button{flex:none;min-height:34px;padding:0 12px;border:0;border-radius:10px;background:rgba(167,139,250,.2);color:#d9d0ff;font-weight:700;font-size:13px}
-.toast button:empty{display:none}
-body[data-theme="light"] .toast{background:#1d2235}
 
-/* desktop gate */
-.gate{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 30% 20%,rgba(124,58,237,.3),transparent 50%),radial-gradient(circle at 75% 70%,rgba(34,211,238,.18),transparent 50%),#070910;color:#f3f4fb;text-align:center}
+/* toast */
+.toast{position:fixed;z-index:60;left:50%;bottom:96px;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 28px);padding:10px 10px 10px 16px;border-radius:13px;font-size:13.5px;line-height:1.35;color:#eef0f5;background:#1f2430;border:1px solid rgba(255,255,255,.08);box-shadow:0 12px 30px -14px rgba(0,0,0,.7);opacity:0;transform:translate(-50%,10px);pointer-events:none;transition:opacity .2s,transform .2s var(--ease)}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+html.layer-open .toast,body.selecting .toast{bottom:calc(84px + env(safe-area-inset-bottom))!important}
+.toast button{flex:none;min-height:32px;padding:0 12px;border:0;border-radius:9px;background:rgba(255,255,255,.1);color:#fff;font-weight:650;font-size:13px}
+.toast button:empty{display:none}
+
+.gate{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:24px;background:var(--bg);color:var(--text);text-align:center}
 .gate[hidden]{display:none}
-.gate h2{margin:22px 0 8px;font-size:30px;letter-spacing:-.03em}
-.gate p{max-width:420px;margin:0 auto;font-size:15px;line-height:1.55;color:#a6afc6}
-.gate .row2{justify-content:center;margin-top:24px;flex-wrap:wrap}
+.gate h2{margin:18px 0 8px;font-size:26px;letter-spacing:-.02em}
+.gate p{max-width:420px;margin:0 auto;font-size:15px;line-height:1.55;color:var(--muted)}
+.gate .row2{justify-content:center;margin-top:22px;flex-wrap:wrap}
 .gate .btn{flex:none}
-.gate code{display:inline-block;margin-top:14px;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.06);font-size:13px;color:#c4b5fd}
+.gate code{display:inline-block;margin-top:14px;padding:6px 10px;border-radius:9px;background:var(--surface2);font-size:13px}
 body.desk .app{width:430px}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style></head>
 <body data-theme="dark" data-sync="off">
 <script>try{document.body.dataset.theme=localStorage.getItem('orbit-theme')==='light'?'light':'dark'}catch(e){}</script>
-<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div><div class="grain" aria-hidden="true"></div>
 
 <main class="app" id="app" data-swipe-surface>
   <header class="titlebar">
-    <div class="tt"><h1>Contacts</h1><p class="meta" id="meta"><span class="mini-orb"></span><span id="metaText">Loading…</span></p></div>
-    <button class="ibtn" id="syncBtn" type="button" aria-label="Sync status"><span class="orb" id="orb"></span></button>
-    <button class="ibtn" id="menuBtn" type="button" aria-label="Sync and settings"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg></button>
+    <div class="tt"><h1>Contacts</h1><p class="meta" id="metaText">Loading…</p></div>
+    <button class="ibtn" id="azBtn" type="button" aria-label="Jump to letter" aria-expanded="false"><span class="az">A–Z</span></button>
+    <button class="ibtn" id="selBtn" type="button" aria-label="Select contacts"><svg class="i" viewBox="0 0 24 24"><rect x="3.5" y="4" width="6" height="6" rx="1.5"/><path d="M5 7l1 1 2-2"/><rect x="3.5" y="14" width="6" height="6" rx="1.5"/><path d="M13 7h7.5M13 17h7.5"/></svg></button>
+    <button class="ibtn" id="menuBtn" type="button" aria-label="Settings and sync status"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg><span class="sdot"></span></button>
   </header>
   <div class="sentinel" id="sentinel"></div>
   <div class="bar" id="bar">
     <label class="search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
-      <input id="q" type="search" placeholder="Search name, number, tag, note…" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search" aria-label="Search contacts">
+      <input id="q" type="search" placeholder="Search name, number, tag or note" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search" aria-label="Search contacts">
       <button class="clearq" id="clearQ" type="button" aria-label="Clear search"><svg class="i" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg></button>
     </label>
     <div class="chips" id="chips" role="toolbar" aria-label="Filter by tag" data-noswipe></div>
   </div>
   <section id="list" aria-live="polite"></section>
 </main>
+<div class="azpop" id="azPop" role="menu" aria-label="Jump to letter" hidden></div>
 
-<nav class="scrub" id="scrub" aria-hidden="true" data-noswipe hidden></nav>
-<div class="bubble" id="bubble" aria-hidden="true"><span></span></div>
+<div class="selbar" id="selbar" hidden>
+  <button type="button" data-sb="close" aria-label="Cancel selection"><svg class="i" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>Cancel</button>
+  <b id="selCount">0 selected</b>
+  <button type="button" data-sb="all"><svg class="i" viewBox="0 0 24 24"><path d="M4 12.5l3.5 3.5L14 9.5M11 16l1 1 8-8.5"/></svg>All</button>
+  <button type="button" data-sb="tags"><svg class="i" viewBox="0 0 24 24"><path d="M3.5 12V4.5a1 1 0 0 1 1-1H12l8.5 8.5-8.5 8.5z"/><circle cx="8" cy="8" r="1.3"/></svg>Tags</button>
+  <button type="button" data-sb="star"><svg class="i" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/></svg>Star</button>
+  <button type="button" data-sb="del" class="del"><svg class="i" viewBox="0 0 24 24"><path d="M4.5 7h15M10 11v6M14 11v6M6 7l1 12.5a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5L18 7M9 7V4.5h6V7"/></svg><span>Delete</span></button>
+</div>
 
 <nav class="odock" id="odock" data-active="contacts" aria-label="Orbit sections">
   <span class="odock-glow" aria-hidden="true"></span>
   <a class="odock-tab" data-tab="bookmarks" href="./" aria-label="Bookmarks"><svg viewBox="0 0 24 24"><path d="M7 3.5h10a1 1 0 0 1 1 1V20l-6-3.6L6 20V4.5a1 1 0 0 1 1-1z"/></svg></a>
-  <button class="fab" id="addBtn" type="button" aria-label="Add contact"><svg viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round"><path d="M12 5v14M5 12h14"/></svg></button>
-  <a class="odock-tab" data-tab="contacts" href="./contacts.html" aria-label="Contacts" aria-current="page"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.8 20c.8-3.6 3.7-5.8 7.2-5.8s6.4 2.2 7.2 5.8"/></svg></a>
+  <button class="fab" id="addBtn" type="button" aria-label="New contact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+  <a class="odock-tab" data-tab="contacts" href="./contacts.html" aria-label="Contacts" aria-current="page"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20.5c.6-4 3.9-6.5 8-6.5s7.4 2.5 8 6.5"/></svg></a>
 </nav>
 
-<section class="layer detail" id="detail" role="dialog" aria-modal="true" aria-label="Contact" hidden></section>
+<section class="layer" id="detail" role="dialog" aria-modal="true" aria-label="Contact" hidden></section>
 <section class="layer" id="editor" role="dialog" aria-modal="true" aria-label="Edit contact" hidden></section>
-<section class="layer" id="settings" role="dialog" aria-modal="true" aria-label="Sync and settings" hidden></section>
+<section class="layer" id="settings" role="dialog" aria-modal="true" aria-label="Settings and sync status" hidden></section>
+<section class="layer" id="tagsheet" role="dialog" aria-modal="true" aria-label="Tags for selected contacts" hidden></section>
+<section class="layer" id="dups" role="dialog" aria-modal="true" aria-label="Possible duplicates" hidden></section>
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button type="button" id="toastAct"></button></div>
-<div class="lockscr" id="lockscr" hidden><div><div class="shield"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></div>
+<div class="lockscr" id="lockscr" hidden><div><div class="eic"><svg class="i" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></div>
 <h2>Orbit Contacts is locked</h2><p id="lockMsg">The SOS kill switch was used. Contacts were wiped from this phone. They are still safe in your Google Sheet.</p>
 <form id="unlockForm" autocomplete="off"><input class="fin" id="unlockPass" type="password" placeholder="SOS passphrase" autocomplete="off" aria-label="SOS passphrase"><button class="btn primary" type="submit">Unlock this phone</button></form></div></div>
 <input type="file" id="vcfFile" accept=".vcf,text/vcard,text/x-vcard" hidden>
 
 <div class="gate" id="gate" hidden>
   <div>
-    <div class="orbit-art" aria-hidden="true"><div class="path p2"><b>AK</b></div><div class="path"><b>RS</b><b>MJ</b><b>PL</b></div><div class="core"></div></div>
+    <div class="empty" style="margin:0"><div class="eic"><svg class="i" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></svg></div></div>
     <h2>Orbit Contacts lives on your phone</h2>
-    <p>It is built for your thumb, not a mouse. Open this address on your phone, then add it to your home screen.</p>
+    <p>Open this address on your phone, then add it to your home screen.</p>
     <code id="gateUrl"></code>
     <div class="row2"><button class="btn" id="gateScript" type="button">Copy the sync script</button><button class="btn primary" id="gatePreview" type="button">Preview anyway</button></div>
   </div>
@@ -399,38 +404,39 @@ const sv=p=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
 const I={
   phone:sv('<path d="M6.6 3.8l2.3-.4 1.6 4-2 1.5a11 11 0 0 0 6.6 6.6l1.5-2 4 1.6-.4 2.3a2 2 0 0 1-2.1 1.6C10.6 18.5 5.5 13.4 5 6a2 2 0 0 1 1.6-2.2z"/>'),
   msg:sv('<path d="M5 5h14a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 19 17H10l-4.5 3.5V17H5a1.5 1.5 0 0 1-1.5-1.5v-9A1.5 1.5 0 0 1 5 5z"/>'),
-  wa:sv('<path d="M4.5 19.5l1.2-3.6A8 8 0 1 1 8.4 18.6z"/><path d="M9.3 8.6c.2-.5.5-.6.8-.6h.5l.9 2.1-.6.8a5.2 5.2 0 0 0 2.4 2.4l.8-.6 2.1.9v.5c0 .4-.2.7-.6.9-.7.3-1.6.3-2.8-.3a8 8 0 0 1-3.4-3.4c-.5-1.1-.5-2 -.1-2.7z"/>'),
+  wa:sv('<path d="M4.5 19.5l1.2-3.6A8 8 0 1 1 8.4 18.6z"/><path d="M9.3 8.6c.2-.5.5-.6.8-.6h.5l.9 2.1-.6.8a5.2 5.2 0 0 0 2.4 2.4l.8-.6 2.1.9v.5c0 .4-.2.7-.6.9-.7.3-1.6.3-2.8-.3a8 8 0 0 1-3.4-3.4c-.5-1.1-.5-2-.1-2.7z"/>'),
   mail:sv('<rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 7l8 6 8-6"/>'),
-  star:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/></svg>',
-  starO:sv('<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/>'),
+  starF:'<svg class="star" viewBox="0 0 24 24" aria-label="Starred"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/></svg>',
+  star:sv('<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/>'),
   edit:sv('<path d="M4 20h4L19 9a2.1 2.1 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),
-  back:sv('<path d="M6 9l6 6 6-6"/>'),
+  back:sv('<path d="M15 6l-6 6 6 6"/>'),
   close:sv('<path d="M7 7l10 10M17 7L7 17"/>'),
   plus:sv('<path d="M12 5v14M5 12h14"/>'),
   copy:sv('<rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/>'),
-  pin:sv('<path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>'),
-  cake:sv('<path d="M4.5 20.5h15v-7a2 2 0 0 0-2-2h-11a2 2 0 0 0-2 2z"/><path d="M4.5 15.5c2.5 1.5 5 1.5 7.5 0s5-1.5 7.5 0M12 11.5V8M12 5.5v-1"/>'),
   note:sv('<path d="M6 3.5h8.5L19 8v12a.5.5 0 0 1-.5.5h-12A.5.5 0 0 1 6 20z"/><path d="M14 3.5V8.5h5M9 13h6M9 16.5h4"/>'),
   share:sv('<path d="M12 15V4M8 8l4-4 4 4"/><path d="M5 12v6.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V12"/>'),
   trash:sv('<path d="M4.5 7h15M10 11v6M14 11v6M6 7l1 12.5a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5L18 7M9 7V4.5h6V7"/>'),
   tag:sv('<path d="M3.5 12V4.5a1 1 0 0 1 1-1H12l8.5 8.5-8.5 8.5z"/><circle cx="8" cy="8" r="1.3"/>'),
-  user:sv('<circle cx="12" cy="8.2" r="3.7"/><path d="M4.8 20c.8-3.6 3.7-5.8 7.2-5.8s6.4 2.2 7.2 5.8"/>'),
+  user:sv('<circle cx="12" cy="8" r="4"/><path d="M4 20.5c.6-4 3.9-6.5 8-6.5s7.4 2.5 8 6.5"/>'),
+  users:sv('<circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 19.5c.5-3.3 3.2-5.3 6.5-5.3s6 2 6.5 5.3M16 5.2a3.5 3.5 0 0 1 0 6.6M18.5 14.6c1.7.8 2.8 2.5 3 4.9"/>'),
   sync:sv('<path d="M20 11a8 8 0 0 0-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.5 4.5L20 16M20 20v-4h-4"/>'),
   phoneBook:sv('<rect x="5" y="2.5" width="14" height="19" rx="3"/><path d="M10 18.5h4"/>'),
   up:sv('<path d="M12 16V4M7.5 8.5L12 4l4.5 4.5M4.5 15v3.5A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5V15"/>'),
   down:sv('<path d="M12 4v12M7.5 11.5L12 16l4.5-4.5M4.5 15v3.5A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5V15"/>'),
   link:sv('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
   check:sv('<path d="M5 12.5l4.5 4.5L19 7.5"/>'),
-  building:sv('<path d="M4.5 20.5V5a1.5 1.5 0 0 1 1.5-1.5h7A1.5 1.5 0 0 1 14.5 5v15.5M14.5 9.5H18a1.5 1.5 0 0 1 1.5 1.5v9.5M3 20.5h18M8 7.5h3M8 11h3M8 14.5h3"/>')
+  merge:sv('<path d="M7 4v5a5 5 0 0 0 5 5h5M7 20v-5M14 11l3 3-3 3"/>'),
+  hash:sv('<path d="M5 9h14M5 15h14M10 4L8 20M16 4l-2 16"/>'),
+  shield:sv('<path d="M12 3l7.5 3v5.5c0 4.5-3.2 8.3-7.5 9.5-4.3-1.2-7.5-5-7.5-9.5V6z"/>'),
+  swap:sv('<path d="M7 7h12l-3-3M17 17H5l3 3"/>')
 };
+const CK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 
 /* ---------- palettes ---------- */
-const PAL=[['#8b5cf6','#22d3ee'],['#f472b6','#8b5cf6'],['#10b981','#06b6d4'],['#f59e0b','#ec4899'],['#3b82f6','#a78bfa'],['#f97316','#e11d48'],['#14b8a6','#84cc16'],['#d946ef','#6366f1'],['#0ea5e9','#10b981'],['#ef4444','#f59e0b']];
-const TAGC=['#a78bfa','#5eead4','#f9a8d4','#fcd34d','#7dd3fc','#bef264','#fdba74','#fda4af','#c4b5fd','#6ee7b7'];
+const PAL=[['#7c6cf0','#4f8fe0'],['#d46aa8','#8a6cf0'],['#2fa98f','#3f8fd8'],['#d8963f','#d0607a'],['#4f7fe0','#8a7cf0'],['#d97a4a','#c9505f'],['#3aa08a','#7aa84a'],['#a65fd6','#5d6be0'],['#3d9bd6','#3aa88a'],['#c9606a','#d8963f']];
 const hash=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0};
 const pal=c=>PAL[hash(c.id||'x')%PAL.length];
-const tagColor=t=>TAGC[hash(norm(t))%TAGC.length];
-const SUGGESTED=['Family','Friends','Work','Client','Doctor','Emergency','Neighbour','Services'];
+const DEFAULT_TAGS=['BT','DB','E31','South Point'];
 
 /* ---------- storage ---------- */
 let db;
@@ -445,11 +451,47 @@ const idb={
   set:(k,v)=>new Promise((res,rej)=>{const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})
 };
 
+/* ---------- settings state ---------- */
+let cfg={url:'',token:'',cursor:0,lastSync:0,lastFull:0,cc:'',locked:false};
+function defaultCC(){const l=(navigator.language||'').toLowerCase();if(l.endsWith('-in')||l.startsWith('hi'))return '91';if(l.endsWith('-gb'))return '44';if(l.endsWith('-us')||l.endsWith('-ca'))return '1';if(l.endsWith('-au'))return '61';if(l.endsWith('-ae'))return '971';return ''}
+const myCC=()=>cfg.cc||defaultCC();
+const deviceName=()=>{const u=navigator.userAgent;return(/iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Android/.test(u)?((u.match(/Android[^;]*;\s*([^;)]+)/)||[])[1]||'Android phone'):'Browser').trim().slice(0,60)+' · joined '+new Date().toLocaleDateString('en-GB')};
+
+/* ---------- phone numbers: one international format ---------- */
+const CC2=new Set(['20','27','30','31','32','33','34','36','39','40','41','43','44','45','46','47','48','49','51','52','53','54','55','56','57','58','60','61','62','63','64','65','66','81','82','84','86','90','91','92','93','94','95','98']);
+function splitCC(d){if(d[0]==='1'||d[0]==='7')return[d[0],d.slice(1)];if(CC2.has(d.slice(0,2)))return[d.slice(0,2),d.slice(2)];return[d.slice(0,3),d.slice(3)]}
+function groupNat(cc,n){
+  if(cc==='91'&&n.length===10)return n.slice(0,5)+' '+n.slice(5);
+  if(cc==='44'&&n.length===10){if(n.startsWith('20'))return '20 '+n.slice(2,6)+' '+n.slice(6);return n.slice(0,4)+' '+n.slice(4)}
+  if(cc==='1'&&n.length===10)return n.slice(0,3)+' '+n.slice(3,6)+' '+n.slice(6);
+  if(cc==='971'&&n.length===9)return n.slice(0,2)+' '+n.slice(2,5)+' '+n.slice(5);
+  if(cc==='61'&&n.length===9)return n.slice(0,3)+' '+n.slice(3,6)+' '+n.slice(6);
+  const g=[];let i=0;while(n.length-i>4){g.push(n.slice(i,i+3));i+=3}g.push(n.slice(i));return g.join(' ');
+}
+// Returns "+CC national-grouped". Short codes, extensions and anything with letters stay exactly as typed.
+function fmtPhone(raw){
+  const v=String(raw||'').trim().replace(/^tel:/i,'');
+  if(!v)return '';
+  if(/[a-z,;#*]/i.test(v))return v;
+  let d=v.replace(/[^\d+]/g,'');
+  let plus=d.startsWith('+');d=d.replace(/\+/g,'');
+  if(!plus&&d.startsWith('00')){plus=true;d=d.slice(2)}
+  if(!plus){
+    const cc=myCC();
+    if(d.length<7||!cc)return v;
+    if(!(!d.startsWith('0')&&d.startsWith(cc)&&d.length>=11&&d.length-cc.length>=9))d=cc+d.replace(/^0+/,'');
+  }
+  if(d.length<8||d.length>15)return v;
+  const[c,n]=splitCC(d);
+  return '+'+c+' '+groupNat(c,n);
+}
+const phoneKey=v=>{const d=digits(v);return d.length>=7?d.slice(-10):''};
+
 /* ---------- model ---------- */
 const str=(v,n)=>String(v??'').trim().slice(0,n);
-function vals(a,def){if(!Array.isArray(a))return[];const out=[];for(const x of a){const v=str(x&&typeof x==='object'?x.value:x,200);if(v)out.push({label:str(x&&x.label,40)||def,value:v})}return out.slice(0,20)}
-function tagList(a){const out=[],seen=new Set();for(const t of Array.isArray(a)?a:String(a||'').split(',')){const v=str(t,40);if(v&&!seen.has(v.toLowerCase())){seen.add(v.toLowerCase());out.push(v)}}return out.slice(0,30)}
-function clean(c){const now=Date.now();return{id:str(c.id,80)||uid(),name:str(c.name,200),phones:vals(c.phones,'Mobile'),emails:vals(c.emails,'Personal'),tags:tagList(c.tags),notes:str(c.notes,5000),fav:c.fav===true||c.fav==='true'||c.fav===1,createdAt:Number(c.createdAt)||now,updatedAt:Number(c.updatedAt)||now,deleted:c.deleted===true||c.deleted==='true'||c.deleted===1,dirty:c.dirty===true}}
+function vals(a,def,isPhone,format){if(!Array.isArray(a))return[];const out=[],seen=new Set();for(const x of a){let v=str(x&&typeof x==='object'?x.value:x,200);if(!v)continue;if(isPhone&&format)v=fmtPhone(v);const k=isPhone?(phoneKey(v)||v):v.toLowerCase();if(seen.has(k))continue;seen.add(k);out.push({label:str(x&&x.label,40)||def,value:v})}return out.slice(0,20)}
+function tagList(a,max=30){const out=[],seen=new Set();for(const t of Array.isArray(a)?a:String(a||'').split(',')){const v=str(t,40);if(v&&!seen.has(v.toLowerCase())){seen.add(v.toLowerCase());out.push(v)}}return out.slice(0,max)}
+function clean(c,{format=false}={}){const now=Date.now();return{id:str(c.id,80)||uid(),name:str(c.name,200),phones:vals(c.phones,'Mobile',true,format),emails:vals(c.emails,'Personal',false,false),tags:tagList(c.tags),notes:str(c.notes,5000),fav:c.fav===true||c.fav==='true'||c.fav===1,createdAt:Number(c.createdAt)||now,updatedAt:Number(c.updatedAt)||now,deleted:c.deleted===true||c.deleted==='true'||c.deleted===1,dirty:c.dirty===true}}
 let all=new Map();
 const live=()=>{const o=[];for(const c of all.values())if(!c.deleted)o.push(c);return o};
 const disp=c=>c.name||c.phones[0]?.value||c.emails[0]?.value||'Unnamed';
@@ -457,14 +499,22 @@ function initials(c){const n=c.name;if(!n)return '';const w=n.split(/[^\p{L}\p{N
 function av(c,cls=''){const p=pal(c),ini=initials(c);return `<span class="av ${cls}" style="--a1:${p[0]};--a2:${p[1]}">${ini?esc(ini):I.user}</span>`}
 function indexOf(c){if(c._v===c.updatedAt)return;c._v=c.updatedAt;c._n=norm(c.name||disp(c));c._w=c._n.split(/[^\p{L}\p{N}]+/u).filter(Boolean);c._i=c._w.map(w=>w[0]).join('');c._d=c.phones.map(p=>digits(p.value)).join(' ');c._o=norm([...c.emails.map(e=>e.value),c.notes].join(' '));c._t=c.tags.map(norm)}
 const telHref=v=>String(v).replace(/[^\d+*#,;]/g,'');
-let cfg={url:'',token:'',cursor:0,lastSync:0,lastFull:0,cc:'',locked:false};
-const deviceName=()=>{const u=navigator.userAgent;return(/iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Android/.test(u)?((u.match(/Android[^;]*;\s*([^;)]+)/)||[])[1]||'Android phone'):'Browser').trim().slice(0,60)+' · joined '+new Date().toLocaleDateString('en-GB')};
-function defaultCC(){const l=(navigator.language||'').toLowerCase();if(l.endsWith('-in')||l.startsWith('hi'))return '91';if(l.endsWith('-gb'))return '44';if(l.endsWith('-us')||l.endsWith('-ca'))return '1';if(l.endsWith('-au'))return '61';if(l.endsWith('-ae'))return '971';return ''}
-function waNumber(v){let d=digits(v);if(String(v).trim().startsWith('+'))return d;if(d.startsWith('00'))return d.slice(2);const cc=cfg.cc||defaultCC();d=d.replace(/^0+/,'');if(cc&&!d.startsWith(cc)||cc&&d.length<=10)return cc+d;return d}
+function waNumber(v){const f=fmtPhone(v);const d=digits(f);if(f.startsWith('+'))return d;const cc=myCC();return cc&&!d.startsWith(cc)?cc+d.replace(/^0+/,''):d}
+const contactText=c=>[disp(c),...c.phones.map(p=>`${p.label}: ${p.value}`),...c.emails.map(e=>e.value)].filter(Boolean).join('\n');
+
+/* ---------- tag library (synced through the Sheet) ---------- */
+let tagLib={list:DEFAULT_TAGS.slice(),updatedAt:1};
+function libTags(){const out=[],seen=new Set();const add=t=>{const k=t.toLowerCase();if(!seen.has(k)){seen.add(k);out.push(t)}};for(const t of tagLib.list)add(t);for(const c of live())for(const t of c.tags)add(t);return out}
+function tagCounts(cs){const m=new Map();for(const t of libTags())m.set(t.toLowerCase(),{name:t,n:0});for(const c of cs)for(const t of c.tags){const e=m.get(t.toLowerCase());if(e)e.n++}return[...m.values()]}
+async function setLib(list){tagLib={list:tagList(list,200),updatedAt:Date.now()};await idb.set('taglib',tagLib);queueSync(500)}
+
+/* ---------- recent changes ---------- */
+let changeLog=[];
+async function logAdd(k,text,src='here'){changeLog.unshift({t:Date.now(),k,text,src});changeLog=changeLog.slice(0,200);try{await idb.set('log',changeLog)}catch{}}
 
 /* ---------- search ---------- */
 function fuzzy(h,n){let i=0,first=-1,last=-1;for(let j=0;j<h.length&&i<n.length;j++)if(h[j]===n[i]){if(first<0)first=j;last=j;i++}return i===n.length&&(last-first)<=n.length*2.6}
-function tokenize(q){return norm(q).split(/\s+/).filter(Boolean)}
+const tokenize=q=>norm(q).split(/\s+/).filter(Boolean);
 function score(c,tok){
   if(tok[0]==='#'){const t=tok.slice(1);return !t?1:c._t.some(x=>x.startsWith(t))?60:0}
   let s=0;
@@ -500,85 +550,105 @@ function context(c,toks){
   return c.phones[0]?.value||c.emails[0]?.value||'';
 }
 
-/* ---------- list rendering ---------- */
-let q='',activeTags=new Set(),favOnly=false,firstPaint=true,lastResults=[];
+/* ---------- list ---------- */
+let q='',activeTags=new Set(),starOnly=false,firstPaint=true,lastResults=[];
+let selecting=false;const selected=new Set();
 const list=$('#list');
-function tagCounts(cs){const m=new Map();for(const c of cs)for(const t of c.tags){const k=t.toLowerCase();const e=m.get(k);if(e)e.n++;else m.set(k,{name:t,n:1})}return[...m.values()].sort((a,b)=>b.n-a.n||collator.compare(a.name,b.name))}
 function renderChips(cs){
-  const tags=tagCounts(cs),favN=cs.filter(c=>c.fav).length;
+  const tags=tagCounts(cs),starN=cs.filter(c=>c.fav).length;
   for(const t of [...activeTags])if(!tags.some(x=>x.name.toLowerCase()===t))activeTags.delete(t);
-  if(favOnly&&!favN)favOnly=false;
-  const none=!favOnly&&!activeTags.size;
-  let h=`<button class="chip ${none?'on':''}" data-chip="all" style="--c:#a78bfa">All <small>${cs.length}</small></button>`;
-  if(favN)h+=`<button class="chip ${favOnly?'on':''}" data-chip="fav" style="--c:#fbbf24"><svg viewBox="0 0 24 24" style="fill:#fbbf24"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/></svg>Favourites <small>${favN}</small></button>`;
-  for(const t of tags)h+=`<button class="chip ${activeTags.has(t.name.toLowerCase())?'on':''}" data-chip="tag" data-tag="${esc(t.name.toLowerCase())}" style="--c:${tagColor(t.name)}"><i></i>${esc(t.name)} <small>${t.n}</small></button>`;
+  if(starOnly&&!starN)starOnly=false;
+  const none=!starOnly&&!activeTags.size;
+  let h=`<button class="chip ${none?'on':''}" data-chip="all">All <small>${cs.length}</small></button>`;
+  if(starN)h+=`<button class="chip ${starOnly?'on':''}" data-chip="star"><svg viewBox="0 0 24 24" style="fill:var(--warn)"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/></svg>Starred <small>${starN}</small></button>`;
+  for(const t of tags)h+=`<button class="chip ${activeTags.has(t.name.toLowerCase())?'on':''}" data-chip="tag" data-tag="${esc(t.name.toLowerCase())}">${esc(t.name)} <small>${t.n}</small></button>`;
   $('#chips').innerHTML=h;
   $('#chips').hidden=!cs.length;
 }
 function rowHTML(c,toks,d){
   const name=disp(c),sub=toks.length?context(c,toks):(c.phones[0]?.value||c.emails[0]?.value||'');
-  const dots=c.tags.slice(0,4).map(t=>`<i style="--c:${tagColor(t)}"></i>`).join('');
-  const tel=c.phones[0]?.value;
-  return `<div class="row${d!==undefined?' rise':''}" ${d!==undefined?`style="--d:${d}"`:''} data-id="${esc(c.id)}" role="button" tabindex="0">${av(c)}<div class="rt"><div class="rn">${hl(name,toks)}${c.fav?I.star:''}</div>${sub||dots?`<div class="rs">${dots?`<span class="dots">${dots}</span>`:''}<span>${esc(sub)}</span></div>`:''}</div>${tel?`<a class="qcall" href="tel:${esc(telHref(tel))}" aria-label="Call ${esc(name)}">${I.phone}</a>`:''}</div>`;
+  const tel=c.phones[0]?.value,tags=c.tags.slice(0,3).map(t=>`<span class="tg">${esc(t)}</span>`).join('');
+  const off=tel?'':' off',th=tel?esc(telHref(tel)):'';
+  return `<div class="row${d!==undefined?' rise':''}${selected.has(c.id)?' selected':''}" ${d!==undefined?`style="--d:${d}"`:''} data-id="${esc(c.id)}" role="button" tabindex="0">`+
+    `${av(c)}<span class="chk" aria-hidden="true">${CK}</span>`+
+    `<div class="rn">${hl(name,toks)}${c.fav?I.starF:''}</div>`+
+    `<div class="rq"><button class="mi" data-r="edit" aria-label="Edit ${esc(name)}">${I.edit}</button><button class="mi" data-r="copy" aria-label="Copy ${esc(name)}">${I.copy}</button></div>`+
+    `<div class="rs"><span class="num">${esc(sub)}</span>${tags}</div>`+
+    `<div class="ra"><a class="ic sms${off}" href="${tel?'sms:'+th:'#'}" aria-label="Message ${esc(name)}">${I.msg}</a><a class="ic wa${off}" href="${tel?'https://wa.me/'+esc(waNumber(tel)):'#'}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp ${esc(name)}">${I.wa}</a><a class="ic call${off}" href="${tel?'tel:'+th:'#'}" aria-label="Call ${esc(name)}">${I.phone}</a></div>`+
+  `</div>`;
 }
 const letterOf=c=>{const ch=(norm(disp(c)).match(/\p{L}/u)||[''])[0].toUpperCase();return /^[A-Z]$/.test(ch)?ch:'#'};
+let groupLetters=[];
 function render(){
   const cs=live();for(const c of cs)indexOf(c);
   renderChips(cs);
   const toks=tokenize(q);
   let res=cs;
-  if(favOnly||activeTags.size)res=res.filter(c=>(favOnly&&c.fav)||c.tags.some(t=>activeTags.has(t.toLowerCase())));
+  if(starOnly||activeTags.size)res=res.filter(c=>(starOnly&&c.fav)||c.tags.some(t=>activeTags.has(t.toLowerCase())));
   let h='';
-  const anim=firstPaint&&!reduce;let d=0;const A=()=>anim&&d<16?d++:undefined;
+  const anim=firstPaint&&!reduce;let d=0;const A=()=>anim&&d<14?d++:undefined;
+  groupLetters=[];
   if(toks.length){
     const scored=[];for(const c of res){let s=0,ok=true;for(const t of toks){const v=score(c,t);if(!v){ok=false;break}s+=v}if(ok)scored.push([s+(c.fav?3:0),c])}
     scored.sort((a,b)=>b[0]-a[0]||collator.compare(disp(a[1]),disp(b[1])));
     res=scored.map(x=>x[1]);
-    if(res.length)h=`<div class="section-label">${res.length} ${res.length===1?'match':'matches'}</div><div class="gcard">${res.slice(0,300).map(c=>rowHTML(c,toks,A())).join('')}</div>`;
+    if(res.length)h=`<div class="section-label">${res.length} ${res.length===1?'MATCH':'MATCHES'}</div><div class="gcard">${res.slice(0,300).map(c=>rowHTML(c,toks,A())).join('')}</div>`;
   }else{
     res=[...res].sort((a,b)=>collator.compare(disp(a),disp(b)));
-    const favs=cs.filter(c=>c.fav).sort((a,b)=>collator.compare(disp(a),disp(b)));
-    if(!favOnly&&!activeTags.size&&favs.length)h+=`<div class="favs" data-noswipe>${favs.map(c=>`<button class="fav" data-id="${esc(c.id)}"><span class="ring">${av(c)}</span><span>${esc((c.name||disp(c)).split(' ')[0])}</span></button>`).join('')}</div>`;
+    const starred=res.filter(c=>c.fav);
+    if(starred.length&&!starOnly){h+=`<div class="group" data-letter="★"><div class="gl">★ STARRED</div><div class="gcard">${starred.map(c=>rowHTML(c,[],A())).join('')}</div></div>`;groupLetters.push('★')}
     const groups=new Map();for(const c of res){const L=letterOf(c);if(!groups.has(L))groups.set(L,[]);groups.get(L).push(c)}
     const keys=[...groups.keys()].sort((a,b)=>a==='#'?1:b==='#'?-1:a.localeCompare(b));
-    for(const L of keys)h+=`<div class="group" data-letter="${L}"><div class="gl">${L}</div><div class="gcard">${groups.get(L).map(c=>rowHTML(c,[],A())).join('')}</div></div>`;
+    for(const L of keys){h+=`<div class="group" data-letter="${L}"><div class="gl">${L}</div><div class="gcard">${groups.get(L).map(c=>rowHTML(c,[],A())).join('')}</div></div>`;groupLetters.push(L)}
   }
   lastResults=res;
   if(!res.length)h=emptyHTML(cs.length,toks.length>0);
   list.innerHTML=h;
   firstPaint=false;
-  renderScrub(toks.length?[]:res);
-  updateMeta();
+  $('#azBtn').hidden=toks.length>0||res.length<2;
+  updateMeta();updateSelbar();
 }
 function emptyHTML(total,searching){
-  if(searching){const isNum=/^[\d\s+()\-.]{3,}$/.test(q.trim());return `<div class="empty"><h2>No one matches “${esc(q.trim())}”</h2><p>Try fewer letters, a number fragment, or a tag such as <b>#work</b>.</p><div class="actions"><button class="btn primary" data-act="new-from-q">${I.plus}Add “${esc(q.trim().slice(0,30))}” as ${isNum?'a number':'a contact'}</button></div></div>`}
-  if(total)return `<div class="empty"><h2>Nobody here yet</h2><p>No contacts carry the selected tags.</p><div class="actions"><button class="btn" data-act="clear-filters">Show everyone</button></div></div>`;
+  if(searching){const isNum=/^[\d\s+()\-.]{3,}$/.test(q.trim());return `<div class="empty"><div class="eic">${sv('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>')}</div><h2>No one matches “${esc(q.trim())}”</h2><p>Try fewer letters, part of a number, or a tag such as <b>#BT</b>.</p><div class="actions"><button class="btn primary" data-act="new-from-q">${I.plus}Add “${esc(q.trim().slice(0,30))}” as ${isNum?'a number':'a contact'}</button></div></div>`}
+  if(total)return `<div class="empty"><h2>No contacts with these tags</h2><div class="actions"><button class="btn" data-act="clear-filters">Show everyone</button></div></div>`;
   const picker='contacts' in navigator&&'ContactsManager' in window;
-  return `<div class="empty"><div class="orbit-art" aria-hidden="true"><div class="path p2"><b>AK</b></div><div class="path"><b>RS</b><b>MJ</b><b>PL</b></div><div class="core"></div></div><h2>Your people, in orbit</h2><p>Add someone, bring contacts across from your phone, or connect your Google Sheet to pull in everyone you have already saved.</p><div class="actions"><button class="btn primary" data-act="new">${I.plus}Add first contact</button>${picker?`<button class="btn" data-act="pick">${I.phoneBook}Import from this phone</button>`:''}<button class="btn" data-act="settings">${I.sync}${cfg.url?'Sync now':'Connect Google Sheet'}</button></div></div>`;
+  return `<div class="empty"><div class="eic">${I.users}</div><h2>No contacts yet</h2><p>Add someone, import from your phone, or connect your Google Sheet to bring in everyone you have saved.</p><div class="actions"><button class="btn primary" data-act="new">${I.plus}Add contact</button>${picker?`<button class="btn" data-act="pick">${I.phoneBook}Import from this phone</button>`:''}<button class="btn" data-act="vcf">${I.down}Import .vcf file</button><button class="btn" data-act="settings">${I.sync}${cfg.url?'Sync now':'Connect Google Sheet'}</button></div></div>`;
 }
-let renderQueued=false;const scheduleRender=()=>{if(renderQueued)return;renderQueued=true;raf(()=>{renderQueued=false;render();refreshDetail()})};
+let renderQueued=false;const scheduleRender=()=>{if(renderQueued)return;renderQueued=true;raf(()=>{renderQueued=false;render();refreshDetail();refreshOpenLayers()})};
 
 /* ---------- list interactions ---------- */
-list.addEventListener('click',e=>{
+let lpTimer=0,lpFired=false,lpX=0,lpY=0;
+list.addEventListener('pointerdown',e=>{const r=e.target.closest('.row');if(!r||e.target.closest('a,button'))return;lpFired=false;lpX=e.clientX;lpY=e.clientY;clearTimeout(lpTimer);lpTimer=setTimeout(()=>{lpFired=true;haptic(15);if(!selecting)startSelect();toggleSel(r.dataset.id)},460)});
+list.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-lpX)>9||Math.abs(e.clientY-lpY)>9)clearTimeout(lpTimer)});
+['pointerup','pointercancel','pointerleave'].forEach(ev=>list.addEventListener(ev,()=>clearTimeout(lpTimer)));
+list.addEventListener('contextmenu',e=>{if(e.target.closest('.row')&&!e.target.closest('a'))e.preventDefault()});
+list.addEventListener('click',async e=>{
+  if(lpFired){lpFired=false;e.preventDefault();return}
   const a=e.target.closest('[data-act]');if(a){act(a.dataset.act);return}
-  if(e.target.closest('.qcall')){haptic(10);return}
-  const r=e.target.closest('.row,.fav');if(r)openDetail(r.dataset.id,r.querySelector('.av'));
+  const r=e.target.closest('.row');if(!r)return;
+  const id=r.dataset.id,c=all.get(id);if(!c)return;
+  if(selecting){e.preventDefault();toggleSel(id);return}
+  const rb=e.target.closest('[data-r]');
+  if(rb){e.preventDefault();if(rb.dataset.r==='edit')openEditor(c);else{const ok=await copyText(contactText(c));toast(ok?`Copied ${disp(c)}`:'Could not copy');haptic(8)}return}
+  if(e.target.closest('a.ic')){haptic(8);return}
+  openDetail(id,r.querySelector('.av'));
 });
-list.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList.contains('row'))openDetail(e.target.dataset.id,e.target.querySelector('.av'))});
+list.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList.contains('row'))e.target.click()});
 function act(a){
   if(a==='new')openEditor();
   else if(a==='pick')pickFromPhone();
+  else if(a==='vcf')$('#vcfFile').click();
   else if(a==='settings')openSettings();
-  else if(a==='clear-filters'){activeTags.clear();favOnly=false;render()}
+  else if(a==='clear-filters'){activeTags.clear();starOnly=false;render()}
   else if(a==='new-from-q'){const t=q.trim();openEditor(null,/^[\d\s+()\-.]{3,}$/.test(t)?{phones:[{label:'Mobile',value:t}]}:{name:t})}
 }
 $('#chips').addEventListener('click',e=>{
-  const c=e.target.closest('.chip');if(!c)return;haptic(6);
+  const c=e.target.closest('.chip');if(!c)return;haptic(5);
   const k=c.dataset.chip;
-  if(k==='all'){activeTags.clear();favOnly=false}
-  else if(k==='fav')favOnly=!favOnly;
+  if(k==='all'){activeTags.clear();starOnly=false}
+  else if(k==='star')starOnly=!starOnly;
   else{const t=c.dataset.tag;activeTags.has(t)?activeTags.delete(t):activeTags.add(t)}
-  render();window.scrollTo({top:Math.min(scrollY,$('#sentinel').offsetTop),behavior:reduce?'auto':'smooth'});
+  render();window.scrollTo({top:Math.min(scrollY,$('#sentinel').offsetTop)});
 });
 const qi=$('#q');
 qi.addEventListener('input',()=>{q=qi.value;$('#clearQ').classList.toggle('show',!!q);scheduleRender()});
@@ -587,102 +657,136 @@ $('#clearQ').addEventListener('click',()=>{qi.value='';q='';$('#clearQ').classLi
 new IntersectionObserver(([en])=>$('#bar').classList.toggle('stuck',!en.isIntersecting)).observe($('#sentinel'));
 new ResizeObserver(()=>root.style.setProperty('--bar-h',$('#bar').offsetHeight+'px')).observe($('#bar'));
 
-/* ---------- alphabet scrubber ---------- */
-const scrub=$('#scrub'),bubble=$('#bubble');
-function renderScrub(res){
-  if(res.length<14){scrub.hidden=true;return}
-  const has=new Set(res.map(letterOf));
-  scrub.innerHTML=[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'].map(L=>`<b class="${has.has(L)?'has':''}" data-l="${L}">${L}</b>`).join('');
-  scrub.hidden=false;
+/* ---------- A–Z menu ---------- */
+const azPop=$('#azPop'),azBtn=$('#azBtn');
+function openAZ(){
+  const has=new Set(groupLetters);
+  azPop.innerHTML=(has.has('★')?`<button type="button" class="star" data-l="★" aria-label="Starred">★</button>`:'')+[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'].map(L=>`<button type="button" data-l="${L}" ${has.has(L)?'':'disabled'}>${L}</button>`).join('');
+  azPop.hidden=false;azBtn.classList.add('on');azBtn.setAttribute('aria-expanded','true');
 }
-let curL='';
-function scrubAt(y){
-  const bs=$$('b',scrub);if(!bs.length)return;
-  const r=scrub.getBoundingClientRect();let i=Math.floor((y-r.top-8)/((r.height-16)/bs.length));i=Math.max(0,Math.min(bs.length-1,i));
-  let L=bs[i].dataset.l;
-  if(!$(`.group[data-letter="${L}"]`)){const lets=$$('.group').map(g=>g.dataset.letter);const order='ABCDEFGHIJKLMNOPQRSTUVWXYZ#';L=lets.find(x=>order.indexOf(x)>=order.indexOf(L))||lets[lets.length-1];if(!L)return}
-  bubble.style.top=Math.max(r.top+20,Math.min(r.bottom-20,y))+'px';
-  if(L===curL)return;curL=L;haptic(4);
-  bs.forEach(b=>b.classList.toggle('cur',b.dataset.l===L));
-  $('span',bubble).textContent=L;bubble.classList.add('show');
-  const g=$(`.group[data-letter="${L}"]`);if(g)window.scrollTo({top:g.getBoundingClientRect().top+scrollY-parseFloat(getComputedStyle(root).getPropertyValue('--bar-h'))-4,behavior:'auto'});
-}
-scrub.addEventListener('pointerdown',e=>{e.preventDefault();scrub.setPointerCapture(e.pointerId);scrub.classList.add('active');curL='';scrubAt(e.clientY)});
-scrub.addEventListener('pointermove',e=>{if(scrub.hasPointerCapture(e.pointerId))scrubAt(e.clientY)});
-const scrubEnd=()=>{scrub.classList.remove('active');bubble.classList.remove('show');$$('b',scrub).forEach(b=>b.classList.remove('cur'))};
-scrub.addEventListener('pointerup',scrubEnd);scrub.addEventListener('pointercancel',scrubEnd);
+function closeAZ(){azPop.hidden=true;azBtn.classList.remove('on');azBtn.setAttribute('aria-expanded','false')}
+azBtn.addEventListener('click',e=>{e.stopPropagation();azPop.hidden?openAZ():closeAZ()});
+azPop.addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(!b||b.disabled)return;const g=$(`.group[data-letter="${CSS.escape(b.dataset.l)}"]`);closeAZ();if(g){const off=parseFloat(getComputedStyle(root).getPropertyValue('--bar-h'))||110;window.scrollTo({top:g.getBoundingClientRect().top+scrollY-off+2,behavior:reduce?'auto':'smooth'})}});
+document.addEventListener('click',e=>{if(!azPop.hidden&&!e.target.closest('#azPop,#azBtn'))closeAZ()});
 
-/* ---------- layers (with history so the Back button closes them) ---------- */
+/* ---------- selection & bulk actions ---------- */
+function startSelect(){selecting=true;body.classList.add('selecting');closeAZ();$('#selBtn').classList.add('on');updateSelbar()}
+function endSelect(){selecting=false;selected.clear();body.classList.remove('selecting');$('#selBtn').classList.remove('on');$$('.row.selected').forEach(r=>r.classList.remove('selected'));updateSelbar()}
+function toggleSel(id){selected.has(id)?selected.delete(id):selected.add(id);const r=$(`.row[data-id="${CSS.escape(id)}"]`);if(r)r.classList.toggle('selected',selected.has(id));haptic(4);updateSelbar()}
+let delArm=0;
+function updateSelbar(){$('#selbar').hidden=!selecting;$('#selCount').textContent=`${selected.size} selected`;const d=$('[data-sb="del"]');if(d&&!delArm){d.classList.remove('armed');$('span',d).textContent='Delete'}}
+$('#selBtn').addEventListener('click',()=>selecting?endSelect():startSelect());
+const pickedContacts=()=>[...selected].map(id=>all.get(id)).filter(c=>c&&!c.deleted);
+$('#selbar').addEventListener('click',async e=>{
+  const b=e.target.closest('[data-sb]');if(!b)return;const k=b.dataset.sb;
+  if(k==='close'){endSelect();return}
+  if(k==='all'){const ids=lastResults.map(c=>c.id);const allOn=ids.length&&ids.every(id=>selected.has(id));ids.forEach(id=>allOn?selected.delete(id):selected.add(id));render();return}
+  const cs=pickedContacts();if(!cs.length){toast('Select contacts first');return}
+  if(k==='tags')openTagSheet();
+  else if(k==='star'){const on=!cs.every(c=>c.fav);await saveMany(cs.map(c=>({...c,fav:on})));await logAdd('edited',`${on?'Starred':'Unstarred'} ${cs.length} ${cs.length===1?'contact':'contacts'}`);toast(`${on?'Starred':'Unstarred'} ${cs.length}`);endSelect();render()}
+  else if(k==='del'){
+    if(!b.classList.contains('armed')){b.classList.add('armed');$('span',b).textContent='Confirm';haptic(15);clearTimeout(delArm);delArm=setTimeout(()=>{delArm=0;updateSelbar()},3000);return}
+    clearTimeout(delArm);delArm=0;
+    const snap=cs.map(c=>({...c}));await saveMany(cs.map(c=>({...c,deleted:true})));await logAdd('deleted',`Deleted ${cs.length} ${cs.length===1?'contact':'contacts'}`);endSelect();render();
+    toast(`Deleted ${cs.length}`,'Undo',async()=>{await saveMany(snap.map(c=>({...c,deleted:false})));await logAdd('added',`Restored ${snap.length} ${snap.length===1?'contact':'contacts'}`)});
+  }
+});
+
+/* ---------- tag sheet (bulk apply) ---------- */
+function tagSheetHTML(){
+  const cs=pickedContacts(),n=cs.length;
+  const rows=libTags().map(t=>{const k=t.toLowerCase(),have=cs.filter(c=>c.tags.some(x=>x.toLowerCase()===k)).length;const st=have===0?'none':have===n?'all':'some';
+    return `<button type="button" class="tcheck" data-tt="${esc(t)}" data-state="${st}"><span class="bx">${CK.replace('<svg','<svg class="ck"')}<svg class="dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 12h10"/></svg></span><span class="tc">${esc(t)}</span><small>${have} of ${n}</small></button>`}).join('');
+  return `<div class="lin"><div class="lbar"><button class="ibtn" data-ts="close" aria-label="Back">${I.back}</button><h2>Tags for ${n} ${n===1?'contact':'contacts'}</h2><button class="textbtn go" data-ts="done">Done</button></div>
+  <div class="fcard"><div style="padding:4px 0">${rows||'<p class="note">No tags yet. Create one below.</p>'}</div></div>
+  <div class="fcard"><div class="fhead"><span>${I.plus}NEW TAG</span></div><form class="inline" id="tsNew" autocomplete="off"><input class="fin" id="tsNewName" placeholder="Tag name" maxlength="40" enterkeyhint="done"><button class="btn" type="submit">Add &amp; apply</button></form></div>
+  <p class="note">Tap a tag to add it to all selected contacts. Tap it again to remove it from all of them.</p></div>`;
+}
+function openTagSheet(){openLayer('tagsheet',()=>{$('#tagsheet').innerHTML=tagSheetHTML()})}
+async function applyTag(t,add){const cs=pickedContacts();const k=t.toLowerCase();const change=cs.filter(c=>add!==c.tags.some(x=>x.toLowerCase()===k));if(!change.length)return;
+  await saveMany(change.map(c=>({...c,tags:add?[...c.tags,t]:c.tags.filter(x=>x.toLowerCase()!==k)})));
+  await logAdd('tagged',`${add?'Added':'Removed'} tag ${t} ${add?'to':'from'} ${change.length} ${change.length===1?'contact':'contacts'}`);
+  toast(`${add?'Added':'Removed'} ${t} · ${change.length}`)}
+$('#tagsheet').addEventListener('click',async e=>{
+  const b=e.target.closest('[data-tt]');if(b){haptic(6);await applyTag(b.dataset.tt,b.dataset.state!=='all');$('#tagsheet').innerHTML=tagSheetHTML();return}
+  const x=e.target.closest('[data-ts]');if(!x)return;
+  const done=x.dataset.ts==='done';closeTop();if(done){endSelect();render()}
+});
+$('#tagsheet').addEventListener('submit',async e=>{e.preventDefault();const t=str($('#tsNewName').value,40);if(!t)return;
+  const existing=libTags().find(x=>x.toLowerCase()===t.toLowerCase());const name=existing||t;
+  if(!existing){await setLib([...tagLib.list,name]);await logAdd('tagged',`Created tag ${name}`)}
+  await applyTag(name,true);$('#tagsheet').innerHTML=tagSheetHTML()});
+
+/* ---------- layers (the Back button closes them) ---------- */
 const stack=[];
 history.replaceState({depth:0},'');
 function animate(el,update,morph,opening){
   const hero=()=>el.querySelector('.hero-av');
   if(document.startViewTransition&&!reduce){
-    root.classList.add('vt-layer');
-    el.style.viewTransitionName='layer';
+    root.classList.add('vt-layer');el.style.viewTransitionName='layer';
     if(opening&&morph)morph.style.viewTransitionName='hero-av';
     if(!opening&&morph&&hero())hero().style.viewTransitionName='hero-av';
+    const cleanup=()=>{root.classList.remove('vt-layer');el.style.viewTransitionName='';const h=hero();if(h)h.style.viewTransitionName='';if(morph)morph.style.viewTransitionName=''};
     let t;
-    try{t=document.startViewTransition(()=>{update();if(opening&&morph){morph.style.viewTransitionName='';const h=hero();if(h)h.style.viewTransitionName='hero-av'}if(!opening&&morph){morph.style.viewTransitionName='hero-av'}})}
+    try{t=document.startViewTransition(()=>{update();if(opening&&morph){morph.style.viewTransitionName='';const h=hero();if(h)h.style.viewTransitionName='hero-av'}if(!opening&&morph)morph.style.viewTransitionName='hero-av'})}
     catch{update();cleanup();return}
-    function cleanup(){root.classList.remove('vt-layer');el.style.viewTransitionName='';const h=hero();if(h)h.style.viewTransitionName='';if(morph)morph.style.viewTransitionName=''}
-    t.finished.then(cleanup,cleanup);
+    t.finished.then(cleanup,cleanup);t.ready.catch(()=>{});
     return;
   }
-  if(opening){update();el.classList.remove('anim-out');el.classList.add('anim-in');setTimeout(()=>el.classList.remove('anim-in'),520)}
-  else{el.classList.add('anim-out');setTimeout(()=>{el.classList.remove('anim-out');update()},250)}
+  if(opening){update();el.classList.remove('anim-out');el.classList.add('anim-in');setTimeout(()=>el.classList.remove('anim-in'),320)}
+  else{el.classList.add('anim-out');setTimeout(()=>{el.classList.remove('anim-out');update()},200)}
 }
 function openLayer(id,setup,morph){
-  const el=$('#'+id);
+  const el=$('#'+id);closeAZ();
   if(stack.includes(id)){setup&&setup();return}
   stack.push(id);history.pushState({depth:stack.length,layer:id},'');
-  haptic(8);
   animate(el,()=>{setup&&setup();el.hidden=false;el.scrollTop=0;root.classList.add('layer-open')},morph,true);
 }
 function hideLayer(id){
   const el=$('#'+id);let morph=null;
-  if(id==='detail'&&stack.length===0){const r=$(`.row[data-id="${CSS.escape(detailId||'')}"] .av`)||$(`.fav[data-id="${CSS.escape(detailId||'')}"] .av`);if(r){const b=r.getBoundingClientRect();if(b.bottom>0&&b.top<innerHeight)morph=r}}
+  if(id==='detail'&&stack.length===0){const r=$(`.row[data-id="${CSS.escape(detailId||'')}"] .av`);if(r){const b=r.getBoundingClientRect();if(b.bottom>0&&b.top<innerHeight)morph=r}}
   animate(el,()=>{el.hidden=true;if(!stack.length)root.classList.remove('layer-open');if(id==='detail')detailId=null},morph,false);
 }
 function closeTop(){if(stack.length)history.back()}
 addEventListener('popstate',e=>{const depth=e.state?.depth||0;while(stack.length>depth)hideLayer(stack.pop())});
-addEventListener('keydown',e=>{if(e.key==='Escape'&&stack.length)closeTop()});
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(!azPop.hidden)closeAZ();else if(stack.length)closeTop();else if(selecting)endSelect()}});
+function refreshOpenLayers(){if(!$('#settings').hidden)paintSettingsLive();if(!$('#dups').hidden)$('#dups').innerHTML=dupsHTML();if(!$('#tagsheet').hidden&&selecting)$('#tagsheet').innerHTML=tagSheetHTML()}
 
 /* ---------- detail ---------- */
 let detailId=null;
 function detailHTML(c){
-  const p=pal(c),name=disp(c),tel=c.phones[0]?.value,mail=c.emails[0]?.value;
-  const sub='';
-  return `<div class="glow" aria-hidden="true"></div><div class="lin">
-  <div class="lbar"><button class="ibtn" data-d="close" aria-label="Close">${I.back}</button><span class="sp"></span><button class="ibtn ${c.fav?'on':''}" data-d="fav" aria-label="${c.fav?'Remove from favourites':'Add to favourites'}">${I.starO}</button><button class="ibtn" data-d="edit" aria-label="Edit">${I.edit}</button></div>
-  <div class="hero"><div class="halo">${av(c,'big hero-av')}</div><div class="st"><h2>${esc(name)}</h2>${sub?`<p>${esc(sub)}</p>`:''}${c.tags.length?`<div class="dtags">${c.tags.map(t=>`<span class="chip on" style="--c:${tagColor(t)}"><i></i>${esc(t)}</span>`).join('')}</div>`:''}</div></div>
+  const name=disp(c),tel=c.phones[0]?.value,mail=c.emails[0]?.value,th=tel?esc(telHref(tel)):'';
+  return `<div class="lin">
+  <div class="lbar"><button class="ibtn" data-d="close" aria-label="Back">${I.back}</button><span class="sp"></span><button class="ibtn ${c.fav?'starred':''}" data-d="fav" aria-label="${c.fav?'Unstar':'Star'}">${I.star}</button><button class="ibtn" data-d="copy" aria-label="Copy contact">${I.copy}</button><button class="ibtn" data-d="edit" aria-label="Edit">${I.edit}</button></div>
+  <div class="hero">${av(c,'big hero-av')}<div class="st"><h2>${esc(name)}</h2>${c.tags.length?`<div class="dtags">${c.tags.map(t=>`<span class="chip on">${esc(t)}</span>`).join('')}</div>`:''}</div></div>
   <div class="st">
   <div class="acts">
-    <a class="act call ${tel?'':'off'}" href="${tel?'tel:'+esc(telHref(tel)):'#'}"><span>${I.phone}</span>Call</a>
-    <a class="act ${tel?'':'off'}" href="${tel?'sms:'+esc(telHref(tel)):'#'}"><span>${I.msg}</span>Message</a>
-    <a class="act ${tel?'':'off'}" href="${tel?'https://wa.me/'+esc(waNumber(tel)):'#'}" target="_blank" rel="noopener noreferrer"><span>${I.wa}</span>WhatsApp</a>
-    <a class="act ${mail?'':'off'}" href="${mail?'mailto:'+esc(mail):'#'}"><span>${I.mail}</span>Email</a>
+    <a class="act call ${tel?'':'off'}" href="${tel?'tel:'+th:'#'}"><span>${I.phone}</span>Call</a>
+    <a class="act sms ${tel?'':'off'}" href="${tel?'sms:'+th:'#'}"><span>${I.msg}</span>Message</a>
+    <a class="act wa ${tel?'':'off'}" href="${tel?'https://wa.me/'+esc(waNumber(tel)):'#'}" target="_blank" rel="noopener noreferrer"><span>${I.wa}</span>WhatsApp</a>
+    <a class="act mail ${mail?'':'off'}" href="${mail?'mailto:'+esc(mail):'#'}"><span>${I.mail}</span>Email</a>
   </div>
-  ${c.phones.length?`<div class="icard">${c.phones.map(x=>`<div class="irow"><div class="k"><small>${esc(x.label)}</small><a class="v" href="tel:${esc(telHref(x.value))}">${esc(x.value)}</a></div><a class="mini" href="sms:${esc(telHref(x.value))}" aria-label="Message">${I.msg}</a><button class="mini" data-copy="${esc(x.value)}" aria-label="Copy number">${I.copy}</button></div>`).join('')}</div>`:''}
-  ${c.emails.length?`<div class="icard">${c.emails.map(x=>`<div class="irow"><div class="k"><small>${esc(x.label)}</small><a class="v" href="mailto:${esc(x.value)}">${esc(x.value)}</a></div><button class="mini" data-copy="${esc(x.value)}" aria-label="Copy email">${I.copy}</button></div>`).join('')}</div>`:''}
+  ${c.phones.length?`<div class="icard">${c.phones.map(x=>`<div class="irow"><div class="k"><small>${esc(x.label)}</small><a class="v" href="tel:${esc(telHref(x.value))}">${esc(x.value)}</a></div><a class="ic sms" href="sms:${esc(telHref(x.value))}" aria-label="Message">${I.msg}</a><a class="ic wa" href="https://wa.me/${esc(waNumber(x.value))}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">${I.wa}</a><button class="mi" data-copy="${esc(x.value)}" aria-label="Copy number">${I.copy}</button></div>`).join('')}</div>`:''}
+  ${c.emails.length?`<div class="icard">${c.emails.map(x=>`<div class="irow"><div class="k"><small>${esc(x.label)}</small><a class="v" href="mailto:${esc(x.value)}">${esc(x.value)}</a></div><button class="mi" data-copy="${esc(x.value)}" aria-label="Copy email">${I.copy}</button></div>`).join('')}</div>`:''}
   ${c.notes?`<div class="icard"><div class="irow"><div class="k"><small>Notes</small><span class="v">${esc(c.notes)}</span></div></div></div>`:''}
-  <div class="dfoot"><button class="btn" data-d="share">${I.share}Share</button><button class="btn danger" data-d="delete">${I.trash}Delete</button></div>
+  <div class="dfoot"><button class="btn" data-d="share">${I.share}Share</button><button class="btn danger" data-d="delete">${I.trash}<span>Delete</span></button></div>
   </div></div>`;
 }
-function setDetail(c){const el=$('#detail'),p=pal(c);el.style.setProperty('--a1',p[0]);el.style.setProperty('--a2',p[1]);el.innerHTML=detailHTML(c)}
+function setDetail(c){$('#detail').innerHTML=detailHTML(c)}
 function openDetail(id,morph){const c=all.get(id);if(!c)return;detailId=id;openLayer('detail',()=>setDetail(c),morph)}
 function refreshDetail(){if(!detailId||$('#detail').hidden)return;const c=all.get(detailId);if(!c||c.deleted){if(stack[stack.length-1]==='detail')closeTop();return}const y=$('#detail').scrollTop;setDetail(c);$$('#detail .st').forEach(s=>s.classList.remove('st'));$('#detail').scrollTop=y}
 let delTimer=0;
 $('#detail').addEventListener('click',async e=>{
-  const cp=e.target.closest('[data-copy]');if(cp){const ok=await copyText(cp.dataset.copy);toast(ok?'Copied':'Could not copy');haptic(8);return}
-  const b=e.target.closest('[data-d]');if(!b){if(e.target.closest('a.act,.irow a'))haptic(10);return}
+  const cp=e.target.closest('[data-copy]');if(cp){const ok=await copyText(cp.dataset.copy);toast(ok?'Copied':'Could not copy');haptic(6);return}
+  const b=e.target.closest('[data-d]');if(!b){if(e.target.closest('a'))haptic(8);return}
   const c=all.get(detailId);if(!c)return;const k=b.dataset.d;
   if(k==='close')closeTop();
-  else if(k==='fav'){haptic(12);await save({...c,fav:!c.fav});toast(c.fav?'Removed from favourites':'Added to favourites ★')}
+  else if(k==='fav'){haptic(10);await save({...c,fav:!c.fav});toast(c.fav?'Unstarred':'Starred')}
+  else if(k==='copy'){const ok=await copyText(contactText(c));toast(ok?'Contact copied':'Could not copy')}
   else if(k==='edit')openEditor(c);
   else if(k==='share')shareContact(c);
   else if(k==='delete'){
-    if(!b.classList.contains('armed')){b.classList.add('armed');b.lastChild.textContent='Tap again to delete';haptic(15);clearTimeout(delTimer);delTimer=setTimeout(()=>{b.classList.remove('armed');b.lastChild.textContent='Delete'},3000);return}
+    if(!b.classList.contains('armed')){b.classList.add('armed');$('span',b).textContent='Tap again to delete';haptic(15);clearTimeout(delTimer);delTimer=setTimeout(()=>{b.classList.remove('armed');$('span',b).textContent='Delete'},3000);return}
     const snapshot={...c};await save({...c,deleted:true});closeTop();haptic([10,30,10]);
     toast(`Deleted ${disp(c)}`,'Undo',()=>save({...snapshot,deleted:false}));
   }
@@ -696,32 +800,29 @@ function openEditor(c,prefill){
   const isNew=!c;
   edit={base:c?{...c}:null,id:c?c.id:uid(),tags:new Set(((c&&c.tags)||prefill?.tags||[]).map(String))};
   const d=c||{name:'',phones:[],emails:[],notes:'',fav:false,...prefill};
-  const known=new Map();for(const t of [...tagCounts(live()).map(x=>x.name),...SUGGESTED])if(!known.has(t.toLowerCase()))known.set(t.toLowerCase(),t);
-  edit.known=known;
-  const el=$('#editor');
   const html=`<form class="lin" id="eForm" novalidate>
   <div class="lbar"><button type="button" class="textbtn" data-e="cancel">Cancel</button><h2>${isNew?'New contact':'Edit contact'}</h2><button type="submit" class="textbtn go">Save</button></div>
-  <div class="ehero"><span id="eAvWrap">${av({...d,id:edit.id},'')}</span><input class="ename" id="eName" placeholder="Full name" value="${esc(d.name)}" maxlength="200" autocomplete="off" autocapitalize="words" enterkeyhint="next"></div>
-  <div class="fcard"><div class="fhead">${I.phone}Phone</div><div id="ePhones">${(d.phones.length?d.phones:[{}]).map(x=>frow('p',x)).join('')}</div><p class="warn" id="dupWarn"></p><button type="button" class="addrow" data-e="addp">${I.plus}Add phone</button></div>
-  <div class="fcard"><div class="fhead">${I.mail}Email</div><div id="eEmails">${d.emails.map(x=>frow('e',x)).join('')}</div><button type="button" class="addrow" data-e="adde">${I.plus}Add email</button></div>
-  <div class="fcard"><div class="fhead">${I.tag}Tags</div><div class="tagpick" id="eTags"></div><div class="tagnew"><input class="fin" id="eTagNew" placeholder="Create a tag" maxlength="40" enterkeyhint="done" autocapitalize="words"><button type="button" class="btn" data-e="addtag">Add</button></div></div>
-  <div class="fcard"><div class="fhead">${I.note}Notes</div><textarea id="eNotes" rows="3" maxlength="5000" placeholder="How you met, what matters to them…">${esc(d.notes)}</textarea></div>
-  <label class="fcard switch"><span>${'Favourite'}</span><input type="checkbox" id="eFav" ${d.fav?'checked':''}><span class="sw"></span></label>
+  <div class="ehero"><span id="eAvWrap">${av({...d,id:edit.id})}</span><input class="ename" id="eName" placeholder="Full name" value="${esc(d.name)}" maxlength="200" autocomplete="off" autocapitalize="words" enterkeyhint="next"></div>
+  <div class="fcard"><div class="fhead"><span>${I.phone}PHONE</span></div><div id="ePhones">${(d.phones.length?d.phones:[{}]).map(x=>frow('p',x)).join('')}</div><p class="warn" id="dupWarn"></p><button type="button" class="addrow" data-e="addp">${I.plus}Add phone</button></div>
+  <div class="fcard"><div class="fhead"><span>${I.mail}EMAIL</span></div><div id="eEmails">${d.emails.map(x=>frow('e',x)).join('')}</div><button type="button" class="addrow" data-e="adde">${I.plus}Add email</button></div>
+  <div class="fcard"><div class="fhead"><span>${I.tag}TAGS</span></div><div class="tagpick" id="eTags"></div><div class="inline"><input class="fin" id="eTagNew" placeholder="Create a tag" maxlength="40" enterkeyhint="done"><button type="button" class="btn" data-e="addtag">Add</button></div></div>
+  <div class="fcard"><div class="fhead"><span>${I.note}NOTES</span></div><textarea id="eNotes" rows="3" maxlength="5000" placeholder="Anything worth remembering">${esc(d.notes)}</textarea></div>
+  <label class="fcard switch"><span>Star this contact</span><input type="checkbox" id="eFav" ${d.fav?'checked':''}><span class="sw"></span></label>
   <button type="submit" class="btn primary bigsave">${I.check}${isNew?'Save contact':'Save changes'}</button>
   </form>`;
-  const setup=()=>{el.innerHTML=html;drawTags();checkDup()};
+  const setup=()=>{$('#editor').innerHTML=html;drawTags();checkDup()};
   if(stack.includes('editor')){setup();return}
   openLayer('editor',setup);
-  if(isNew)setTimeout(()=>{const n=$('#eName');if(n&&!n.value)n.focus({preventScroll:true})},380);
+  if(isNew)setTimeout(()=>{const n=$('#eName');if(n&&!n.value)n.focus({preventScroll:true})},350);
 }
-function drawTags(){const box=$('#eTags');if(!box)return;const items=new Map(edit.known);for(const t of edit.tags)if(!items.has(t.toLowerCase()))items.set(t.toLowerCase(),t);const sel=new Set([...edit.tags].map(t=>t.toLowerCase()));box.innerHTML=[...items.values()].map(t=>`<button type="button" class="chip ${sel.has(t.toLowerCase())?'on':''}" data-t="${esc(t)}" style="--c:${tagColor(t)}"><i></i>${esc(t)}</button>`).join('')}
-function addTag(){const i=$('#eTagNew'),v=str(i.value,40);if(!v)return;if(![...edit.tags].some(t=>t.toLowerCase()===v.toLowerCase()))edit.tags.add(v);if(!edit.known.has(v.toLowerCase()))edit.known.set(v.toLowerCase(),v);i.value='';drawTags();haptic(8)}
-function checkDup(){const w=$('#dupWarn');if(!w)return;const nums=$$('#ePhones input').map(i=>digits(i.value)).filter(d=>d.length>=7).map(d=>d.slice(-10));let hit=null;if(nums.length)for(const c of live()){if(c.id===edit.id)continue;if(c.phones.some(p=>nums.includes(digits(p.value).slice(-10)))){hit=c;break}}w.textContent=hit?`This number is already saved for ${disp(hit)}.`:'';w.classList.toggle('show',!!hit)}
+function drawTags(){const box=$('#eTags');if(!box)return;const items=libTags();for(const t of edit.tags)if(!items.some(x=>x.toLowerCase()===t.toLowerCase()))items.push(t);const sel=new Set([...edit.tags].map(t=>t.toLowerCase()));box.innerHTML=items.map(t=>`<button type="button" class="chip ${sel.has(t.toLowerCase())?'on':''}" data-t="${esc(t)}">${esc(t)}</button>`).join('')||'<span class="note">No tags yet.</span>'}
+async function addTag(){const i=$('#eTagNew'),v=str(i.value,40);if(!v)return;const ex=libTags().find(x=>x.toLowerCase()===v.toLowerCase());const name=ex||v;if(![...edit.tags].some(t=>t.toLowerCase()===name.toLowerCase()))edit.tags.add(name);if(!ex){await setLib([...tagLib.list,name]);await logAdd('tagged',`Created tag ${name}`)}i.value='';drawTags();haptic(6)}
+function checkDup(){const w=$('#dupWarn');if(!w)return;const keys=$$('#ePhones input').map(i=>phoneKey(i.value)).filter(Boolean);let hit=null;if(keys.length)for(const c of live()){if(c.id===edit.id)continue;if(c.phones.some(p=>keys.includes(phoneKey(p.value)))){hit=c;break}}w.textContent=hit?`This number is already saved for ${disp(hit)}.`:'';w.classList.toggle('show',!!hit)}
 const editorEl=$('#editor');
 editorEl.addEventListener('click',e=>{
   const b=e.target.closest('[data-e],[data-t],.rm');if(!b)return;
-  if(b.classList.contains('rm')){const r=b.closest('.frow');r.style.transition='opacity .2s,transform .2s';r.style.opacity='0';r.style.transform='translateX(20px)';setTimeout(()=>{r.remove();checkDup()},180);return}
-  if(b.dataset.t){const t=b.dataset.t,k=[...edit.tags].find(x=>x.toLowerCase()===t.toLowerCase());k?edit.tags.delete(k):edit.tags.add(t);b.classList.toggle('on');haptic(6);return}
+  if(b.classList.contains('rm')){b.closest('.frow').remove();checkDup();return}
+  if(b.dataset.t){const t=b.dataset.t,k=[...edit.tags].find(x=>x.toLowerCase()===t.toLowerCase());k?edit.tags.delete(k):edit.tags.add(t);b.classList.toggle('on');haptic(5);return}
   const k=b.dataset.e;
   if(k==='cancel')closeTop();
   else if(k==='addp'){$('#ePhones').insertAdjacentHTML('beforeend',frow('p'));$('#ePhones .frow:last-child input').focus()}
@@ -729,54 +830,94 @@ editorEl.addEventListener('click',e=>{
   else if(k==='addtag')addTag();
 });
 editorEl.addEventListener('input',e=>{
-  if(e.target.id==='eName'){const w=$('#eAvWrap');const n=$('#eName').value;const old=w.textContent;w.innerHTML=av({id:edit.id,name:n,phones:[],emails:[]});if(w.textContent!==old)w.firstChild.classList.add('pulse')}
+  if(e.target.id==='eName')$('#eAvWrap').innerHTML=av({id:edit.id,name:$('#eName').value,phones:[],emails:[]});
   if(e.target.closest('#ePhones'))checkDup();
 });
+editorEl.addEventListener('focusout',e=>{if(e.target.matches('#ePhones input')&&e.target.value.trim())e.target.value=fmtPhone(e.target.value)});
 editorEl.addEventListener('keydown',e=>{if(e.target.id==='eTagNew'&&(e.key==='Enter'||e.key===',')){e.preventDefault();addTag()}else if(e.target.id==='eName'&&e.key==='Enter'){e.preventDefault();$('#ePhones input')?.focus()}});
 editorEl.addEventListener('submit',async e=>{
   e.preventDefault();
-  if($('#eTagNew').value.trim())addTag();
+  if($('#eTagNew').value.trim())await addTag();
   const rows=k=>$$(`#${k} .frow`).map(r=>({label:$('select',r).value,value:$('input',r).value.trim()})).filter(x=>x.value);
   const data={...(edit.base||{}),id:edit.id,name:$('#eName').value,phones:rows('ePhones'),emails:rows('eEmails'),tags:[...edit.tags],notes:$('#eNotes').value,fav:$('#eFav').checked,deleted:false};
   if(!str(data.name,1)&&!data.phones.length&&!data.emails.length){toast('Add a name, number or email first');$('#eName').focus();haptic([20,40,20]);return}
   const isNew=!edit.base;
-  await save(data);
-  haptic([8,30,14]);
+  const saved=await save(data);
+  haptic([8,30,12]);
   closeTop();
-  if(isNew){q='';qi.value='';$('#clearQ').classList.remove('show');activeTags.clear();favOnly=false;render();
-    setTimeout(()=>{const r=$(`.row[data-id="${CSS.escape(data.id)}"]`);if(r){r.scrollIntoView({block:'center',behavior:reduce?'auto':'smooth'});r.classList.add('flash')}},320);
-    toast(`${disp(clean(data))} saved${cfg.url?' · syncing':''}`)}
+  if(isNew){q='';qi.value='';$('#clearQ').classList.remove('show');activeTags.clear();starOnly=false;render();
+    setTimeout(()=>{const r=$(`.row[data-id="${CSS.escape(saved.id)}"]`);if(r){r.scrollIntoView({block:'center'});r.classList.add('flash')}},260);
+    toast(`${disp(saved)} saved`)}
   else toast('Changes saved');
 });
 
 /* ---------- saving ---------- */
 async function save(data,{silent=false}={}){
-  const c=clean({...data,updatedAt:Date.now(),dirty:true});
+  const c=clean({...data,updatedAt:Date.now(),dirty:true},{format:true});
   const old=all.get(c.id);if(old&&old.createdAt)c.createdAt=old.createdAt;
   all.set(c.id,c);await idb.put([c]);
+  const kind=!old||old.deleted?(c.deleted?null:'added'):c.deleted?'deleted':'edited';
+  if(kind)await logAdd(kind,`${kind==='added'?'Added':kind==='deleted'?'Deleted':'Edited'} ${disp(c)}`);
   if(!silent)scheduleRender();
   queueSync(700);
   return c;
 }
-async function saveMany(list){const now=Date.now();const cs=list.map((d,i)=>clean({...d,updatedAt:now+i,dirty:true}));for(const c of cs)all.set(c.id,c);await idb.put(cs);scheduleRender();queueSync(300);return cs}
+async function saveMany(items){const now=Date.now();const cs=items.map((d,i)=>{const c=clean({...d,updatedAt:now+i,dirty:true},{format:true});const old=all.get(c.id);if(old&&old.createdAt)c.createdAt=old.createdAt;return c});for(const c of cs)all.set(c.id,c);await idb.put(cs);scheduleRender();queueSync(300);return cs}
+
+/* ---------- duplicates ---------- */
+let dupIgnore=new Set();
+function dupGroups(){
+  const cs=live(),parent=new Map(cs.map(c=>[c.id,c.id]));
+  const find=x=>{while(parent.get(x)!==x){parent.set(x,parent.get(parent.get(x)));x=parent.get(x)}return x};
+  const seen=new Map(),why=new Map();
+  const add=(k,id,reason)=>{if(k.length<2)return;if(seen.has(k)){const o=seen.get(k);const a=find(o),b=find(id);if(a!==b)parent.set(b,a);if(!why.has(o))why.set(o,reason);if(!why.has(id))why.set(id,reason)}else seen.set(k,id)};
+  for(const c of cs){for(const p of c.phones)add('p'+phoneKey(p.value),c.id,'Same number');for(const e of c.emails)add('e'+e.value.trim().toLowerCase(),c.id,'Same email');const n=norm(c.name).replace(/\s+/g,' ').trim();if(n.split(' ').length>=2)add('n'+n,c.id,'Same name')}
+  const groups=new Map();for(const c of cs){const r=find(c.id);if(!groups.has(r))groups.set(r,[]);groups.get(r).push(c)}
+  return[...groups.values()].filter(g=>g.length>1).map(g=>{g.sort((a,b)=>a.createdAt-b.createdAt);return{ids:g.map(c=>c.id).sort().join('|'),items:g,reason:why.get(g[0].id)||why.get(g[1].id)||'Possible duplicate'}}).filter(g=>!dupIgnore.has(g.ids)).sort((a,b)=>collator.compare(disp(a.items[0]),disp(b.items[0])));
+}
+const richness=c=>c.phones.length*3+c.emails.length*2+c.tags.length+(c.name?2:0)+(c.notes?1:0);
+function mergeInto(items){
+  const primary=[...items].sort((a,b)=>richness(b)-richness(a)||a.createdAt-b.createdAt)[0];
+  const others=items.filter(c=>c!==primary);
+  const m={...primary};
+  m.name=items.map(c=>c.name).filter(Boolean).sort((x,y)=>y.length-x.length)[0]||''; // keep the fullest name
+  m.phones=[...primary.phones,...others.flatMap(c=>c.phones)];
+  m.emails=[...primary.emails,...others.flatMap(c=>c.emails)];
+  m.tags=tagList([...primary.tags,...others.flatMap(c=>c.tags)]);
+  m.notes=[...new Set([primary.notes,...others.map(c=>c.notes)].map(s=>s.trim()).filter(Boolean))].join('\n');
+  m.fav=items.some(c=>c.fav);
+  return{merged:m,others};
+}
+function dupsHTML(){
+  const gs=dupGroups();
+  const inner=gs.length?gs.map(g=>`<div class="dgroup"><div class="dh"><span>${esc(g.reason)} · ${g.items.length} contacts</span><button class="textbtn" style="min-height:32px;font-size:13px" data-dg="ignore" data-ids="${esc(g.ids)}">Not duplicates</button></div>${g.items.map(c=>`<div class="dr">${av(c)}<div class="k"><b>${esc(disp(c))}</b><span>${esc([...c.phones.map(p=>p.value),...c.emails.map(e=>e.value)].join(' · ')||'No number')}</span></div><button class="mi" data-dg="del" data-id="${esc(c.id)}" aria-label="Delete ${esc(disp(c))}">${I.trash}</button></div>`).join('')}<div class="df"><button class="btn sm primary" data-dg="merge" data-ids="${esc(g.ids)}">${I.merge}Merge into one</button></div></div>`).join('')
+    :`<div class="empty"><div class="eic">${I.check}</div><h2>No duplicates</h2><p>Every contact has its own numbers and emails.</p></div>`;
+  return `<div class="lin"><div class="lbar"><button class="ibtn" data-dg="close" aria-label="Back">${I.back}</button><h2>Duplicates</h2><span style="width:38px"></span></div>${gs.length?`<p class="note">These contacts share a number, an email or the same full name. Merge keeps every number, email and tag in one contact. Or delete the copy you do not want (tap the bin twice).</p>`:''}${inner}</div>`;
+}
+function openDuplicates(){openLayer('dups',()=>{$('#dups').innerHTML=dupsHTML()})}
+$('#dups').addEventListener('click',async e=>{
+  const b=e.target.closest('[data-dg]');if(!b)return;const k=b.dataset.dg;
+  if(k==='close'){closeTop();return}
+  if(k==='ignore'){dupIgnore.add(b.dataset.ids);await idb.set('dupIgnore',[...dupIgnore]);$('#dups').innerHTML=dupsHTML();return}
+  if(k==='del'){const c=all.get(b.dataset.id);if(!c)return;if(!b.classList.contains('armed')){b.classList.add('armed');haptic(12);setTimeout(()=>b.classList.remove('armed'),2500);return}
+    const snap={...c};await save({...c,deleted:true});toast(`Deleted ${disp(c)}`,'Undo',()=>save({...snap,deleted:false}));return}
+  if(k==='merge'){const items=b.dataset.ids.split('|').map(id=>all.get(id)).filter(c=>c&&!c.deleted);if(items.length<2)return;
+    const snaps=items.map(c=>({...c}));const{merged,others}=mergeInto(items);
+    await saveMany([merged,...others.map(c=>({...c,deleted:true}))]);
+    await logAdd('merged',`Merged ${items.length} contacts into ${disp(merged)}`);haptic([8,30,12]);
+    toast(`Merged into ${disp(merged)}`,'Undo',async()=>{await saveMany(snaps);await logAdd('edited',`Undid merge of ${disp(merged)}`)})}
+});
 
 /* ---------- sync engine (Google Apps Script + Sheet) ---------- */
 let syncing=false,again=false,syncTimer=0,status='off',statusMsg='',failCount=0;
 const wire=c=>({id:c.id,name:c.name,phones:c.phones,emails:c.emails,tags:c.tags,notes:c.notes,fav:c.fav,createdAt:c.createdAt,updatedAt:c.updatedAt,deleted:c.deleted});
-function setStatus(s,msg=''){status=s;statusMsg=msg;body.dataset.sync=s;updateMeta();if($('#settings')&&!$('#settings').hidden)paintStatusCard()}
+function setStatus(s,msg=''){status=s;statusMsg=msg;body.dataset.sync=s;updateMeta();if(!$('#settings').hidden)paintSettingsLive()}
 function ago(t){if(!t)return 'never';const s=(Date.now()-t)/1000;if(s<45)return 'just now';if(s<3600)return Math.round(s/60)+' min ago';if(s<86400)return Math.round(s/3600)+' h ago';return new Date(t).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}
 const pending=()=>{let n=0;for(const c of all.values())if(c.dirty)n++;return n};
-function statusText(){
-  const p=pending();
-  if(status==='off')return 'On this phone only';
-  if(status==='syncing')return 'Syncing…';
-  if(status==='offline')return `Offline${p?` · ${p} waiting`:''}`;
-  if(status==='error')return 'Sync paused · tap to fix';
-  return `Synced ${ago(cfg.lastSync)}`;
-}
+function statusText(){const p=pending();if(status==='off')return 'On this phone only';if(status==='syncing')return 'Syncing…';if(status==='offline')return `Offline${p?` · ${p} waiting`:''}`;if(status==='error')return 'Sync paused';return `Synced ${ago(cfg.lastSync)}`}
 function updateMeta(){const n=live().length;$('#metaText').textContent=`${n} ${n===1?'person':'people'} · ${statusText()}`}
 setInterval(updateMeta,30000);
-function queueSync(ms=0){clearTimeout(syncTimer);if(!cfg.url)return;syncTimer=setTimeout(()=>sync(),ms)}
+function queueSync(ms=0){clearTimeout(syncTimer);if(!cfg.url||!cfg.token||cfg.locked)return;syncTimer=setTimeout(()=>sync(),ms)}
 async function post(payload,timeout=25000){
   const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),timeout);
   try{
@@ -789,16 +930,17 @@ async function post(payload,timeout=25000){
   finally{clearTimeout(t)}
 }
 async function sync({full=false}={}){
-  if(cfg.locked)return;if(!cfg.url||!cfg.token)return setStatus('off');
+  if(cfg.locked)return;
+  if(!cfg.url||!cfg.token)return setStatus('off');
   if(syncing){again=true;return}
   if(!navigator.onLine)return setStatus('offline');
-  const prev=status;syncing=true;setStatus('syncing');
+  syncing=true;setStatus('syncing');
   full=full||!cfg.cursor||Date.now()-cfg.lastFull>6*3600e3;
   try{
     const dirty=[...all.values()].filter(c=>c.dirty);
     const sent=new Map(dirty.map(c=>[c.id,c.updatedAt]));
-    const j=await post({token:cfg.token,cursor:full?0:cfg.cursor,changes:dirty.map(wire)});
-    const changed=[];
+    const j=await post({token:cfg.token,cursor:full?0:cfg.cursor,changes:dirty.map(wire),tagLib});
+    const changed=[],events=[];
     for(const[id,u]of sent){const c=all.get(id);if(c&&c.updatedAt===u&&c.dirty){c.dirty=false;changed.push(c)}}
     const seen=new Set();
     for(const r of j.changes||[]){
@@ -806,19 +948,20 @@ async function sync({full=false}={}){
       const loc=all.get(inc.id);
       if(loc&&loc.dirty&&loc.updatedAt>inc.updatedAt)continue;
       if(loc&&!loc.dirty&&JSON.stringify(wire(loc))===JSON.stringify(wire(inc)))continue;
+      if(!sent.has(inc.id)){const k=!loc||loc.deleted?(inc.deleted?null:'added'):inc.deleted?'deleted':'edited';if(k)events.push([k,inc])}
       all.set(inc.id,inc);changed.push(inc);
     }
     const removed=[];
-    if(full&&Array.isArray(j.changes)){for(const c of [...all.values()])if(!c.dirty&&!seen.has(c.id)){all.delete(c.id);removed.push(c.id)}}
+    if(full&&Array.isArray(j.changes)){for(const c of [...all.values()])if(!c.dirty&&!seen.has(c.id)){all.delete(c.id);removed.push(c.id);if(!c.deleted)events.push(['deleted',c])}}
     if(changed.length)await idb.put(changed);
     if(removed.length)await idb.del(removed);
+    if(j.tagLib&&Array.isArray(j.tagLib.list)&&(Number(j.tagLib.updatedAt)||0)>tagLib.updatedAt){tagLib={list:tagList(j.tagLib.list,200),updatedAt:Number(j.tagLib.updatedAt)};await idb.set('taglib',tagLib);scheduleRender()}
+    if(events.length>8)await logAdd('synced',`Received ${events.length} changes from your other phones`,'sync');
+    else for(const[k,c]of events)await logAdd(k,`${k==='added'?'Added':k==='deleted'?'Deleted':'Edited'} ${disp(c)}`,'sync');
     cfg.cursor=j.cursor||0;cfg.lastSync=Date.now();if(full)cfg.lastFull=Date.now();
     await idb.set('sync',cfg);
-    failCount=0;
-    const wasFirst=prev!=='idle'&&prev!=='syncing';
-    setStatus('idle');
-    if(wasFirst){const o=$('#orb');o.classList.remove('pop');void o.offsetWidth;o.classList.add('pop')}
-    if(changed.length||removed.length)scheduleRender();
+    failCount=0;setStatus('idle');
+    if(changed.length||removed.length||events.length)scheduleRender();
   }catch(e){
     if(e.code==='locked'||e.code==='revoked'){syncing=false;await lockdown(e.code==='locked'?'':'This phone was signed out of sync (an SOS lock happened). Contacts were wiped from this phone. Unlock to download them again.');return}
     failCount++;
@@ -829,67 +972,69 @@ async function sync({full=false}={}){
     if(again){again=false;queueSync(200)}
   }
 }
-setInterval(()=>{if(document.visibilityState==='visible'&&cfg.url&&!syncing&&status!=='error')sync()},15000);
+setInterval(()=>{if(document.visibilityState==='visible'&&cfg.url&&cfg.token&&!syncing&&status!=='error')sync()},15000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')queueSync(150)});
 addEventListener('online',()=>queueSync(100));
 addEventListener('offline',()=>{if(cfg.url)setStatus('offline')});
-$('#syncBtn').addEventListener('click',()=>{haptic(8);if(!cfg.url||status==='error')openSettings();else{sync();toast('Syncing with your Google Sheet…')}});
 $('#menuBtn').addEventListener('click',()=>openSettings());
 
 /* ---------- settings ---------- */
-function paintStatusCard(){
-  const box=$('#stCard');if(!box)return;
-  const t={off:['Not connected','Contacts are saved on this phone only.'],syncing:['Syncing…','Talking to your Google Sheet.'],idle:['Connected',`Last synced ${ago(cfg.lastSync)} · ${live().length} people`],offline:['Offline',`${pending()} changes waiting for a connection.`],error:['Sync paused',statusMsg||'Something went wrong.']}[status];
-  box.innerHTML=`<span class="orb"></span><div><b>${esc(t[0])}</b><span>${esc(t[1])}</span></div>`;
+function numbersToFormat(){let n=0;const items=[];for(const c of live()){const k=c.phones.filter(p=>fmtPhone(p.value)!==p.value).length;if(k){n+=k;items.push(c)}}return{n,items}}
+function statusBlock(){
+  const t={off:['Not connected','Contacts are saved on this phone only.'],syncing:['Syncing…','Talking to your Google Sheet.'],idle:['Connected','Everything is up to date.'],offline:['Offline','Changes will be sent when you are back online.'],error:['Sync paused',statusMsg||'Something went wrong.']}[status];
+  return `<div class="statusline"><span class="dot"></span><div><b>${esc(t[0])}</b><span>${esc(t[1])}</span></div></div>
+  <dl class="kv"><dt>Last synced</dt><dd>${cfg.url?esc(ago(cfg.lastSync)):'—'}</dd><dt>Waiting to send</dt><dd>${pending()}</dd><dt>Contacts</dt><dd>${live().length}</dd></dl>`;
+}
+let logLimit=8;
+function logHTML(){
+  if(!changeLog.length)return '<p class="note">Changes you make here, and changes that arrive from your other phones, will show up here.</p>';
+  const icon={added:I.plus,edited:I.edit,deleted:I.trash,merged:I.merge,tagged:I.tag,synced:I.sync,formatted:I.hash};
+  return `<ul class="log">${changeLog.slice(0,logLimit).map(x=>`<li><span class="lk ${esc(x.k)}">${icon[x.k]||I.edit}</span><div class="lt">${esc(x.text)}<small>${x.src==='sync'?'From another phone or the Sheet':'On this phone'} · ${esc(ago(x.t))}</small></div></li>`).join('')}</ul>${changeLog.length>logLimit?`<button class="addrow" data-s="morelog">Show all ${changeLog.length}</button>`:''}`;
+}
+function paintSettingsLive(){
+  const s=$('#stLive');if(s)s.innerHTML=statusBlock();
+  const l=$('#stLog');if(l)l.innerHTML=logHTML();
+  const d=$('#stHealth');if(d){const g=dupGroups().length,f=numbersToFormat().n;d.innerHTML=`<button class="btn" data-s="dups">${I.users}${g?`Review ${g} possible ${g===1?'duplicate':'duplicates'}`:'No duplicates found'}</button><button class="btn" data-s="format" ${f?'':'disabled'}>${I.hash}${f?`Format ${f} ${f===1?'number':'numbers'}`:'All numbers formatted'}</button>`}
+  drawTagMgr();
 }
 function openSettings(){
   const picker='contacts' in navigator&&'ContactsManager' in window;
-  const pos=root.dataset.dockPos||'center';
+  const swap=root.dataset.dockSwap==='1';logLimit=8;
   const html=`<div class="lin">
-  <div class="lbar"><button class="ibtn" data-s="close" aria-label="Close">${I.back}</button><h2>Sync &amp; settings</h2><span style="width:42px"></span></div>
-  <div class="fcard"><div class="statuscard" id="stCard"></div>
-    <form id="cfgForm" class="stack" autocomplete="off">
-      <label class="flabel" for="cfgUrl" style="margin:0">Apps Script web app URL</label>
-      <input class="fin" id="cfgUrl" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec" value="${esc(cfg.url)}" spellcheck="false">
-      <button class="btn primary" type="submit">${I.link}${cfg.url?'Save &amp; sync':'Connect'}</button>
-    </form>
-    ${cfg.url?`<div class="row2" style="margin-top:9px"><button class="btn" data-s="sync">${I.sync}Sync now</button><button class="btn" data-s="full">Full resync</button></div>
-    <div class="stack"><button class="btn" data-s="pair">${I.copy}Copy setup link for another phone</button></div>
-    <p class="note">Open that link on your other phone and it connects by itself. Anyone with the link can join, so only send it to yourself.</p>
-    <div class="stack"><button class="btn danger" data-s="disconnect">Disconnect this phone</button></div>`:''}
-  </div>
-  ${cfg.url?`<div class="fcard sos"><div class="fhead">${I.trash}SOS kill switch</div>
-    <p class="note">Phone lost or stolen? This locks sync and cancels every phone's access. Each phone wipes its contacts the next time it is opened online. Your contacts stay safe in the Google Sheet, and you unlock with the same passphrase.</p>
-    <form id="sosForm" class="stack" autocomplete="off"><input class="fin" id="sosPass" type="password" placeholder="SOS passphrase (from the script)" autocomplete="off"><button class="btn hold" type="button" id="sosHold"><span>Hold for 2 seconds to lock all phones</span></button></form></div>`:''}
-  <div class="fcard"><div class="fhead">${I.user}Your contacts</div><div class="stack">
+  <div class="lbar"><button class="ibtn" data-s="close" aria-label="Back">${I.back}</button><h2>Settings</h2><span style="width:38px"></span></div>
+  <div class="fcard"><div class="fhead"><span>${I.sync}SYNC STATUS</span></div><div id="stLive"></div>
+    ${cfg.url?`<div class="row2" style="padding-bottom:4px"><button class="btn sm" data-s="sync">Sync now</button><button class="btn sm" data-s="full">Full resync</button></div>`:''}</div>
+  <div class="fcard"><div class="fhead"><span>${I.edit}RECENT CHANGES</span></div><div id="stLog"></div></div>
+  <div class="fcard"><div class="fhead"><span>${I.check}DATA CHECKS</span></div><div class="stack" id="stHealth"></div><p class="note">Numbers are saved in one international format, for example +91 98765 43210. The country code below is used when a number has no +.</p></div>
+  <div class="fcard"><div class="fhead"><span>${I.tag}TAGS</span></div><div id="tagMgr"></div><form class="inline" id="tagAdd" autocomplete="off" style="padding-top:8px"><input class="fin" id="tagAddName" placeholder="New tag" maxlength="40" enterkeyhint="done"><button class="btn" type="submit">Add</button></form><p class="note">To tag many people at once, tap the select icon at the top of the list (or hold a contact), pick people, then tap Tags.</p></div>
+  <div class="fcard"><div class="fhead"><span>${I.swap}BOTTOM BAR</span></div><label class="flabel" style="margin-top:2px">Left side shows</label><div class="seg" id="segSwap"><button type="button" data-swap="0" class="${swap?'':'on'}">Bookmarks</button><button type="button" data-swap="1" class="${swap?'on':''}">Contacts</button></div></div>
+  <div class="fcard"><div class="fhead"><span>${I.phone}PHONE NUMBERS</span></div><label class="flabel" for="cfgCC" style="margin-top:2px">Default country code</label><input class="fin" id="cfgCC" inputmode="numeric" placeholder="e.g. 91 or 44" value="${esc(cfg.cc||defaultCC())}" maxlength="4"></div>
+  <div class="fcard"><div class="fhead"><span>${I.down}IMPORT &amp; EXPORT</span></div><div class="stack">
     ${picker?`<button class="btn" data-s="pick">${I.phoneBook}Import from this phone</button>`:''}
-    <div class="row2"><button class="btn" data-s="vcfin">${I.down}Import .vcf</button><button class="btn" data-s="vcfout">${I.up}Export .vcf</button></div>
-    <p class="note">Export creates a standard contacts file. Open it on your phone to copy everyone into the phone's own address book.</p>
-  </div></div>
-  <div class="fcard"><div class="fhead">${I.tag}Tags</div><div id="tagMgr"></div></div>
-  <div class="fcard"><div class="fhead">${I.phone}Preferences</div>
-    <label class="flabel">Dock position (you can also hold the dock and slide it)</label>
-    <div class="seg" id="segPos">${['left','center','right'].map(p=>`<button type="button" data-pos="${p}" class="${p===pos?'on':''}">${p==='center'?'Centre':p[0].toUpperCase()+p.slice(1)}</button>`).join('')}</div>
-    <label class="flabel" for="cfgCC">Country code for WhatsApp (used when a number has no +)</label>
-    <input class="fin" id="cfgCC" inputmode="numeric" placeholder="e.g. 44 or 91" value="${esc(cfg.cc||defaultCC())}" maxlength="4">
-  </div>
+    <div class="row2"><button class="btn" data-s="vcfin">${I.down}Import .vcf</button><button class="btn" data-s="vcfout">${I.up}Export .vcf</button></div></div></div>
+  <div class="fcard"><div class="fhead"><span>${I.link}GOOGLE SHEET</span></div>
+    <form id="cfgForm" class="stack" autocomplete="off"><label class="flabel" for="cfgUrl" style="margin:0">Apps Script web app URL</label><input class="fin" id="cfgUrl" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec" value="${esc(cfg.url)}" spellcheck="false"><button class="btn primary" type="submit">${cfg.url?'Save &amp; sync':'Connect'}</button></form>
+    ${cfg.url?`<div class="stack"><button class="btn" data-s="pair">${I.copy}Copy setup link for another phone</button></div><p class="note">Open that link on your other phone and it connects by itself. Anyone with the link can join, so only send it to yourself.</p><div class="stack"><button class="btn danger" data-s="disconnect">Disconnect this phone</button></div>`:''}</div>
+  ${cfg.url?`<div class="fcard sos"><div class="fhead"><span>${I.shield}SOS KILL SWITCH</span></div><p class="note">Phone lost or stolen? This locks sync and cancels every phone's access. Each phone wipes its contacts the next time it is opened online. Your contacts stay safe in the Sheet, and the same passphrase unlocks.</p>
+    <form id="sosForm" class="stack" autocomplete="off"><input class="fin" id="sosPass" type="password" placeholder="SOS passphrase (from the script)" autocomplete="off"><button class="btn hold" type="button" id="sosHold"><span>Hold for 2 seconds to lock all phones</span></button></form></div>`:''}
   <div class="fcard"><details class="guide"><summary>How to set up Google Sheet sync</summary><ol>
-    <li>Create a new Google Sheet (for example “Orbit Contacts”).</li>
-    <li>In the Sheet choose <b>Extensions → Apps Script</b>. Delete the sample code and paste the Orbit sync script.</li>
-    <li>Change <b>SOS_PASSPHRASE</b> to a secret phrase only you know. You only need it in an emergency.</li>
-    <li>Click <b>Deploy → New deployment</b>, type <b>Web app</b>. Execute as: <b>Me</b>. Who has access: <b>Anyone</b>. Deploy and allow access.</li>
-    <li>Copy the <b>Web app URL</b> (it ends in /exec), paste it above and tap Connect.</li>
-    <li>On your other phones, use “Copy setup link” or paste the same URL.</li>
+    <li>Create a Google Sheet. Choose <b>Extensions → Apps Script</b> and paste the Orbit sync script.</li>
+    <li>Change <b>SOS_PASSPHRASE</b> to a phrase only you know (emergencies only).</li>
+    <li><b>Deploy → New deployment → Web app</b>. Execute as <b>Me</b>, access <b>Anyone</b>.</li>
+    <li>Paste the <b>/exec</b> URL above and tap Connect. Use “Copy setup link” for your other phones.</li>
   </ol><div class="stack"><button class="btn" data-s="script">${I.copy}Copy the sync script</button></div></details></div>
   </div>`;
-  const setup=()=>{$('#settings').innerHTML=html;paintStatusCard();drawTagMgr()};
+  const setup=()=>{$('#settings').innerHTML=html;paintSettingsLive()};
   if(stack.includes('settings')){setup();return}
   openLayer('settings',setup);
 }
-function drawTagMgr(rename){
-  const box=$('#tagMgr');if(!box)return;const tags=tagCounts(live());
-  if(!tags.length){box.innerHTML='<p class="note">Tags you add to contacts appear here. Tap them in the list to filter people instantly.</p>';return}
-  box.innerHTML=tags.map(t=>rename===t.name.toLowerCase()?`<form class="tagrow" data-rename="${esc(t.name)}"><input class="fin" value="${esc(t.name)}" maxlength="40" enterkeyhint="done"><button class="mini" type="submit" aria-label="Save">${I.check}</button></form>`:`<div class="tagrow"><span class="chip on" style="--c:${tagColor(t.name)}"><i></i>${esc(t.name)} <small>${t.n}</small></span><button class="mini" data-rn="${esc(t.name.toLowerCase())}" aria-label="Rename">${I.edit}</button><button class="mini" data-rmtag="${esc(t.name)}" aria-label="Remove tag">${I.trash}</button></div>`).join('');
+let renameKey=null;
+function drawTagMgr(){
+  const box=$('#tagMgr');if(!box)return;
+  if(box.querySelector('form.tagrow input')===document.activeElement)return;
+  const tags=tagCounts(live());
+  if(!tags.length){box.innerHTML='<p class="note">No tags yet.</p>';return}
+  box.innerHTML=tags.map(t=>renameKey===t.name.toLowerCase()?`<form class="tagrow" data-rename="${esc(t.name)}"><input class="fin" value="${esc(t.name)}" maxlength="40" enterkeyhint="done" aria-label="New name for ${esc(t.name)}"><button class="mi" type="submit" aria-label="Save">${I.check}</button></form>`:`<div class="tagrow"><span class="tn">${esc(t.name)}<small>${t.n} ${t.n===1?'contact':'contacts'}</small></span><button class="mi" data-rn="${esc(t.name.toLowerCase())}" aria-label="Rename ${esc(t.name)}">${I.edit}</button><button class="mi" data-rmtag="${esc(t.name)}" aria-label="Delete ${esc(t.name)}">${I.trash}</button></div>`).join('');
   const f=$('form.tagrow input',box);if(f){f.focus();f.select()}
 }
 const settingsEl=$('#settings');
@@ -900,21 +1045,34 @@ settingsEl.addEventListener('submit',async e=>{
     if(!/^https:\/\/script\.google(usercontent)?\.com\//.test(url)){toast('Paste the Web app URL from Apps Script (starts with https://script.google.com/)');return}
     if(url===cfg.url&&cfg.token){await sync();openSettings();return}
     await connect(url);openSettings();
+  }else if(e.target.id==='tagAdd'){
+    const t=str($('#tagAddName').value,40);if(!t)return;
+    if(libTags().some(x=>x.toLowerCase()===t.toLowerCase())){toast(`${t} already exists`);return}
+    await setLib([...tagLib.list,t]);await logAdd('tagged',`Created tag ${t}`);$('#tagAddName').value='';render();drawTagMgr();toast(`Tag ${t} created`);
   }else if(e.target.dataset.rename){
-    const from=e.target.dataset.rename,to=str($('input',e.target).value,40);
-    if(to&&to!==from){const hit=live().filter(c=>c.tags.some(t=>t.toLowerCase()===from.toLowerCase()));await saveMany(hit.map(c=>({...c,tags:tagList(c.tags.map(t=>t.toLowerCase()===from.toLowerCase()?to:t))})));toast(`Renamed to ${to} on ${hit.length} ${hit.length===1?'contact':'contacts'}`)}
-    drawTagMgr();
+    const from=e.target.dataset.rename,to=str($('input',e.target).value,40);renameKey=null;document.activeElement?.blur();
+    if(to&&to!==from){const fk=from.toLowerCase();const hit=live().filter(c=>c.tags.some(t=>t.toLowerCase()===fk));
+      await setLib([...tagLib.list.filter(t=>t.toLowerCase()!==fk&&t.toLowerCase()!==to.toLowerCase()),to]);
+      if(hit.length)await saveMany(hit.map(c=>({...c,tags:tagList(c.tags.map(t=>t.toLowerCase()===fk?to:t))})));
+      if(activeTags.delete(fk))activeTags.add(to.toLowerCase());
+      await logAdd('tagged',`Renamed tag ${from} to ${to}`);toast(`Renamed to ${to}`)}
+    render();drawTagMgr();
   }
 });
 settingsEl.addEventListener('click',async e=>{
-  const pb=e.target.closest('[data-pos]');if(pb){const p=pb.dataset.pos;try{localStorage.setItem('orbit-dock-pos',p)}catch{}const d=$('#odock');d.dataset.pos=p;root.dataset.dockPos=p;$$('#segPos button').forEach(b=>b.classList.toggle('on',b===pb));haptic(8);return}
-  const rn=e.target.closest('[data-rn]');if(rn){drawTagMgr(rn.dataset.rn);return}
-  const rt=e.target.closest('[data-rmtag]');if(rt){if(!rt.classList.contains('armed')){rt.classList.add('armed');rt.style.color='var(--danger)';haptic(12);setTimeout(()=>{rt.classList.remove('armed');rt.style.color=''},2500);return}
-    const t=rt.dataset.rmtag.toLowerCase();const hit=live().filter(c=>c.tags.some(x=>x.toLowerCase()===t));await saveMany(hit.map(c=>({...c,tags:c.tags.filter(x=>x.toLowerCase()!==t)})));drawTagMgr();toast(`Tag removed from ${hit.length} ${hit.length===1?'contact':'contacts'}`);return}
+  const sw=e.target.closest('[data-swap]');if(sw){const v=sw.dataset.swap;try{localStorage.setItem('orbit-dock-swap',v)}catch{}if(window.orbitDockSwap)window.orbitDockSwap(v);else if(v==='1')root.dataset.dockSwap='1';else delete root.dataset.dockSwap;$$('#segSwap button').forEach(b=>b.classList.toggle('on',b===sw));haptic(6);return}
+  const rn=e.target.closest('[data-rn]');if(rn){renameKey=rn.dataset.rn;drawTagMgr();return}
+  const rt=e.target.closest('[data-rmtag]');if(rt){if(!rt.classList.contains('armed')){rt.classList.add('armed');haptic(12);setTimeout(()=>rt.classList.remove('armed'),2500);return}
+    const t=rt.dataset.rmtag,k=t.toLowerCase();const hit=live().filter(c=>c.tags.some(x=>x.toLowerCase()===k));
+    await setLib(tagLib.list.filter(x=>x.toLowerCase()!==k));if(hit.length)await saveMany(hit.map(c=>({...c,tags:c.tags.filter(x=>x.toLowerCase()!==k)})));
+    await logAdd('tagged',`Deleted tag ${t}${hit.length?` (removed from ${hit.length})`:''}`);activeTags.delete(k);render();drawTagMgr();toast(`Tag ${t} deleted`);return}
   const b=e.target.closest('[data-s]');if(!b)return;const k=b.dataset.s;
   if(k==='close')closeTop();
-  else if(k==='sync'){await sync();paintStatusCard()}
+  else if(k==='sync'){await sync();toast(status==='idle'?'Synced':'Sync failed: '+statusMsg)}
   else if(k==='full'){await sync({full:true});toast(status==='idle'?'Full resync complete':'Resync failed: '+statusMsg)}
+  else if(k==='morelog'){logLimit=200;paintSettingsLive()}
+  else if(k==='dups')openDuplicates();
+  else if(k==='format'){const{n,items}=numbersToFormat();if(!items.length)return;await saveMany(items.map(c=>({...c})));await logAdd('formatted',`Formatted ${n} ${n===1?'number':'numbers'} on ${items.length} ${items.length===1?'contact':'contacts'}`);toast(`Formatted ${n} ${n===1?'number':'numbers'}`);paintSettingsLive()}
   else if(k==='pair'){const link=location.href.split('#')[0]+'#connect='+b64e(JSON.stringify({u:cfg.url}));const ok=await copyText(link);toast(ok?'Setup link copied. Send it to yourself and open it on the other phone.':'Could not copy the link')}
   else if(k==='disconnect'){if(!b.classList.contains('armed')){b.classList.add('armed');b.textContent='Tap again to disconnect';setTimeout(()=>{b.classList.remove('armed');b.textContent='Disconnect this phone'},3000);return}
     cfg={...cfg,url:'',token:'',cursor:0,lastSync:0,lastFull:0};await idb.set('sync',cfg);setStatus('off');openSettings();toast('Disconnected. Contacts stay on this phone.')}
@@ -923,7 +1081,7 @@ settingsEl.addEventListener('click',async e=>{
   else if(k==='vcfout')exportVCF();
   else if(k==='script')copyScript();
 });
-settingsEl.addEventListener('change',async e=>{if(e.target.id==='cfgCC'){cfg.cc=digits(e.target.value).slice(0,4);await idb.set('sync',cfg);toast('Saved')}});
+settingsEl.addEventListener('change',async e=>{if(e.target.id==='cfgCC'){cfg.cc=digits(e.target.value).slice(0,4);await idb.set('sync',cfg);toast('Country code saved');paintSettingsLive()}});
 async function connect(url){
   const changedSheet=cfg.url&&cfg.url!==url;
   if(changedSheet||!cfg.token){const mark=[...all.values()].filter(c=>!c.dirty);for(const c of mark)c.dirty=true;if(mark.length)await idb.put(mark)}
@@ -931,8 +1089,7 @@ async function connect(url){
   try{setStatus('syncing');const j=await post({action:'register',device:deviceName()});cfg.token=j.token;await idb.set('sync',cfg)}
   catch(e){await idb.set('sync',cfg);if(e.code==='locked'){await lockdown('');return}setStatus('error',e.message);toast('Could not connect: '+e.message);return}
   await sync({full:true});
-  if(status==='idle'){toast('Connected to your Google Sheet ✨');haptic([10,40,10,40,20])}
-  else toast('Could not connect: '+statusMsg);
+  if(status==='idle')toast('Connected to your Google Sheet');else toast('Could not connect: '+statusMsg);
 }
 /* ---------- SOS kill switch ---------- */
 async function lockdown(msg){
@@ -942,19 +1099,18 @@ async function lockdown(msg){
   cfg={...cfg,token:'',cursor:0,lastSync:0,lastFull:0,locked:true};
   try{await idb.set('sync',cfg)}catch{}
   while(stack.length){const id=stack.pop();$('#'+id).hidden=true}
-  root.classList.remove('layer-open');
+  root.classList.remove('layer-open');if(selecting)endSelect();
   if(msg)$('#lockMsg').textContent=msg;
   $('#lockscr').hidden=false;setStatus('off');render();
 }
 let holdT=0,holdStart=0;
-function holdTick(){const b=$('#sosHold');if(!b)return;const p=Math.min(1,(performance.now()-holdStart)/2000);b.style.setProperty('--p',p);if(p>=1){holdEnd(true);return}if(p>0&&Math.round(p*10)!==Math.round((p-0.016)*10))haptic(4);holdT=requestAnimationFrame(holdTick)}
+function holdTick(){const b=$('#sosHold');if(!b)return;const p=Math.min(1,(performance.now()-holdStart)/2000);b.style.setProperty('--p',p);if(p>=1){holdEnd(true);return}holdT=requestAnimationFrame(holdTick)}
 async function holdEnd(fire){
   cancelAnimationFrame(holdT);const b=$('#sosHold');if(!b)return;const was=holdStart;holdStart=0;
   if(!fire){b.style.setProperty('--p',0);return}
   if(!was)return;
   haptic([30,60,30,60,60]);
-  const pass=$('#sosPass').value;
-  try{await post({action:'kill',passphrase:pass});await lockdown('You used the SOS kill switch. Every phone is now locked and will wipe its contacts when opened online. Your contacts are safe in the Google Sheet.')}
+  try{await post({action:'kill',passphrase:$('#sosPass').value});await lockdown('You used the SOS kill switch. Every phone is now locked and will wipe its contacts when opened online. Your contacts are safe in the Google Sheet.')}
   catch(e){b.style.setProperty('--p',0);toast(e.message)}
 }
 settingsEl.addEventListener('pointerdown',e=>{const b=e.target.closest('#sosHold');if(!b)return;if(!$('#sosPass').value){toast('Type the SOS passphrase first');return}b.setPointerCapture(e.pointerId);holdStart=performance.now();holdT=requestAnimationFrame(holdTick)});
@@ -963,8 +1119,8 @@ settingsEl.addEventListener('pointercancel',()=>{if(holdStart)holdEnd(false)});
 settingsEl.addEventListener('contextmenu',e=>{if(e.target.closest('#sosHold'))e.preventDefault()});
 $('#unlockForm').addEventListener('submit',async e=>{
   e.preventDefault();const pass=$('#unlockPass').value;if(!pass)return;
-  if(!cfg.url){toast('Connect this phone first');$('#lockscr').hidden=true;cfg.locked=false;await idb.set('sync',cfg);openSettings();return}
-  try{const j=await post({action:'unlock',passphrase:pass,device:deviceName()});cfg={...cfg,token:j.token,locked:false,cursor:0,lastFull:0};await idb.set('sync',cfg);$('#unlockPass').value='';$('#lockscr').hidden=true;await sync({full:true});toast(`Unlocked · ${live().length} contacts restored from your Sheet`);haptic([10,40,20])}
+  if(!cfg.url){$('#lockscr').hidden=true;cfg.locked=false;await idb.set('sync',cfg);openSettings();return}
+  try{const j=await post({action:'unlock',passphrase:pass,device:deviceName()});cfg={...cfg,token:j.token,locked:false,cursor:0,lastFull:0};await idb.set('sync',cfg);$('#unlockPass').value='';$('#lockscr').hidden=true;await sync({full:true});toast(`Unlocked · ${live().length} contacts restored from your Sheet`)}
   catch(e){toast(e.message);haptic([20,40,20])}
 });
 const b64e=s=>btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
@@ -974,19 +1130,23 @@ async function copyScript(){try{const r=await fetch('./apps-script/contacts-sync
 /* ---------- import / export ---------- */
 async function pickFromPhone(){
   try{
-    const avail=await navigator.contacts.getProperties();const props=['name','tel','email'].filter(p=>avail.includes(p));
+    const availP=await navigator.contacts.getProperties();const props=['name','tel','email'].filter(p=>availP.includes(p));
     const picked=await navigator.contacts.select(props,{multiple:true});if(!picked||!picked.length)return;
     await importList(picked.map(p=>({name:(p.name||[])[0]||'',phones:(p.tel||[]).map(v=>({label:'Mobile',value:v})),emails:(p.email||[]).map(v=>({label:'Personal',value:v}))})));
   }catch(e){toast('Import cancelled')}
 }
-async function importList(list){
-  const keys=new Set(live().map(c=>norm(c.name)+'|'+(digits(c.phones[0]?.value).slice(-10))));
+async function importList(items){
+  const keys=new Set();for(const c of live()){for(const p of c.phones){const k=phoneKey(p.value);if(k)keys.add('p'+k)}for(const e of c.emails)keys.add('e'+e.value.toLowerCase())}
   const add=[];let dup=0;
-  for(const x of list){const c=clean({...x,id:uid()});if(!c.name&&!c.phones.length&&!c.emails.length)continue;const k=norm(c.name)+'|'+digits(c.phones[0]?.value).slice(-10);if(keys.has(k)){dup++;continue}keys.add(k);add.push(c)}
-  if(add.length)await saveMany(add);
-  toast(`${add.length} imported${dup?` · ${dup} already here`:''}`);haptic([8,30,8]);
+  for(const x of items){const c=clean({...x,id:uid()},{format:true});if(!c.name&&!c.phones.length&&!c.emails.length)continue;
+    const ck=[...c.phones.map(p=>phoneKey(p.value)).filter(Boolean).map(k=>'p'+k),...c.emails.map(e=>'e'+e.value.toLowerCase())];
+    if(ck.length&&ck.every(k=>keys.has(k))){dup++;continue}
+    ck.forEach(k=>keys.add(k));add.push(c)}
+  if(add.length){await saveMany(add);await logAdd('added',`Imported ${add.length} ${add.length===1?'contact':'contacts'}`)}
+  const g=dupGroups().length;
+  toast(`${add.length} imported${dup?` · ${dup} already saved, skipped`:''}${g?` · ${g} to review`:''}`,g?'Review':'',g?openDuplicates:null);haptic([8,30,8]);
 }
-$('#vcfFile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;if(f.size>20*1024*1024){toast('That file is too large (20 MB max)');return}try{const list=parseVCF(await f.text());if(!list.length){toast('No contacts found in that file');return}await importList(list)}catch{toast('Could not read that file')}});
+$('#vcfFile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;if(f.size>20*1024*1024){toast('That file is too large (20 MB max)');return}try{const l=parseVCF(await f.text());if(!l.length){toast('No contacts found in that file');return}await importList(l)}catch{toast('Could not read that file')}});
 function qp(s,charset){const bytes=[];for(let i=0;i<s.length;i++){if(s[i]==='='&&/^[0-9A-F]{2}$/i.test(s.substr(i+1,2))){bytes.push(parseInt(s.substr(i+1,2),16));i+=2}else bytes.push(s.charCodeAt(i)&255)}try{return new TextDecoder(charset||'utf-8').decode(new Uint8Array(bytes))}catch{return new TextDecoder().decode(new Uint8Array(bytes))}}
 const unesc=s=>s.replace(/\\n/gi,'\n').replace(/\\([,;\\])/g,'$1');
 function splitV(s,ch){const out=[];let cur='';for(let i=0;i<s.length;i++){if(s[i]==='\\'&&i+1<s.length){cur+=s[i]+s[i+1];i++}else if(s[i]===ch){out.push(cur);cur=''}else cur+=s[i]}out.push(cur);return out}
@@ -1025,20 +1185,19 @@ function toVCF(c){
 function download(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
 function exportVCF(){const cs=live().sort((a,b)=>collator.compare(disp(a),disp(b)));if(!cs.length){toast('No contacts to export yet');return}download(`orbit-contacts-${new Date().toISOString().slice(0,10)}.vcf`,cs.map(toVCF).join('\r\n')+'\r\n','text/vcard');toast(`${cs.length} contacts exported`)}
 async function shareContact(c){
-  const vcf=toVCF(c),name=disp(c),file=new File([vcf],name.replace(/[^\w\- ]+/g,'').trim()+'.vcf',{type:'text/vcard'});
-  const text=[name,...c.phones.map(p=>`${p.label}: ${p.value}`),...c.emails.map(e=>e.value)].filter(Boolean).join('\n');
-  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});return}if(navigator.share){await navigator.share({title:name,text});return}}catch(e){if(e.name==='AbortError')return}
-  const ok=await copyText(text);toast(ok?'Contact details copied':'Sharing is not available');
+  const name=disp(c),file=new File([toVCF(c)],name.replace(/[^\w\- ]+/g,'').trim()+'.vcf',{type:'text/vcard'});
+  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});return}if(navigator.share){await navigator.share({title:name,text:contactText(c)});return}}catch(e){if(e.name==='AbortError')return}
+  const ok=await copyText(contactText(c));toast(ok?'Contact details copied':'Sharing is not available');
 }
 async function copyText(t){try{await navigator.clipboard.writeText(t);return true}catch{const a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand('copy')}catch{}a.remove();return ok}}
 
 /* ---------- toast ---------- */
 let toastTimer=0,toastFn=null;
-function toast(msg,action='',fn=null){const el=$('#toast');$('#toastText').textContent=msg;$('#toastAct').textContent=action;toastFn=fn;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),action?5500:3200)}
-$('#toastAct').addEventListener('click',async()=>{const f=toastFn;toastFn=null;$('#toast').classList.remove('show');if(f){await f();haptic(10)}});
+function toast(msg,action='',fn=null){const el=$('#toast');$('#toastText').textContent=msg;$('#toastAct').textContent=action;toastFn=fn;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),action?5500:3000)}
+$('#toastAct').addEventListener('click',async()=>{const f=toastFn;toastFn=null;$('#toast').classList.remove('show');if(f)await f()});
 
 /* ---------- add button ---------- */
-$('#addBtn').addEventListener('click',()=>{const t=q.trim();if(t&&!lastResults.length)act('new-from-q');else openEditor()});
+$('#addBtn').addEventListener('click',()=>{if(selecting)endSelect();const t=q.trim();if(t&&!lastResults.length)act('new-from-q');else openEditor()});
 
 /* ---------- desktop gate ---------- */
 function gate(){
@@ -1058,13 +1217,16 @@ async function init(){
     await openDB();
     const saved=await idb.all();for(const c of saved){const x=clean(c);all.set(x.id,x)}
     const s=await idb.get('sync');if(s)cfg={...cfg,...s};
+    const tl=await idb.get('taglib');if(tl&&Array.isArray(tl.list))tagLib=tl;
+    const lg=await idb.get('log');if(Array.isArray(lg))changeLog=lg;
+    const di=await idb.get('dupIgnore');if(Array.isArray(di))dupIgnore=new Set(di);
   }catch(e){list.innerHTML='<div class="empty"><h2>Storage is blocked</h2><p>Allow site storage (leave private browsing) and reload. Nothing has been deleted.</p></div>';return}
   const m=location.hash.match(/connect=([\w-]+)/);
-  if(m){history.replaceState(history.state,'',location.pathname+location.search);try{const o=JSON.parse(b64d(m[1]));if(o.u){render();await connect(o.u);}}catch{toast('That setup link is not valid')}}
-  if(cfg.locked){$('#lockscr').hidden=false}
+  if(m){history.replaceState(history.state,'',location.pathname+location.search);try{const o=JSON.parse(b64d(m[1]));if(o.u){render();await connect(o.u)}}catch{toast('That setup link is not valid')}}
+  if(cfg.locked)$('#lockscr').hidden=false;
   setStatus(cfg.url&&cfg.token?(navigator.onLine?'idle':'offline'):'off');
   render();
-  if(cfg.url)queueSync(250);
+  if(cfg.url&&cfg.token)queueSync(250);
   if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
 init();
