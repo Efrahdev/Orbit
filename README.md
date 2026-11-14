@@ -22,15 +22,16 @@ The app uses relative paths, so it also supports a repository subdirectory URL. 
 A phone-first contact list that lives next to your bookmarks. It is built for phones: on a desktop screen it shows a "use your phone" page (with a "Preview anyway" button).
 
 **Switching between Bookmarks and Contacts**
-- The bottom bar has three icon buttons: Bookmarks, + and Contacts. The + adds a bookmark on Bookmarks and a new contact on Contacts.
+- The bottom bar has four icon buttons: Bookmarks, +, Search and Contacts. The + adds a bookmark on Bookmarks and a new contact on Contacts. Search opens the search field at the top (Cancel closes it).
 - Swipe sideways on the list to switch. Swipes that start at the very edge of the screen are left to your phone's Back gesture.
 - To put Contacts on the left instead, open Contacts > Settings > Bottom bar.
 
 **Using Contacts**
-- Each row shows the name, the number in one international format and up to three tags. On the right are Call, SMS and WhatsApp, plus small Edit and Copy icons. Tap the row itself to open the contact.
+- Each contact is its own row card: a larger name, the number, Call, SMS and WhatsApp, plus small Edit and Copy icons. Tags show in the bar at the top, not in the rows. Tap the row to open the contact.
+- Calls: on Android the call button opens Truecaller directly (no chooser). Switch to the phone app in Settings > Calls & numbers. If Truecaller is not installed, Android offers it in the Play Store.
 - Search treats what you type as one exact phrase: "DB" finds only names, tags, numbers, emails or notes containing D and B together. Matches at the start of a name or word come first; any part of a number works ("40726").
-- The A–Z button opens a letter grid; tap a letter to jump there. Starred contacts sit in their own group at the top.
-- Tags come from name prefixes automatically: a first word shared by several names ("BT …", "LX …", "South Point …", "Zinfi …") becomes a tag. Short codes need 3+ names, ordinary words 10+, so first names like "Sumit" do not. Delete a tag in Settings > Tags to hide it, or rename it. You can also add your own tags and apply them in bulk.
+- The A–Z button in the top corner shows the letter you are scrolling through; tap it for the letter grid. Starred contacts come first.
+- Tags come from name prefixes automatically: a first word shared by several names ("BT …", "LX …", "South Point …", "Zinfi …") becomes a tag. Short codes need 3+ names, ordinary words 10+, so first names like "Sumit" do not. Delete a tag in Settings > Tags to hide it, or rename it. You can also add your own tags and apply them in bulk. Order in the bar: BT, E31, DB first; move any tag left or right with the arrows in Settings > Tags (synced to every phone).
 - Bulk tagging: tap the select icon at the top (or hold a contact), pick people, then tap Tags. Tap a tag to add it to all of them, tap again to remove it. You can also create a new tag there and apply it straight away. The same bar can star or delete the selection.
 - Numbers: every saved or imported number is stored as +country code and grouped, for example +91 98765 43210. Numbers without a + use the default country code in Settings. Settings > Data checks can format any older numbers in one tap.
 - Duplicates: Settings > Data checks > Merge all merges every group that shares a number or email. The contact with the most detail wins and keeps the fullest name; every number, email and tag is kept and the other names go into the notes ("Also saved as …"). Contacts that only share a name are listed for review and never merged automatically. Importing a contact that is already saved merges it into the existing one.

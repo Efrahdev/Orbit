@@ -34,7 +34,8 @@ window.orbitGo=go;
 addEventListener('pageshow',()=>{leaving=false;root.classList.remove('ot-leave-forward','ot-leave-back');if(surface){surface.style.transition='';surface.style.transform=''}});
 setTimeout(()=>root.classList.remove('ot-arrive-forward','ot-arrive-back'),400);
 
-dock.addEventListener('click',e=>{const tab=e.target.closest('[data-tab]');if(tab){e.preventDefault();go(tab.dataset.tab)}});
+dock.addEventListener('click',e=>{const tab=e.target.closest('[data-tab]');if(tab){e.preventDefault();go(tab.dataset.tab);return}
+  if(e.target.closest('.odock-search')){haptic(6);if(window.orbitSearch)window.orbitSearch();else{const f=document.getElementById('search');if(f){window.scrollTo({top:0,behavior:'instant'});f.focus()}}}});
 dock.addEventListener('contextmenu',e=>e.preventDefault());
 
 /* ---------- swipe sideways to switch ---------- */

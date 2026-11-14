@@ -350,6 +350,43 @@ html.layer-open .toast,body.selecting .toast{bottom:calc(84px + env(safe-area-in
 .gate .btn{flex:none}
 .gate code{display:inline-block;margin-top:14px;padding:6px 10px;border-radius:9px;background:var(--surface2);font-size:13px}
 body.desk .app{width:430px}
+
+/* ===== Compact layout: one slim title row, search behind the dock icon, separate row cards ===== */
+.bar{padding-bottom:4px}
+.bar .titlebar{padding:4px 2px 6px}
+.bar h1{font-size:22px}
+.bar.stuck .titlebar{padding:2px 2px 4px}
+.bar.stuck h1{font-size:19px}
+.ibtn.az{width:auto;min-width:38px;padding:0 9px;font-size:12px;font-weight:750;letter-spacing:.02em;color:var(--text)}
+.ibtn.az #azLabel{min-width:12px;text-align:center}
+.searchrow{display:none;align-items:center;gap:6px;padding:4px 0 6px}
+body.searching .searchrow{display:flex}
+body.searching .titlebar{display:none}
+.searchrow .search{flex:1;height:42px}
+.searchrow .textbtn{flex:none;color:var(--accent)}
+.chips{padding:2px 14px 4px}
+.chip{height:30px}
+.gl{display:none}
+.group{margin-top:0}
+.group+.group{margin-top:8px}
+.section-label{margin:6px 6px 6px}
+.gcard{background:none;border:0;border-radius:0;overflow:visible;display:flex;flex-direction:column;gap:8px}
+#list{padding-top:4px}
+.row{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 10px 12px 12px;min-height:78px;column-gap:12px;row-gap:6px;grid-template-columns:44px minmax(0,1fr) auto;contain-intrinsic-size:auto 80px}
+.row+.row:before{display:none}
+.row:active,.row:focus-visible{background:var(--surface2)}
+.row.selected{background:var(--sel);border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.av{width:44px;height:44px;font-size:16px}
+.row .chk{width:44px;height:44px}
+.rn{font-size:17px;font-weight:600;letter-spacing:-.005em}
+.rn .star{width:14px;height:14px}
+.rs{font-size:14px}
+.rq{gap:4px}
+.mi{width:30px;height:28px}
+.mi .i{width:16px;height:16px}
+.ra{gap:8px}
+.ic{width:40px;height:34px;border-radius:10px}
+.ic .i{width:18px;height:18px}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style></head>
 <body data-theme="dark" data-sync="off">
@@ -368,14 +405,17 @@ body.desk .app{width:430px}
   <div class="bar" id="bar">
   <header class="titlebar">
     <div class="tt"><h1>Contacts</h1><p class="meta" id="metaText">Loading…</p></div>
-    <button class="ibtn" id="azBtn" type="button" aria-label="Jump to letter" aria-expanded="false"><span class="az">A–Z</span></button>
+    <button class="ibtn az" id="azBtn" type="button" aria-label="Jump to letter" aria-expanded="false"><span id="azLabel">A–Z</span></button>
     <button class="ibtn" id="selBtn" type="button" aria-label="Select contacts"><svg class="i" viewBox="0 0 24 24"><rect x="3.5" y="4" width="6" height="6" rx="1.5"/><path d="M5 7l1 1 2-2"/><rect x="3.5" y="14" width="6" height="6" rx="1.5"/><path d="M13 7h7.5M13 17h7.5"/></svg></button>
     <button class="ibtn" id="menuBtn" type="button" aria-label="Settings and sync status"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg><span class="sdot"></span></button>
   </header>
+  <div class="searchrow" id="searchRow">
     <label class="search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
-      <input id="q" type="search" placeholder="Search name, number, tag or note" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search" aria-label="Search contacts">
+      <input id="q" type="search" placeholder="Name, number, tag or note" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search" aria-label="Search contacts">
       <button class="clearq" id="clearQ" type="button" aria-label="Clear search"><svg class="i" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg></button>
     </label>
+    <button class="textbtn" id="searchCancel" type="button">Cancel</button>
+  </div>
     <div class="chips" id="chips" role="toolbar" aria-label="Filter by tag" data-noswipe></div>
   </div>
   <section id="list" aria-live="polite"></section>
@@ -395,6 +435,7 @@ body.desk .app{width:430px}
   <span class="odock-glow" aria-hidden="true"></span>
   <a class="odock-tab" data-tab="bookmarks" href="./" aria-label="Bookmarks"><svg viewBox="0 0 24 24"><path d="M7 3.5h10a1 1 0 0 1 1 1V20l-6-3.6L6 20V4.5a1 1 0 0 1 1-1z"/></svg></a>
   <button class="fab" id="addBtn" type="button" aria-label="New contact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button class="odock-tab odock-search" id="dockSearch" type="button" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></button>
   <a class="odock-tab" data-tab="contacts" href="./contacts.html" aria-label="Contacts" aria-current="page"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20.5c.6-4 3.9-6.5 8-6.5s7.4 2.5 8 6.5"/></svg></a>
 </nav>
 
@@ -471,7 +512,7 @@ const CK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-widt
 const PAL=[['#6a64b8','#56789f'],['#9a6a86','#7469a8'],['#4b847a','#567a9c'],['#a3845a','#9c6a74'],['#5a72a3','#7470a8'],['#a27461','#93626a'],['#55806f','#76875c'],['#83679f','#626ba0'],['#55809b','#558678'],['#966a6e','#a08660']];
 const hash=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0};
 const pal=c=>PAL[hash(c.id||'x')%PAL.length];
-const DEFAULT_TAGS=['BT','DB','E31','South Point'];
+const DEFAULT_TAGS=['BT','E31','DB','South Point'];
 
 /* ---------- storage ---------- */
 let db;
@@ -541,6 +582,9 @@ function indexOf(c){computePrefixes();if(c._v===c.updatedAt&&c._pv===prefixVer)r
   const pt=prefixTagOf(c.name);const tg=[...c.tags];if(pt&&!tg.some(t=>t.toLowerCase()===pt.tag.toLowerCase()))tg.unshift(pt.tag);c._tags=tg;c._pt=pt;
   c._n=norm(c.name||disp(c)).replace(/\s+/g,' ');c._d=c.phones.map(p=>digits(p.value)).join(' ');c._e=norm(c.emails.map(e=>e.value).join(' '));c._no=norm(c.notes);c._t=tg.map(norm)}
 const telHref=v=>String(v).replace(/[^\d+*#,;]/g,'');
+const isAndroid=/Android/i.test(navigator.userAgent);
+// Android: an intent link addressed to Truecaller opens it directly, with no "Phone or Truecaller?" chooser.
+const callHref=v=>{const t=telHref(v);return isAndroid&&cfg.caller!=='phone'?`intent:${t}#Intent;scheme=tel;action=android.intent.action.DIAL;package=com.truecaller;end`:'tel:'+t};
 function waNumber(v){const f=fmtPhone(v);const d=digits(f);if(f.startsWith('+'))return d;const cc=myCC();return cc&&!d.startsWith(cc)?cc+d.replace(/^0+/,''):d}
 const contactText=c=>[disp(c),...c.phones.map(p=>`${p.label}: ${p.value}`),...c.emails.map(e=>e.value)].filter(Boolean).join('\n');
 
@@ -631,13 +675,17 @@ let q='',activeTags=new Set(),starOnly=false,firstPaint=true,lastResults=[];
 let selecting=false;const selected=new Set();
 const list=$('#list');
 const U=(id,cls='i')=>`<svg class="${cls}" aria-hidden="true"><use href="#s-${id}"/></svg>`;
+function chipOrder(tags){const lib=libPlain().map(t=>t.toLowerCase());const li=t=>{const i=lib.indexOf(t.name.toLowerCase());return i<0?1e6:i};
+  return tags.filter(t=>t.n>0||li(t)<1e6).sort((a,b)=>li(a)-li(b)||b.n-a.n||collator.compare(a.name,b.name))}
+async function moveTag(name,dir){const order=chipOrder(tagCounts(live())).map(t=>t.name);const i=order.findIndex(t=>t.toLowerCase()===name.toLowerCase()),j=i+dir;if(i<0||j<0||j>=order.length)return;[order[i],order[j]]=[order[j],order[i]];
+  const markers=tagLib.list.filter(t=>t[0]==='!'||t.includes('=>'));const others=libPlain().filter(t=>!order.some(o=>o.toLowerCase()===t.toLowerCase()));
+  await setLib([...order,...others,...markers]);render();drawTagMgr();haptic(5)}
 function renderChips(cs){
   const tags=tagCounts(cs),starN=cs.filter(c=>c.fav).length;
   for(const t of [...activeTags])if(!tags.some(x=>x.name.toLowerCase()===t))activeTags.delete(t);
   if(starOnly&&!starN)starOnly=false;
   const none=!starOnly&&!activeTags.size;
-  const lib=new Set(libPlain().map(t=>t.toLowerCase()));
-  const shown=tags.filter(t=>t.n>0||lib.has(t.name.toLowerCase())).sort((a,b)=>(lib.has(b.name.toLowerCase())-lib.has(a.name.toLowerCase()))||b.n-a.n||collator.compare(a.name,b.name));
+  const shown=chipOrder(tags);
   let h=`<button class="chip ${none?'on':''}" data-chip="all">All <small>${cs.length}</small></button>`;
   if(starN)h+=`<button class="chip ${starOnly?'on':''}" data-chip="star">${U('star','cs')}Starred <small>${starN}</small></button>`;
   for(const t of shown)h+=`<button class="chip ${activeTags.has(t.name.toLowerCase())?'on':''}" data-chip="tag" data-tag="${esc(t.name.toLowerCase())}">${esc(t.name)} <small>${t.n}</small></button>`;
@@ -646,14 +694,14 @@ function renderChips(cs){
 }
 function rowHTML(c,ph,d){
   const name=disp(c),sub=ph?context(c,ph):(c.phones[0]?.value||c.emails[0]?.value||'');
-  const tel=c.phones[0]?.value,tags=effTags(c).slice(0,3).map(t=>`<span class="tg">${esc(t)}</span>`).join('');
+  const tel=c.phones[0]?.value;
   const off=tel?'':' off',th=tel?esc(telHref(tel)):'';
   return `<div class="row${d!==undefined?' rise':''}${selected.has(c.id)?' selected':''}"${d!==undefined?` style="--d:${d}"`:''} data-id="${esc(c.id)}" role="button" tabindex="0">`+
     `${av(c)}<span class="chk" aria-hidden="true">${CK}</span>`+
     `<div class="rn">${hl(name,ph)}${c.fav?U('star','star'):''}</div>`+
     `<div class="rq"><button class="mi" data-r="edit" aria-label="Edit">${U('edit')}</button><button class="mi" data-r="copy" aria-label="Copy">${U('copy')}</button></div>`+
-    `<div class="rs"><span class="num">${esc(sub)}</span>${tags}</div>`+
-    `<div class="ra"><a class="ic sms${off}" href="${tel?'sms:'+th:'#'}" aria-label="Message">${U('msg')}</a><a class="ic wa${off}" href="${tel?'https://wa.me/'+esc(waNumber(tel)):'#'}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">${U('wa')}</a><a class="ic call${off}" href="${tel?'tel:'+th:'#'}" aria-label="Call">${U('phone')}</a></div>`+
+    `<div class="rs"><span class="num">${esc(sub)}</span></div>`+
+    `<div class="ra"><a class="ic sms${off}" href="${tel?'sms:'+th:'#'}" aria-label="Message">${U('msg')}</a><a class="ic wa${off}" href="${tel?'https://wa.me/'+esc(waNumber(tel)):'#'}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">${U('wa')}</a><a class="ic call${off}" href="${tel?esc(callHref(tel)):'#'}" aria-label="Call">${U('phone')}</a></div>`+
   `</div>`;
 }
 const letterOf=c=>{const ch=(norm(disp(c)).match(/\p{L}/u)||[''])[0].toUpperCase();return /^[A-Z]$/.test(ch)?ch:'#'};
@@ -691,7 +739,7 @@ function render(){
     list.innerHTML=first;pendingBlocks=blocks;const tk=renderToken;requestAnimationFrame(()=>pump(tk));
   }
   firstPaint=false;
-  $('#azBtn').hidden=!!ph||res.length<2;
+  $('#azBtn').hidden=!!ph||res.length<2;requestAnimationFrame(updateLetter);
   updateMeta();updateSelbar();
 }
 function emptyHTML(total,searching){
@@ -740,11 +788,19 @@ const qi=$('#q');
 let qTimer=0;qi.addEventListener('input',()=>{q=qi.value;$('#clearQ').classList.toggle('show',!!q);clearTimeout(qTimer);qTimer=setTimeout(scheduleRender,90)});
 qi.addEventListener('keydown',e=>{if(e.key==='Enter'){qi.blur();if(lastResults.length===1)openDetail(lastResults[0].id,$('.row .av'))}});
 $('#clearQ').addEventListener('click',()=>{qi.value='';q='';$('#clearQ').classList.remove('show');render();qi.focus()});
+function openSearch(){if(selecting)endSelect();closeAZ();body.classList.add('searching');window.scrollTo({top:0,behavior:'instant'});qi.focus()}
+function closeSearch(){body.classList.remove('searching');if(q){qi.value='';q='';$('#clearQ').classList.remove('show');render()}qi.blur()}
+window.orbitSearch=()=>body.classList.contains('searching')?qi.focus():openSearch();
+$('#searchCancel').addEventListener('click',closeSearch);
 new IntersectionObserver(([en])=>$('#bar').classList.toggle('stuck',!en.isIntersecting)).observe($('#sentinel'));
 new ResizeObserver(()=>root.style.setProperty('--bar-h',$('#bar').offsetHeight+'px')).observe($('#bar'));
 
 /* ---------- A–Z menu ---------- */
-const azPop=$('#azPop'),azBtn=$('#azBtn');
+const azPop=$('#azPop'),azBtn=$('#azBtn'),azLabel=$('#azLabel');
+let letterTick=0;
+function updateLetter(){letterTick=0;if(phraseOf(q))return;const y=$('#bar').getBoundingClientRect().bottom+12;const el=document.elementFromPoint(Math.min(innerWidth/2,300),y);const g=el&&el.closest('.group');
+  azLabel.textContent=scrollY<8||!g?'A–Z':g.dataset.letter}
+addEventListener('scroll',()=>{if(!letterTick)letterTick=requestAnimationFrame(updateLetter)},{passive:true});
 function openAZ(){
   azPop.style.top=(azBtn.getBoundingClientRect().bottom+8)+'px';
   const has=new Set(groupLetters);
@@ -836,7 +892,7 @@ function hideLayer(id){
 }
 function closeTop(){if(stack.length)history.back()}
 addEventListener('popstate',e=>{const depth=e.state?.depth||0;while(stack.length>depth)hideLayer(stack.pop())});
-addEventListener('keydown',e=>{if(e.key==='Escape'){if(!azPop.hidden)closeAZ();else if(stack.length)closeTop();else if(selecting)endSelect()}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(!azPop.hidden)closeAZ();else if(stack.length)closeTop();else if(selecting)endSelect();else if(body.classList.contains('searching'))closeSearch()}});
 function refreshOpenLayers(){if(!$('#settings').hidden)paintSettingsLive();if(!$('#dups').hidden)$('#dups').innerHTML=dupsHTML();if(!$('#tagsheet').hidden&&selecting)$('#tagsheet').innerHTML=tagSheetHTML()}
 
 /* ---------- detail ---------- */
@@ -848,12 +904,12 @@ function detailHTML(c){
   <div class="hero">${av(c,'big hero-av')}<div class="st"><h2>${esc(name)}</h2>${effTags(c).length?`<div class="dtags">${effTags(c).map(t=>`<span class="chip on">${esc(t)}</span>`).join('')}</div>`:''}</div></div>
   <div class="st">
   <div class="acts">
-    <a class="act call ${tel?'':'off'}" href="${tel?'tel:'+th:'#'}"><span>${I.phone}</span>Call</a>
+    <a class="act call ${tel?'':'off'}" href="${tel?esc(callHref(tel)):'#'}"><span>${I.phone}</span>Call</a>
     <a class="act sms ${tel?'':'off'}" href="${tel?'sms:'+th:'#'}"><span>${I.msg}</span>Message</a>
     <a class="act wa ${tel?'':'off'}" href="${tel?'https://wa.me/'+esc(waNumber(tel)):'#'}" target="_blank" rel="noopener noreferrer"><span>${I.wa}</span>WhatsApp</a>
     <a class="act mail ${mail?'':'off'}" href="${mail?'mailto:'+esc(mail):'#'}"><span>${I.mail}</span>Email</a>
   </div>
-  ${c.phones.length?`<div class="icard">${c.phones.map(x=>`<div class="irow"><div class="k"><small>${esc(x.label)}</small><a class="v" href="tel:${esc(telHref(x.value))}">${esc(x.value)}</a></div><a class="ic sms" href="sms:${esc(telHref(x.value))}" aria-label="Message">${I.msg}</a><a class="ic wa" href="https://wa.me/${esc(waNumber(x.value))}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">${I.wa}</a><button class="mi" data-copy="${esc(x.value)}" aria-label="Copy number">${I.copy}</button></div>`).join('')}</div>`:''}
+  ${c.phones.length?`<div class="icard">${c.phones.map(x=>`<div class="irow"><div class="k"><small>${esc(x.label)}</small><a class="v" href="${esc(callHref(x.value))}">${esc(x.value)}</a></div><a class="ic sms" href="sms:${esc(telHref(x.value))}" aria-label="Message">${I.msg}</a><a class="ic wa" href="https://wa.me/${esc(waNumber(x.value))}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">${I.wa}</a><button class="mi" data-copy="${esc(x.value)}" aria-label="Copy number">${I.copy}</button></div>`).join('')}</div>`:''}
   ${c.emails.length?`<div class="icard">${c.emails.map(x=>`<div class="irow"><div class="k"><small>${esc(x.label)}</small><a class="v" href="mailto:${esc(x.value)}">${esc(x.value)}</a></div><button class="mi" data-copy="${esc(x.value)}" aria-label="Copy email">${I.copy}</button></div>`).join('')}</div>`:''}
   ${c.notes?`<div class="icard"><div class="irow"><div class="k"><small>Notes</small><span class="v">${esc(c.notes)}</span></div></div></div>`:''}
   <div class="dfoot"><button class="btn" data-d="share">${I.share}Share</button><button class="btn danger" data-d="delete">${I.trash}<span>Delete</span></button></div>
@@ -1115,9 +1171,9 @@ function openSettings(){
     ${cfg.url?`<div class="row2" style="padding-bottom:4px"><button class="btn sm" data-s="sync">Sync now</button><button class="btn sm" data-s="full">Full resync</button></div>`:''}</div>
   <div class="fcard"><div id="stLog"></div></div>
   <div class="fcard"><div class="fhead"><span>${I.check}DATA CHECKS</span></div><div class="stack" id="stHealth"></div><p class="note">Numbers are saved in one international format, for example +91 98765 43210. The country code below is used when a number has no +.</p></div>
-  <div class="fcard"><div class="fhead"><span>${I.tag}TAGS</span></div><p class="note" style="margin-top:0">Tags are found automatically from name prefixes shared by several contacts (for example “BT …”, “DB …”, “South Point …”). Delete a tag here to hide it; rename to change how it shows.</p><div id="tagMgr"></div><form class="inline" id="tagAdd" autocomplete="off" style="padding-top:8px"><input class="fin" id="tagAddName" placeholder="New tag" maxlength="40" enterkeyhint="done"><button class="btn" type="submit">Add</button></form><p class="note">To tag many people at once, tap the select icon at the top of the list (or hold a contact), pick people, then tap Tags.</p></div>
+  <div class="fcard"><div class="fhead"><span>${I.tag}TAGS</span></div><p class="note" style="margin-top:0">Tags are found automatically from name prefixes shared by several contacts (for example “BT …”, “DB …”, “South Point …”). Arrows move a tag left or right in the bar. Delete hides it; the pencil renames it.</p><div id="tagMgr"></div><form class="inline" id="tagAdd" autocomplete="off" style="padding-top:8px"><input class="fin" id="tagAddName" placeholder="New tag" maxlength="40" enterkeyhint="done"><button class="btn" type="submit">Add</button></form><p class="note">To tag many people at once, tap the select icon at the top of the list (or hold a contact), pick people, then tap Tags.</p></div>
   <div class="fcard"><div class="fhead"><span>${I.swap}BOTTOM BAR</span></div><label class="flabel" style="margin-top:2px">Left side shows</label><div class="seg" id="segSwap"><button type="button" data-swap="0" class="${swap?'':'on'}">Bookmarks</button><button type="button" data-swap="1" class="${swap?'on':''}">Contacts</button></div></div>
-  <div class="fcard"><div class="fhead"><span>${I.phone}PHONE NUMBERS</span></div><label class="flabel" for="cfgCC" style="margin-top:2px">Default country code</label><input class="fin" id="cfgCC" inputmode="numeric" placeholder="e.g. 91 or 44" value="${esc(cfg.cc||defaultCC())}" maxlength="4"></div>
+  <div class="fcard"><div class="fhead"><span>${I.phone}CALLS &amp; NUMBERS</span></div>${isAndroid?`<label class="flabel" style="margin-top:2px">Call button opens</label><div class="seg" id="segCaller"><button type="button" data-caller="truecaller" class="${cfg.caller!=='phone'?'on':''}">Truecaller</button><button type="button" data-caller="phone" class="${cfg.caller==='phone'?'on':''}">Phone app</button></div>`:''}<label class="flabel" for="cfgCC">Default country code</label><input class="fin" id="cfgCC" inputmode="numeric" placeholder="e.g. 91 or 44" value="${esc(cfg.cc||defaultCC())}" maxlength="4"></div>
   <div class="fcard"><div class="fhead"><span>${I.down}IMPORT &amp; EXPORT</span></div><div class="stack">
     ${picker?`<button class="btn" data-s="pick">${I.phoneBook}Import from this phone</button>`:''}
     <div class="row2"><button class="btn" data-s="vcfin">${I.down}Import .vcf</button><button class="btn" data-s="vcfout">${I.up}Export .vcf</button></div></div></div>
@@ -1141,9 +1197,9 @@ let renameKey=null;
 function drawTagMgr(){
   const box=$('#tagMgr');if(!box)return;
   if(box.querySelector('form.tagrow input')===document.activeElement)return;
-  const tags=tagCounts(live());
+  const tags=chipOrder(tagCounts(live()));
   if(!tags.length){box.innerHTML='<p class="note">No tags yet.</p>';return}
-  box.innerHTML=tags.map(t=>renameKey===t.name.toLowerCase()?`<form class="tagrow" data-rename="${esc(t.name)}"><input class="fin" value="${esc(t.name)}" maxlength="40" enterkeyhint="done" aria-label="New name for ${esc(t.name)}"><button class="mi" type="submit" aria-label="Save">${I.check}</button></form>`:`<div class="tagrow"><span class="tn">${esc(t.name)}<small>${t.n} ${t.n===1?'contact':'contacts'}</small></span><button class="mi" data-rn="${esc(t.name.toLowerCase())}" aria-label="Rename ${esc(t.name)}">${I.edit}</button><button class="mi" data-rmtag="${esc(t.name)}" aria-label="Delete ${esc(t.name)}">${I.trash}</button></div>`).join('');
+  box.innerHTML=tags.map(t=>renameKey===t.name.toLowerCase()?`<form class="tagrow" data-rename="${esc(t.name)}"><input class="fin" value="${esc(t.name)}" maxlength="40" enterkeyhint="done" aria-label="New name for ${esc(t.name)}"><button class="mi" type="submit" aria-label="Save">${I.check}</button></form>`:`<div class="tagrow"><span class="tn">${esc(t.name)}<small>${t.n} ${t.n===1?'contact':'contacts'}</small></span><button class="mi" data-mv="-1" data-tn="${esc(t.name)}" aria-label="Move ${esc(t.name)} left">${sv('<path d="M15 6l-6 6 6 6"/>')}</button><button class="mi" data-mv="1" data-tn="${esc(t.name)}" aria-label="Move ${esc(t.name)} right">${sv('<path d="M9 6l6 6-6 6"/>')}</button><button class="mi" data-rn="${esc(t.name.toLowerCase())}" aria-label="Rename ${esc(t.name)}">${I.edit}</button><button class="mi" data-rmtag="${esc(t.name)}" aria-label="Delete ${esc(t.name)}">${I.trash}</button></div>`).join('');
   const f=$('form.tagrow input',box);if(f){f.focus();f.select()}
 }
 const settingsEl=$('#settings');
@@ -1170,8 +1226,10 @@ settingsEl.addEventListener('submit',async e=>{
   }
 });
 settingsEl.addEventListener('click',async e=>{
+  const cb=e.target.closest('[data-caller]');if(cb){cfg.caller=cb.dataset.caller;await idb.set('sync',cfg);$$('#segCaller button').forEach(b=>b.classList.toggle('on',b===cb));render();toast(cfg.caller==='phone'?'Calls open in your phone app':'Calls open in Truecaller');return}
   const le=e.target.closest('[data-log]');if(le&&!e.target.closest('a,button')){const i=+le.dataset.log,x=changeLog[i];if(x){const key=x.t+':'+i;openEntries.has(key)?openEntries.delete(key):openEntries.add(key);$('#stLog').innerHTML=logHTML()}return}
   const sw=e.target.closest('[data-swap]');if(sw){const v=sw.dataset.swap;try{localStorage.setItem('orbit-dock-swap',v)}catch{}if(window.orbitDockSwap)window.orbitDockSwap(v);else if(v==='1')root.dataset.dockSwap='1';else delete root.dataset.dockSwap;$$('#segSwap button').forEach(b=>b.classList.toggle('on',b===sw));haptic(6);return}
+  const mv=e.target.closest('[data-mv]');if(mv){await moveTag(mv.dataset.tn,+mv.dataset.mv);return}
   const rn=e.target.closest('[data-rn]');if(rn){renameKey=rn.dataset.rn;drawTagMgr();return}
   const rt=e.target.closest('[data-rmtag]');if(rt){if(!rt.classList.contains('armed')){rt.classList.add('armed');haptic(12);setTimeout(()=>rt.classList.remove('armed'),2500);return}
     const t=rt.dataset.rmtag,k=t.toLowerCase();const hit=live().filter(c=>c.tags.some(x=>x.toLowerCase()===k));
@@ -1337,6 +1395,7 @@ async function init(){
     const saved=await idb.all();for(const c of saved){const x=clean(c);all.set(x.id,x)}
     const s=await idb.get('sync');if(s)cfg={...cfg,...s};
     const tl=await idb.get('taglib');if(tl&&Array.isArray(tl.list))tagLib=tl;
+    if(!(await idb.get('tagOrderV2'))){const pl=libPlain().map(t=>t.toUpperCase());if(pl[0]==='BT'&&pl[1]==='DB'&&pl[2]==='E31'){const others=tagLib.list.filter(t=>!['BT','DB','E31'].includes(t.toUpperCase()));tagLib={list:['BT','E31','DB',...others],updatedAt:Date.now()};await idb.set('taglib',tagLib)}await idb.set('tagOrderV2',1)}
     const lg=await idb.get('log');if(Array.isArray(lg))changeLog=lg;
     const di=await idb.get('dupIgnore');if(Array.isArray(di))dupIgnore=new Set(di);
     dataVer++;

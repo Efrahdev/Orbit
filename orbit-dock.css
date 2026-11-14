@@ -1,11 +1,11 @@
 /* Orbit dock: the shared bottom bar for Bookmarks and Contacts (index.html, contacts.html).
    Quiet by design: no glows, no looping motion. Only the page transition slides. */
 @view-transition{navigation:auto}
-:root{--dock-w:204px;--dock-h:60px;--dock-gap:14px;--dock-bg:rgba(18,21,28,.92);--dock-line:rgba(255,255,255,.10);--dock-ink:#8b93a3;--dock-on:#eceef4;--dock-pill:rgba(255,255,255,.07);--dock-fab1:#6a5ae0;--dock-fab2:#4f7fe0;--dock-shadow:0 10px 28px -14px rgba(0,0,0,.75)}
+:root{--dock-w:252px;--dock-h:60px;--dock-gap:14px;--dock-bg:rgba(18,21,28,.92);--dock-line:rgba(255,255,255,.10);--dock-ink:#8b93a3;--dock-on:#eceef4;--dock-pill:rgba(255,255,255,.07);--dock-fab1:#6a5ae0;--dock-fab2:#4f7fe0;--dock-shadow:0 10px 28px -14px rgba(0,0,0,.75)}
 body[data-theme="light"]{--dock-bg:rgba(255,255,255,.94);--dock-line:rgba(15,23,42,.10);--dock-ink:#6b7383;--dock-on:#161a22;--dock-pill:rgba(15,23,42,.06);--dock-fab1:#5b4bd6;--dock-fab2:#3f6fd8;--dock-shadow:0 10px 26px -16px rgba(30,30,60,.35)}
 
 .odock{position:fixed;z-index:22;bottom:calc(var(--dock-gap) + env(safe-area-inset-bottom));left:calc(50% - var(--dock-w)/2);width:var(--dock-w);height:var(--dock-h);
-  display:grid;grid-template-columns:1fr 64px 1fr;align-items:center;padding:0 6px;border-radius:20px;
+  display:grid;grid-template-columns:repeat(4,1fr);align-items:center;padding:0 6px;border-radius:20px;
   background:var(--dock-bg);border:1px solid var(--dock-line);box-shadow:var(--dock-shadow);
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
   view-transition-name:orbit-dock;transition:transform .25s ease,opacity .2s ease;
@@ -13,16 +13,18 @@ body[data-theme="light"]{--dock-bg:rgba(255,255,255,.94);--dock-line:rgba(15,23,
 body.selecting .odock{transform:translateY(calc(100% + 40px));opacity:0;pointer-events:none}
 
 .odock-tab{position:relative;z-index:1;display:grid;place-items:center;height:46px;margin:0 2px;border-radius:14px;color:var(--dock-ink);text-decoration:none;order:1;transition:color .15s ease}
-.odock-tab[data-tab="contacts"]{order:3}
+.odock-tab[data-tab="contacts"]{order:4}
 .odock .fab{order:2}
-html[data-dock-swap="1"] .odock-tab[data-tab="bookmarks"]{order:3}
+.odock .odock-search{order:3;border:0;background:none;padding:0;cursor:pointer;font:inherit}
+html[data-dock-swap="1"] .odock-tab[data-tab="bookmarks"]{order:4}
 html[data-dock-swap="1"] .odock-tab[data-tab="contacts"]{order:1}
+body.searching .odock-search{color:var(--dock-on)}
 .odock-tab svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;display:block}
 .odock-tab[aria-current="page"]{color:var(--dock-on)}
 .odock-tab:active svg{transform:scale(.92)}
 
 /* soft pill behind the active tab; it slides to the other side on a page switch */
-.odock-glow{position:absolute;z-index:0;top:6px;height:46px;width:calc((var(--dock-w) - 64px - 12px)/2 - 4px);border-radius:14px;pointer-events:none;background:var(--dock-pill);view-transition-name:odock-glow}
+.odock-glow{position:absolute;z-index:0;top:6px;height:46px;width:calc((var(--dock-w) - 12px)/4 - 4px);border-radius:14px;pointer-events:none;background:var(--dock-pill);view-transition-name:odock-glow}
 .odock[data-active="bookmarks"] .odock-glow,html[data-dock-swap="1"] .odock[data-active="contacts"] .odock-glow{left:8px;right:auto}
 .odock[data-active="contacts"] .odock-glow,html[data-dock-swap="1"] .odock[data-active="bookmarks"] .odock-glow{right:8px;left:auto}
 
